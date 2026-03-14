@@ -1,1 +1,13 @@
-# Club Management System  Student Club Management System is a web-based platform designed to help student clubs manage members, finances, events, projects, and resources efficiently.  The system includes the following modules:  - Member Management - Finance Management - Event Organization - Project & Team Management - Information & Resource Management
+# Student Club Management System
+
+Student Club Management System is a web-based platform designed to help
+student clubs manage members, finances, events, projects, and resources
+efficiently.
+
+The system includes the following modules:
+
+- Member Management
+- Finance Management
+- Event Organization
+- Project & Team Management
+- Information & Resource Management
