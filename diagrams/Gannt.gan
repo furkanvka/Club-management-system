@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?><project name="Kulüp Yönetim Sistemi" company="" webLink="http://" view-date="2026-03-07" view-index="0" gantt-divider-location="1056" resource-divider-location="381" version="3.3.3316" locale="tr_TR">
+    <description/>
+    <view zooming-state="default:2" id="gantt-chart">
+        <field id="tpd3" name="İsim" width="208" order="0"/>
+        <field id="tpd4" name="Başlangıç tarihi" width="208" order="1"/>
+        <field id="tpd5" name="Bitiş tarihi" width="208" order="2"/>
+        <field id="tpd6" name="Süre" width="208" order="3"/>
+        <field id="tpd13" name="Kaynaklar" width="209" order="4"/>
+        <field id="tpd15" name="Notlar" width="20" order="4"/>
+        <option id="taskLabelUp" value="name"/>
+        <option id="taskLabelDown" value="resources"/>
+        <option id="filter.completedTasks" value="false"/>
+        <option id="filter.dueTodayTasks" value="false"/>
+        <option id="filter.overdueTasks" value="false"/>
+        <option id="filter.inProgressTodayTasks" value="false"/>
+    </view>
+    <view id="resource-table">
+        <field id="0" name="İsim" width="247" order="0"/>
+        <field id="1" name="Varsayılan rol" width="130" order="1"/>
+    </view>
+    <!-- -->
+    <calendars>
+        <day-types>
+            <day-type id="0"/>
+            <day-type id="1"/>
+            <default-week id="1" name="default" sun="1" mon="0" tue="0" wed="0" thu="0" fri="0" sat="1"/>
+            <only-show-weekends value="true"/>
+            <overriden-day-types/>
+            <days/>
+        </day-types>
+    </calendars>
+    <tasks empty-milestones="true">
+        <taskproperties>
+            <taskproperty id="tpd0" name="type" type="default" valuetype="icon"/>
+            <taskproperty id="tpd1" name="priority" type="default" valuetype="icon"/>
+            <taskproperty id="tpd2" name="info" type="default" valuetype="icon"/>
+            <taskproperty id="tpd3" name="name" type="default" valuetype="text"/>
+            <taskproperty id="tpd4" name="begindate" type="default" valuetype="date"/>
+            <taskproperty id="tpd5" name="enddate" type="default" valuetype="date"/>
+            <taskproperty id="tpd6" name="duration" type="default" valuetype="int"/>
+            <taskproperty id="tpd7" name="completion" type="default" valuetype="int"/>
+            <taskproperty id="tpd8" name="coordinator" type="default" valuetype="text"/>
+            <taskproperty id="tpd9" name="predecessorsr" type="default" valuetype="text"/>
+        </taskproperties>
+        <task id="7" uid="b2a735d7ea15462288eced982c8fadef" name="İş Paketi 1: Ön İnceleme Ve Fizibilite Çalışması" meeting="false" start="2026-03-11" duration="8" complete="0" expand="true">
+            <depend id="11" type="2" difference="0" hardness="Strong"/>
+            <task id="8" uid="36e4daea67ff426a862eee25d64f9200" name="Problem tanımı ve görev dağılımı" meeting="false" start="2026-03-11" duration="1" complete="0" expand="true">
+                <depend id="9" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="9" uid="6d7fd04737454c38ad5426456fd93da3" name="Fizibilite çalışması için 3 sistem önerilmesi ve sistemlerin karşılaştırılması" meeting="false" start="2026-03-12" duration="4" complete="0" expand="true">
+                <depend id="10" type="2" difference="2" hardness="Strong"/>
+            </task>
+            <task id="10" uid="a6975f945edf4c9ab1f610c84f2ef86a" name="Fizibilite matrisinin oluşturulması" meeting="false" start="2026-03-18" duration="1" complete="1" thirdDate="2026-03-16" thirdDate-constraint="1" expand="true"/>
+        </task>
+        <task id="11" uid="79815bb957394e478a7356f9a75b52b6" name="İş Paketi 2: Sistem Analizi" meeting="false" start="2026-03-19" duration="11" complete="0" expand="true">
+            <depend id="17" type="2" difference="0" hardness="Strong"/>
+            <task id="13" uid="0af86d6560f64c08ade993c3bf572093" name="Müşteri görüşmelerinin yapılması ve veri toplama" meeting="false" start="2026-03-19" duration="3" complete="0" expand="true">
+                <depend id="14" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="12" uid="1b4003b4e9194989a1d9f35f2d26fe30" name="Sistem gereksinimlerinin belirlenmesi" meeting="false" start="2026-03-19" duration="4" complete="0" expand="true">
+                <depend id="15" type="2" difference="0" hardness="Strong"/>
+                <depend id="16" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="14" uid="60cfd37a74e644e3a779c5d3a47f0f6c" name="Kullanım senaryolarının yapılması" meeting="false" start="2026-03-22" duration="5" complete="0" expand="true"/>
+            <task id="15" uid="77258ca76b9a49069314027fc6f36563" name="Veri akış diyagramlarının çizilmesi" meeting="false" start="2026-03-23" duration="7" complete="0" expand="true"/>
+            <task id="16" uid="c07642f894bb4dfb97fc962432a808eb" name="Veri sözlüklerinin oluşturulması" meeting="false" start="2026-03-23" duration="7" complete="0" expand="true"/>
+        </task>
+        <task id="17" uid="3a2304d6371647fab85986a20a1a31a8" name="İş Paketi 3: Sistem Tasarımı" meeting="false" start="2026-03-30" duration="11" complete="0" expand="true">
+            <depend id="21" type="2" difference="-2" hardness="Strong"/>
+            <task id="18" uid="4d476ee65de44e42a47d19238cf6f278" name="Veri modelleme ve veritabanı tasarımı" meeting="false" start="2026-03-30" duration="10" complete="0" expand="true"/>
+            <task id="20" uid="e6f26d356c4f4bc2b3975ba2158c34f3" name="Yapı diyagramlarının oluşturulması" meeting="false" start="2026-03-30" duration="11" complete="0" expand="true"/>
+            <task id="19" uid="379ec7a6f04f4683a0831be1d3b71723" name="Kullanıcı arayüz taslaklarının oluşturulması(Wireframe/Mockup)" meeting="false" start="2026-04-01" duration="7" complete="0" expand="true"/>
+        </task>
+        <task id="21" uid="6dced5c8a27f42cb86b37b92c0b87008" name="İş Paketi 4: Geliştirme Ve Kodlama" meeting="false" start="2026-04-08" duration="19" complete="0" expand="true">
+            <depend id="26" type="2" difference="-5" hardness="Strong"/>
+            <task id="22" uid="c82e55ee51064defa224574bdd3c6ec6" name="Veritabanının fiziksel olarak oluşturulması" meeting="false" start="2026-04-08" duration="3" complete="0" expand="true"/>
+            <task id="23" uid="fb1d3a3c771640ea9d8c0b89f7bddaed" name="Backend servislerinin ve API'ların kodlanması." meeting="false" start="2026-04-08" duration="15" complete="0" expand="true"/>
+            <task id="24" uid="180fdfc4992b48f28784d61680ba03c9" name="Frontend (Arayüz) kodlaması" meeting="false" start="2026-04-08" duration="15" complete="0" expand="true"/>
+            <task id="25" uid="61c1ab4c1c024bf9a25b2ea1baffa24e" name="Sistem modüllerinin entegrasyonu" meeting="false" start="2026-04-15" duration="12" complete="0" expand="true"/>
+        </task>
+        <task id="26" uid="7031af5c2ac042bcba030aa0d9c9009f" name="İş Paketi 5: Test" meeting="false" start="2026-04-22" duration="7" complete="0" expand="true">
+            <depend id="29" type="2" difference="0" hardness="Strong"/>
+            <task id="27" uid="fc33cbffb78c451c9c2853ae3990fee1" name="Unit testlerin yapılması" meeting="false" start="2026-04-22" duration="5" complete="0" expand="true"/>
+            <task id="28" uid="c8497ddcdca14dcb87b22266bcd84b2f" name="Müşteri değerlendirilmesi" meeting="false" start="2026-04-26" duration="3" complete="0" expand="true"/>
+        </task>
+        <task id="29" uid="5efc9691be2c4aeba00fc7c2335ef6fa" name="Proje Kapanışı" meeting="false" start="2026-04-29" duration="5" complete="0" expand="true">
+            <task id="30" uid="1e906e4258f34ca79ab974018c026f2c" name="Proje raporunun oluşturulması" meeting="false" start="2026-04-29" duration="5" complete="0" expand="true"/>
+        </task>
+    </tasks>
+    <resources>
+        <resource id="1" name="Esma" function="Default:0" contacts="" phone=""/>
+        <resource id="2" name="Hakan" function="Default:0" contacts="" phone=""/>
+        <resource id="3" name="Furkan" function="Default:0" contacts="" phone=""/>
+        <resource id="4" name="Burak" function="Default:0" contacts="" phone=""/>
+        <resource id="5" name="Yusuf" function="Default:0" contacts="" phone=""/>
+    </resources>
+    <allocations>
+        <allocation task-id="8" resource-id="1" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="9" resource-id="1" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="10" resource-id="1" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="12" resource-id="1" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="14" resource-id="1" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="13" resource-id="1" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="16" resource-id="1" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="27" resource-id="1" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="30" resource-id="1" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="23" resource-id="1" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="8" resource-id="2" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="9" resource-id="2" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="10" resource-id="2" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="12" resource-id="2" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="13" resource-id="2" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="15" resource-id="2" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="13" resource-id="2" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="27" resource-id="2" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="30" resource-id="2" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="24" resource-id="2" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="8" resource-id="3" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="9" resource-id="3" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="10" resource-id="3" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="15" resource-id="3" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="16" resource-id="3" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="19" resource-id="3" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="20" resource-id="3" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="18" resource-id="3" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="27" resource-id="3" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="30" resource-id="3" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="23" resource-id="3" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="24" resource-id="3" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="22" resource-id="3" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="25" resource-id="3" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="8" resource-id="4" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="9" resource-id="4" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="10" resource-id="4" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="16" resource-id="4" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="15" resource-id="4" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="27" resource-id="4" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="30" resource-id="4" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="23" resource-id="4" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="24" resource-id="4" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="25" resource-id="4" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="22" resource-id="4" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="8" resource-id="5" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="9" resource-id="5" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="10" resource-id="5" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="13" resource-id="5" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="12" resource-id="5" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="19" resource-id="5" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="20" resource-id="5" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="18" resource-id="5" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="28" resource-id="5" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="30" resource-id="5" function="Default:0" responsible="false" load="100.0"/>
+    </allocations>
+    <vacations/>
+    <previous/>
+    <roles roleset-name="Default"/>
+    <roles>
+        <role id="1" name="Programcı"/>
+    </roles>
+</project>
