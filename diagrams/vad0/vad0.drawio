@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36" version="29.6.6">
   <diagram name="Page-1" id="Dmc3NnsmXZhpYy4OlTB1">
-    <mxGraphModel dx="398" dy="207" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="796" dy="414" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -178,7 +178,7 @@
         <mxCell id="07_lxzlkHR-yt4txuejk-153" parent="1" style="text;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;" value="Etkinlik duyurusu &amp;amp; QR" vertex="1">
           <mxGeometry height="20" width="120" x="180" y="150" as="geometry" />
         </mxCell>
-        <mxCell id="07_lxzlkHR-yt4txuejk-154" parent="1" style="text;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;align=center;" value="Profil güncellme ve görünteleme&amp;nbsp;" vertex="1">
+        <mxCell id="07_lxzlkHR-yt4txuejk-154" parent="1" style="text;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;align=center;" value="Profil güncelleme ve görünteleme&amp;nbsp;" vertex="1">
           <mxGeometry height="10" width="135" x="175" y="190" as="geometry" />
         </mxCell>
         <mxCell id="07_lxzlkHR-yt4txuejk-156" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;" value="Görev durum güncellemesi " vertex="1">
@@ -208,7 +208,7 @@
         <mxCell id="07_lxzlkHR-yt4txuejk-170" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;" value="Belge Onay ve Kategorizasyon" vertex="1">
           <mxGeometry height="10" width="90" x="565" y="460" as="geometry" />
         </mxCell>
-        <mxCell id="07_lxzlkHR-yt4txuejk-172" parent="1" style="text;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;align=center;" value="Üye havuzundan şeçim" vertex="1">
+        <mxCell id="07_lxzlkHR-yt4txuejk-172" parent="1" style="text;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;align=center;" value="Üye havuzundan seçim" vertex="1">
           <mxGeometry height="10" width="110" x="555" y="490" as="geometry" />
         </mxCell>
         <mxCell id="07_lxzlkHR-yt4txuejk-174" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;" value="Etkinlik başvururları" vertex="1">
@@ -298,8 +298,8 @@
             <mxPoint x="540" y="331" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="PE8OJSs09FfCqB5gSNSh-7" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;" value="Etkniklik detayları" vertex="1">
-          <mxGeometry height="10" width="90" x="570" y="335" as="geometry" />
+        <mxCell id="PE8OJSs09FfCqB5gSNSh-7" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;" value="Etkiniklik detayları" vertex="1">
+          <mxGeometry height="10" width="100" x="560" y="335" as="geometry" />
         </mxCell>
         <mxCell id="1S9HTUxGLqLym1jzoO2s-2" edge="1" parent="1" style="endArrow=classic;html=1;rounded=0;" value="">
           <mxGeometry height="50" relative="1" width="50" as="geometry">
@@ -307,7 +307,7 @@
             <mxPoint x="540" y="296" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="1S9HTUxGLqLym1jzoO2s-3" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;" value="Etkniklik duyurusu" vertex="1">
+        <mxCell id="1S9HTUxGLqLym1jzoO2s-3" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;" value="Etkinlik duyurusu" vertex="1">
           <mxGeometry height="10" width="100" x="562.5" y="300" as="geometry" />
         </mxCell>
       </root>

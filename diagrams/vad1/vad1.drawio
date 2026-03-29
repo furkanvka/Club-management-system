@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36" version="29.6.6">
   <diagram name="Sayfa-1" id="nRVAQ2hoRpbiOGjrNdHY">
-    <mxGraphModel dx="1002" dy="521" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="694" dy="361" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -44,7 +44,7 @@
         <mxCell id="T2T2WNn-ijWGMK74eHmP-4" parent="1" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=4;whiteSpace=wrap;html=1;" value="1.0" vertex="1">
           <mxGeometry height="120" width="160" x="790" y="150" as="geometry" />
         </mxCell>
-        <mxCell id="T2T2WNn-ijWGMK74eHmP-5" parent="T2T2WNn-ijWGMK74eHmP-4" style="align=center;strokeColor=none;fillColor=none;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" value="finans modulu" vertex="1">
+        <mxCell id="T2T2WNn-ijWGMK74eHmP-5" parent="T2T2WNn-ijWGMK74eHmP-4" style="align=center;strokeColor=none;fillColor=none;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" value="Kulübün gelir ve gider kayıtlarını tutar ve finansal işlemlerin düzenli olarak izlenmesini sağlar." vertex="1">
           <mxGeometry height="70" width="160" y="50" as="geometry" />
         </mxCell>
         <mxCell id="T2T2WNn-ijWGMK74eHmP-10" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.46;entryY=-0.006;entryDx=0;entryDy=0;entryPerimeter=0;">
@@ -62,7 +62,7 @@
         <mxCell id="ofEFTedCBWioYhBT8gNG-1" parent="1" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=4;whiteSpace=wrap;html=1;" value="2.0" vertex="1">
           <mxGeometry height="160" width="220" x="446" y="380" as="geometry" />
         </mxCell>
-        <mxCell id="ofEFTedCBWioYhBT8gNG-2" parent="ofEFTedCBWioYhBT8gNG-1" style="align=center;strokeColor=none;fillColor=none;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" value="Üye kayıd ve&amp;nbsp;" vertex="1">
+        <mxCell id="ofEFTedCBWioYhBT8gNG-2" parent="ofEFTedCBWioYhBT8gNG-1" style="align=center;strokeColor=none;fillColor=none;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" value="Üye kayıtlarının durumunu düzenli olarak izler ve güncel tutar." vertex="1">
           <mxGeometry height="110" width="220" y="50" as="geometry" />
         </mxCell>
         <mxCell id="ofEFTedCBWioYhBT8gNG-30" parent="1" style="shape=table;startSize=0;container=1;collapsible=0;childLayout=tableLayout;" value="" vertex="1">
@@ -111,7 +111,7 @@
         <mxCell id="ofEFTedCBWioYhBT8gNG-46" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;span data-path-to-node=&quot;5,0,1,0,1,0&quot;&gt;&lt;font style=&quot;font-size: 9px;&quot;&gt;Kayıt bilgisi&lt;/font&gt;&lt;/span&gt;&lt;span data-path-to-node=&quot;5,0,1,0,1,1&quot;&gt;&lt;span class=&quot;citation-147 citation-end-147&quot;&gt;&lt;sup class=&quot;superscript&quot; data-turn-source-index=&quot;3&quot;&gt;&lt;/sup&gt;&lt;/span&gt;&lt;/span&gt;&lt;span data-path-to-node=&quot;5,0,1,0,1,2&quot;&gt;&lt;/span&gt;" vertex="1">
           <mxGeometry height="20" width="60" x="426" y="333.75" as="geometry" />
         </mxCell>
-        <mxCell id="ofEFTedCBWioYhBT8gNG-47" parent="1" style="text;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=8;" value="&lt;font&gt;Profil güncellme istegi&lt;/font&gt;" vertex="1">
+        <mxCell id="ofEFTedCBWioYhBT8gNG-47" parent="1" style="text;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=8;" value="&lt;font&gt;Profil güncelleme istegi&lt;/font&gt;" vertex="1">
           <mxGeometry height="21.25" width="70" x="619" y="340" as="geometry" />
         </mxCell>
         <mxCell id="ofEFTedCBWioYhBT8gNG-51" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontSize=9;" value="&lt;font&gt;Profil Bilgileri &lt;/font&gt;" vertex="1">
@@ -154,7 +154,7 @@
         <mxCell id="ofEFTedCBWioYhBT8gNG-72" parent="1" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=4;whiteSpace=wrap;html=1;" value="5.0" vertex="1">
           <mxGeometry height="150" width="220" x="1050" y="610" as="geometry" />
         </mxCell>
-        <mxCell id="ofEFTedCBWioYhBT8gNG-73" parent="ofEFTedCBWioYhBT8gNG-72" style="align=center;strokeColor=none;fillColor=none;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" value="Organizasyon Modülü" vertex="1">
+        <mxCell id="ofEFTedCBWioYhBT8gNG-73" parent="ofEFTedCBWioYhBT8gNG-72" style="align=center;strokeColor=none;fillColor=none;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" value="Etkinlik başvurularını alır ve bu başvurulara ilişkin duyuruları ilgili kişilere iletir." vertex="1">
           <mxGeometry height="100" width="220" y="50" as="geometry" />
         </mxCell>
         <mxCell id="ofEFTedCBWioYhBT8gNG-74" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontSize=9;" value="&lt;span data-path-to-node=&quot;5,1,1,0,0,1&quot;&gt;Üye havuzundan&lt;br/&gt;seçim&lt;br/&gt;&lt;/span&gt;&lt;span data-path-to-node=&quot;5,1,1,0,0,2&quot;&gt;&lt;span class=&quot;citation-144 citation-end-144&quot;&gt;&lt;sup class=&quot;superscript&quot; data-turn-source-index=&quot;6&quot;&gt;&lt;/sup&gt;&lt;sup class=&quot;superscript&quot; data-turn-source-index=&quot;6&quot;&gt;&lt;/sup&gt;&lt;sup class=&quot;superscript&quot; data-turn-source-index=&quot;6&quot;&gt;&lt;/sup&gt;&lt;sup class=&quot;superscript&quot; data-turn-source-index=&quot;6&quot;&gt;&lt;/sup&gt;&lt;/span&gt;&lt;/span&gt;&lt;span data-path-to-node=&quot;5,1,1,0,0,3&quot;&gt;&lt;/span&gt;" vertex="1">
@@ -189,13 +189,13 @@
         <mxCell id="ofEFTedCBWioYhBT8gNG-82" parent="1" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=4;whiteSpace=wrap;html=1;" value="3.0" vertex="1">
           <mxGeometry height="170" width="226" x="440" y="600" as="geometry" />
         </mxCell>
-        <mxCell id="ofEFTedCBWioYhBT8gNG-83" parent="ofEFTedCBWioYhBT8gNG-82" style="align=center;strokeColor=none;fillColor=none;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" value="Yönetim Modülü" vertex="1">
+        <mxCell id="ofEFTedCBWioYhBT8gNG-83" parent="ofEFTedCBWioYhBT8gNG-82" style="align=center;strokeColor=none;fillColor=none;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" value="Görev atamalarını gerçekleştirir ve bu görevlerin durumlarını takip eder." vertex="1">
           <mxGeometry height="120" width="226" y="50" as="geometry" />
         </mxCell>
         <mxCell id="TKcExpyaazyjUvSpd2Hs-1" parent="1" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=4;whiteSpace=wrap;html=1;" value="4.0" vertex="1">
           <mxGeometry height="150" width="220" x="779" y="610" as="geometry" />
         </mxCell>
-        <mxCell id="TKcExpyaazyjUvSpd2Hs-2" parent="TKcExpyaazyjUvSpd2Hs-1" style="align=center;strokeColor=none;fillColor=none;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" value="kaynak bilgi modulu" vertex="1">
+        <mxCell id="TKcExpyaazyjUvSpd2Hs-2" parent="TKcExpyaazyjUvSpd2Hs-1" style="align=center;strokeColor=none;fillColor=none;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" value="Kulübe ait belgeleri saklar ve bu belgelerin düzenli aralıklarla yedeklenmesini sağlar." vertex="1">
           <mxGeometry height="100" width="220" y="50" as="geometry" />
         </mxCell>
         <mxCell id="TKcExpyaazyjUvSpd2Hs-3" edge="1" parent="1" source="ofEFTedCBWioYhBT8gNG-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="ofEFTedCBWioYhBT8gNG-82">
@@ -352,7 +352,7 @@
         <mxCell id="TKcExpyaazyjUvSpd2Hs-45" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontSize=9;" value="Toplantı Raporları" vertex="1">
           <mxGeometry height="30" width="74" x="686" y="650" as="geometry" />
         </mxCell>
-        <mxCell id="TKcExpyaazyjUvSpd2Hs-49" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.576;entryY=1.02;entryDx=0;entryDy=0;entryPerimeter=0;" value="&amp;nbsp;&amp;nbsp; ">
+        <mxCell id="TKcExpyaazyjUvSpd2Hs-49" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.576;entryY=1.02;entryDx=0;entryDy=0;entryPerimeter=0;" value="">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="914.8560000000002" y="500.0000000000001" as="sourcePoint" />
             <mxPoint x="914" y="607.4" as="targetPoint" />
@@ -528,7 +528,7 @@
             <mxRectangle height="40" width="90" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="TKcExpyaazyjUvSpd2Hs-100" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontSize=9;" value="Şeçilmiş üyeler" vertex="1">
+        <mxCell id="TKcExpyaazyjUvSpd2Hs-100" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontSize=9;" value="Seçilmiş üyeler" vertex="1">
           <mxGeometry height="30" width="60" x="550" y="554.5" as="geometry" />
         </mxCell>
         <mxCell id="wY1qubJ4W0-aXogTrrRt-1" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" value=" ">
@@ -540,7 +540,7 @@
             <mxPoint x="969.49" y="500" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="wY1qubJ4W0-aXogTrrRt-3" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;font style=&quot;font-size: 9px;&quot;&gt;&amp;nbsp;Yedekleme periyodunu&lt;/font&gt;" vertex="1">
+        <mxCell id="wY1qubJ4W0-aXogTrrRt-3" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;font style=&quot;font-size: 9px;&quot;&gt;Yedekleme periyodu&lt;/font&gt;" vertex="1">
           <mxGeometry height="30" width="60" x="910" y="545" as="geometry" />
         </mxCell>
         <mxCell id="wY1qubJ4W0-aXogTrrRt-4" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.005;entryY=0.154;entryDx=0;entryDy=0;entryPerimeter=0;" value="">
