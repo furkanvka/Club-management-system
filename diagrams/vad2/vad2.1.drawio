@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36" version="29.6.6">
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.6.6 Chrome/144.0.7559.236 Electron/40.8.4 Safari/537.36" version="29.6.6">
   <diagram name="Page-1" id="3BSsG-Aw_8ldpqfpUSno">
-    <mxGraphModel dx="1042" dy="527" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="868" dy="522" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -21,6 +21,11 @@
         <mxCell id="8U_VDUhjocYja32xnBQy-17" edge="1" parent="1" source="8U_VDUhjocYja32xnBQy-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="8U_VDUhjocYja32xnBQy-22">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="200" y="210" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="jiRIYVnoNEvg5G0qHX1_-2" connectable="0" parent="8U_VDUhjocYja32xnBQy-17" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="Gelir gider&lt;div&gt;kaydı, fiş&lt;/div&gt;" vertex="1">
+          <mxGeometry relative="1" x="-0.3258" y="4" as="geometry">
+            <mxPoint x="-10" y="-63" as="offset" />
           </mxGeometry>
         </mxCell>
         <mxCell id="8U_VDUhjocYja32xnBQy-8" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="Kulüp Yöneticisi" vertex="1">
@@ -51,6 +56,11 @@
         <mxCell id="8U_VDUhjocYja32xnBQy-21" edge="1" parent="1" source="8U_VDUhjocYja32xnBQy-25" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.75;entryDx=0;entryDy=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" target="8U_VDUhjocYja32xnBQy-8">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="200" y="480" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="jiRIYVnoNEvg5G0qHX1_-3" connectable="0" parent="8U_VDUhjocYja32xnBQy-21" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="Finans&amp;nbsp;&lt;div&gt;Raporu&lt;/div&gt;" vertex="1">
+          <mxGeometry relative="1" x="0.3044" y="-1" as="geometry">
+            <mxPoint x="-16" y="-30" as="offset" />
           </mxGeometry>
         </mxCell>
         <mxCell id="8U_VDUhjocYja32xnBQy-26" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="D1 Finans Tablosundaki bilgileri kullanarak finans raporu oluşturur.&lt;div&gt;Bu raporu kulüp yöneticisine sunar.&lt;/div&gt;" vertex="1">

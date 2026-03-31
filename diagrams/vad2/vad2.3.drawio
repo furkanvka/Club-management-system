@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36" version="29.6.6">
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.6.6 Chrome/144.0.7559.236 Electron/40.8.4 Safari/537.36" version="29.6.6">
   <diagram name="Page-1" id="YDDuoiElML9ok1CLIslZ">
-    <mxGraphModel dx="1389" dy="703" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="947" dy="569" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -22,8 +22,10 @@
         <mxCell id="4YU4ksuSIopyZfO34cWl-24" parent="4YU4ksuSIopyZfO34cWl-1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="Ekip üyelerinin bilgileri 3.1 numaralı sisteme paylaşılır." vertex="1">
           <mxGeometry height="60" width="240" x="40" y="340" as="geometry" />
         </mxCell>
-        <mxCell id="LT-0jbBrJw7X1VfI0H5j-9" edge="1" parent="4YU4ksuSIopyZfO34cWl-1" source="4YU4ksuSIopyZfO34cWl-12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" target="4YU4ksuSIopyZfO34cWl-14">
-          <mxGeometry relative="1" as="geometry" />
+        <mxCell id="LT-0jbBrJw7X1VfI0H5j-9" edge="1" parent="4YU4ksuSIopyZfO34cWl-1" source="4YU4ksuSIopyZfO34cWl-12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.75;entryY=1;entryDx=0;entryDy=0;exitX=0.75;exitY=0;exitDx=0;exitDy=0;" target="4YU4ksuSIopyZfO34cWl-14">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="220" y="310" as="sourcePoint" />
+          </mxGeometry>
         </mxCell>
         <mxCell id="4YU4ksuSIopyZfO34cWl-12" parent="4YU4ksuSIopyZfO34cWl-1" style="swimlane;whiteSpace=wrap;html=1;rounded=1;" value="3.2" vertex="1">
           <mxGeometry height="80" width="240" x="40" y="320" as="geometry" />
@@ -52,20 +54,49 @@
         <mxCell id="LT-0jbBrJw7X1VfI0H5j-6" edge="1" parent="1" source="4YU4ksuSIopyZfO34cWl-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="LT-0jbBrJw7X1VfI0H5j-5">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
+        <mxCell id="lUuXmENB4h84EPh1unpK-3" connectable="0" parent="LT-0jbBrJw7X1VfI0H5j-6" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="Ekip Tanımlama&lt;div&gt;Lider Atama&lt;/div&gt;" vertex="1">
+          <mxGeometry relative="1" x="-0.1179" y="-2" as="geometry">
+            <mxPoint x="7" y="-22" as="offset" />
+          </mxGeometry>
+        </mxCell>
         <mxCell id="4YU4ksuSIopyZfO34cWl-6" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="Kulüp Yöneticisi" vertex="1">
           <mxGeometry height="80" width="120" x="40" y="80" as="geometry" />
         </mxCell>
-        <mxCell id="LT-0jbBrJw7X1VfI0H5j-10" edge="1" parent="1" source="4YU4ksuSIopyZfO34cWl-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="4YU4ksuSIopyZfO34cWl-14">
+        <mxCell id="LT-0jbBrJw7X1VfI0H5j-10" edge="1" parent="1" source="4YU4ksuSIopyZfO34cWl-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" target="4YU4ksuSIopyZfO34cWl-14">
           <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lUuXmENB4h84EPh1unpK-5" connectable="0" parent="LT-0jbBrJw7X1VfI0H5j-10" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="Görev Ataması" vertex="1">
+          <mxGeometry relative="1" x="-0.3744" y="2" as="geometry">
+            <mxPoint x="2" y="-8" as="offset" />
+          </mxGeometry>
         </mxCell>
         <mxCell id="4YU4ksuSIopyZfO34cWl-7" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="Ekip Lideri" vertex="1">
           <mxGeometry height="80" width="120" x="40" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="lUuXmENB4h84EPh1unpK-2" edge="1" parent="1" source="4YU4ksuSIopyZfO34cWl-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" target="4YU4ksuSIopyZfO34cWl-14">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="260" y="360" />
+              <mxPoint x="260" y="320" />
+              <mxPoint x="400" y="320" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lUuXmENB4h84EPh1unpK-7" connectable="0" parent="lUuXmENB4h84EPh1unpK-2" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="Görev Güncellemesi" vertex="1">
+          <mxGeometry relative="1" x="-0.6163" y="-1" as="geometry">
+            <mxPoint x="98" y="-31" as="offset" />
+          </mxGeometry>
         </mxCell>
         <mxCell id="4YU4ksuSIopyZfO34cWl-8" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="Ekip Üyesi" vertex="1">
           <mxGeometry height="80" width="120" x="40" y="320" as="geometry" />
         </mxCell>
         <mxCell id="LT-0jbBrJw7X1VfI0H5j-8" edge="1" parent="1" source="4YU4ksuSIopyZfO34cWl-9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" target="4YU4ksuSIopyZfO34cWl-12">
           <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lUuXmENB4h84EPh1unpK-8" connectable="0" parent="LT-0jbBrJw7X1VfI0H5j-8" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="Üye Seçimi" vertex="1">
+          <mxGeometry relative="1" x="-0.089" y="-2" as="geometry">
+            <mxPoint x="-7" y="-12" as="offset" />
+          </mxGeometry>
         </mxCell>
         <mxCell id="4YU4ksuSIopyZfO34cWl-9" parent="1" style="swimlane;whiteSpace=wrap;html=1;rounded=1;" value="2.0" vertex="1">
           <mxGeometry height="80" width="120" x="40" y="440" as="geometry" />
@@ -84,18 +115,37 @@
             <mxPoint x="180" y="580" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="LT-0jbBrJw7X1VfI0H5j-11" edge="1" parent="1" source="4YU4ksuSIopyZfO34cWl-14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="4YU4ksuSIopyZfO34cWl-8">
+        <mxCell id="lUuXmENB4h84EPh1unpK-9" connectable="0" parent="LT-0jbBrJw7X1VfI0H5j-7" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="Belgeler" vertex="1">
+          <mxGeometry relative="1" x="-0.0034" y="3" as="geometry">
+            <mxPoint x="-13" y="-30" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="LT-0jbBrJw7X1VfI0H5j-11" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.25;entryDx=0;entryDy=0;" target="4YU4ksuSIopyZfO34cWl-8">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="340" y="320" />
-              <mxPoint x="200" y="320" />
-              <mxPoint x="200" y="360" />
+              <mxPoint x="340" y="300" />
+              <mxPoint x="220" y="300" />
+              <mxPoint x="220" y="340" />
             </Array>
+            <mxPoint x="340" y="280" as="sourcePoint" />
             <mxPoint x="200" y="360" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lUuXmENB4h84EPh1unpK-6" connectable="0" parent="LT-0jbBrJw7X1VfI0H5j-11" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="Görev" vertex="1">
+          <mxGeometry relative="1" x="0.2615" y="-2" as="geometry">
+            <mxPoint x="22" y="-22" as="offset" />
           </mxGeometry>
         </mxCell>
         <mxCell id="LT-0jbBrJw7X1VfI0H5j-13" edge="1" parent="1" source="4YU4ksuSIopyZfO34cWl-14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0.75;entryY=0;entryDx=0;entryDy=0;" target="4YU4ksuSIopyZfO34cWl-3">
           <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lUuXmENB4h84EPh1unpK-1" edge="1" parent="1" source="4YU4ksuSIopyZfO34cWl-14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.75;exitDx=0;exitDy=0;entryX=1;entryY=0.75;entryDx=0;entryDy=0;" target="4YU4ksuSIopyZfO34cWl-7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lUuXmENB4h84EPh1unpK-4" connectable="0" parent="lUuXmENB4h84EPh1unpK-1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="Görev Özeti" vertex="1">
+          <mxGeometry relative="1" x="0.0667" y="2" as="geometry">
+            <mxPoint y="-12" as="offset" />
+          </mxGeometry>
         </mxCell>
       </root>
     </mxGraphModel>

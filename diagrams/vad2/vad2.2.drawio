@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36" version="29.6.6">
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.6.6 Chrome/144.0.7559.236 Electron/40.8.4 Safari/537.36" version="29.6.6">
   <diagram name="Page-1" id="YDDuoiElML9ok1CLIslZ">
-    <mxGraphModel dx="1042" dy="527" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="947" dy="569" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -42,17 +42,32 @@
         <mxCell id="4YU4ksuSIopyZfO34cWl-30" edge="1" parent="1" source="4YU4ksuSIopyZfO34cWl-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0;entryY=0.75;entryDx=0;entryDy=0;" target="4YU4ksuSIopyZfO34cWl-12">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
+        <mxCell id="tDBozXtSPVIe2TIpeZL5-3" connectable="0" parent="4YU4ksuSIopyZfO34cWl-30" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="Üye Durum&amp;nbsp;&lt;br&gt;Güncellemesi" vertex="1">
+          <mxGeometry relative="1" x="-0.0682" as="geometry">
+            <mxPoint x="-15" y="20" as="offset" />
+          </mxGeometry>
+        </mxCell>
         <mxCell id="4YU4ksuSIopyZfO34cWl-6" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="Kulüp Yöneticisi" vertex="1">
           <mxGeometry height="80" width="120" x="40" y="200" as="geometry" />
         </mxCell>
         <mxCell id="4YU4ksuSIopyZfO34cWl-33" edge="1" parent="1" source="4YU4ksuSIopyZfO34cWl-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0;entryY=0.75;entryDx=0;entryDy=0;" target="4YU4ksuSIopyZfO34cWl-13">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
+        <mxCell id="tDBozXtSPVIe2TIpeZL5-5" connectable="0" parent="4YU4ksuSIopyZfO34cWl-33" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="Üye Seçimi" vertex="1">
+          <mxGeometry relative="1" x="-0.0833" as="geometry">
+            <mxPoint x="15" y="-10" as="offset" />
+          </mxGeometry>
+        </mxCell>
         <mxCell id="4YU4ksuSIopyZfO34cWl-7" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="Ekip Lideri" vertex="1">
           <mxGeometry height="80" width="120" x="40" y="320" as="geometry" />
         </mxCell>
         <mxCell id="4YU4ksuSIopyZfO34cWl-22" edge="1" parent="1" source="4YU4ksuSIopyZfO34cWl-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="4YU4ksuSIopyZfO34cWl-14">
           <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="tDBozXtSPVIe2TIpeZL5-1" connectable="0" parent="4YU4ksuSIopyZfO34cWl-22" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="Üye Bilgileri" vertex="1">
+          <mxGeometry relative="1" x="-0.3409" y="4" as="geometry">
+            <mxPoint y="-6" as="offset" />
+          </mxGeometry>
         </mxCell>
         <mxCell id="4YU4ksuSIopyZfO34cWl-8" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="Üye" vertex="1">
           <mxGeometry height="80" width="120" x="40" y="80" as="geometry" />
@@ -87,6 +102,11 @@
             <mxPoint x="220" y="220" as="sourcePoint" />
           </mxGeometry>
         </mxCell>
+        <mxCell id="tDBozXtSPVIe2TIpeZL5-2" connectable="0" parent="4YU4ksuSIopyZfO34cWl-26" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="Üye Geçmişi" vertex="1">
+          <mxGeometry relative="1" x="0.2348" y="-3" as="geometry">
+            <mxPoint y="-7" as="offset" />
+          </mxGeometry>
+        </mxCell>
         <mxCell id="4YU4ksuSIopyZfO34cWl-28" edge="1" parent="1" source="4YU4ksuSIopyZfO34cWl-13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" target="4YU4ksuSIopyZfO34cWl-3">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="670" y="379.95238095238096" as="targetPoint" />
@@ -97,6 +117,11 @@
         </mxCell>
         <mxCell id="4YU4ksuSIopyZfO34cWl-32" edge="1" parent="1" source="4YU4ksuSIopyZfO34cWl-13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.25;exitDx=0;exitDy=0;entryX=1;entryY=0.25;entryDx=0;entryDy=0;" target="4YU4ksuSIopyZfO34cWl-7">
           <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="tDBozXtSPVIe2TIpeZL5-4" connectable="0" parent="4YU4ksuSIopyZfO34cWl-32" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="Ekip Üye&lt;div&gt;Bilgileri&lt;/div&gt;" vertex="1">
+          <mxGeometry relative="1" x="-0.0682" as="geometry">
+            <mxPoint x="-25" y="-20" as="offset" />
+          </mxGeometry>
         </mxCell>
       </root>
     </mxGraphModel>
