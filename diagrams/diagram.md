@@ -1,3 +1,3 @@
 # Diagrams
 
-###Diyagramların yer aldığı klasördür.
+Diyagramların yer aldığı klasördür.
