@@ -1,0 +1,370 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Sayfa-1" id="hgp9CkF_3BZ90ng0FDS6">
+    <mxGraphModel dx="1407" dy="774" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-26" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=middle;spacing=2;" value="" vertex="1">
+          <mxGeometry height="450" width="746" x="41" y="84" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-27" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Veri Akış Adı:&amp;nbsp;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255)); font-weight: normal;&quot;&gt;&lt;font&gt;Etkinlik başvurusu&lt;/font&gt;&lt;/span&gt;&lt;/font&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="40" width="590" x="69" y="214" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-28" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Tanım:&amp;nbsp;&lt;span style=&quot;background-color: transparent; font-weight: 400;&quot;&gt;Üyenin belirli bir etkinliğe katılmak için sisteme gönderdiği başvuru verisidir.&lt;/span&gt;&lt;/font&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="40" width="690" x="69" y="254" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-29" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Nereden:&amp;nbsp;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255)); font-weight: normal;&quot;&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Üye&lt;/font&gt;&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="40" width="690" x="69" y="294" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-30" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Nereye:&amp;nbsp;&lt;span style=&quot;font-weight: normal;&quot;&gt;5.0 Organizasyon Modülü&lt;/span&gt;&lt;/font&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="40" width="690" x="69" y="334" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-31" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Veri Yapıları:&amp;nbsp;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255)); font-weight: normal;&quot;&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;etkinlik_basvuru_seti&lt;/font&gt;&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="40" width="690" x="69" y="374" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-32" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Açıklama:&amp;nbsp;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255)); font-weight: normal;&quot;&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Başvuru kaydı; etkinlik kimliği, başvuran üye bilgisi, başvuru zamanı ve varsa ek not bilgisini içerir.&lt;/font&gt;&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="60" width="690" x="69" y="414" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-33" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;align=center;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;font style=&quot;font-size: 18px;&quot;&gt;Veri Akışı Sözlük Girişi&lt;/font&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="50" width="620" x="104" y="124" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-42" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=middle;spacing=2;" value="" vertex="1">
+          <mxGeometry height="450" width="746" x="41" y="604" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-43" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Veri Akış Adı:&amp;nbsp;&lt;/font&gt;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;Etkinlik duyurusu &amp;amp; QR&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="40" width="590" x="69" y="734" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-44" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Tanım:&amp;nbsp;&lt;/font&gt;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;Sistem tarafından oluşturulan etkinliğin duyuru ve katılım yönlendirme verisidir.&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="40" width="690" x="69" y="774" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-45" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Nereden:&amp;nbsp;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;5.0 Organizasyon Modülü&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="40" width="690" x="69" y="814" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-46" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Nereye:&amp;nbsp;&lt;/font&gt;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;Üye&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="40" width="690" x="69" y="854" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-47" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Veri Yapıları:&amp;nbsp;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;etkinlik_duyuru_seti&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="40" width="690" x="69" y="894" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-48" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Açıklama:&amp;nbsp;&lt;span style=&quot;background-color: transparent;&quot;&gt;&lt;span style=&quot;font-size: 16px; font-weight: 400;&quot;&gt;Duyuru metni, tarih, saat, yer bilgisi, QR kod ve kayıt bağlantısından oluşur..&lt;/span&gt;&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="60" width="690" x="69" y="934" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-49" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;align=center;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;font style=&quot;font-size: 18px;&quot;&gt;Veri Akışı Sözlük Girişi&lt;/font&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="50" width="620" x="104" y="644" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-50" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=middle;spacing=2;" value="" vertex="1">
+          <mxGeometry height="450" width="746" x="41" y="1110" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-51" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Veri Akış Adı:&amp;nbsp;&lt;/font&gt;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;Profil güncelleme ve görüntüleme&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="40" width="590" x="69" y="1240" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-52" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Tanım:&amp;nbsp;&lt;/font&gt;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;Üyenin kendi profil bilgilerini görüntülemesi ve güncellemesi için kullanılan veri akışıdır.&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="40" width="690" x="69" y="1280" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-53" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Nereden:&amp;nbsp;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;Üye&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="40" width="690" x="69" y="1320" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-54" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Nereye:&amp;nbsp;&lt;/font&gt;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;2.0 Üye Kontrol Modülü&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="40" width="690" x="69" y="1360" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-55" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Veri Yapıları:&amp;nbsp;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;uye_kaydi&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="40" width="690" x="69" y="1400" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-56" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Açıklama:&amp;nbsp;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;Şifre, e-posta ve diğer izinli profil alanlarının gösterilmesi ve güncellenmesi için kullanılır.&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="60" width="690" x="69" y="1440" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-57" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;align=center;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;font style=&quot;font-size: 18px;&quot;&gt;Veri Akışı Sözlük Girişi&lt;/font&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="50" width="620" x="104" y="1150" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-58" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=middle;spacing=2;" value="" vertex="1">
+          <mxGeometry height="450" width="746" x="41" y="1614" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-59" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Veri Akış Adı:&amp;nbsp;&lt;/font&gt;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;Ekip tanımlama &amp;amp; lider atama&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="40" width="590" x="69" y="1744" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-60" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Tanım:&amp;nbsp;&lt;/font&gt;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;Kulüp yöneticisinin ekip oluşturma ve ekip lideri belirleme işlemine ait veridir.&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="40" width="690" x="69" y="1784" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-61" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Nereden:&amp;nbsp;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;Kulüp Yöneticisi&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="40" width="690" x="69" y="1824" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-62" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Nereye:&amp;nbsp;&lt;/font&gt;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;3.0 Yönetim Modülü&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="40" width="690" x="69" y="1864" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-63" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Veri Yapıları:&amp;nbsp;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;ekip_seti&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="40" width="690" x="69" y="1904" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-64" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Açıklama:&amp;nbsp;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;Ekip adı, ekip türü, sorumlu kişi ve lider atama bilgilerini içerir.&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="60" width="690" x="69" y="1944" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-65" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;align=center;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;font style=&quot;font-size: 18px;&quot;&gt;Veri Akışı Sözlük Girişi&lt;/font&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="50" width="620" x="104" y="1654" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-66" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=middle;spacing=2;" value="" vertex="1">
+          <mxGeometry height="450" width="746" x="41" y="2124" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-67" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Veri Akış Adı:&amp;nbsp;&lt;/font&gt;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;Etkinlik takvimi &amp;amp; çakışma uyarısı&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="40" width="590" x="69" y="2254" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-68" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Tanım:&amp;nbsp;&lt;/font&gt;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;Etkinlik planı oluşturulurken mevcut takvimle karşılaştırma&lt;/span&gt;&lt;/h1&gt;&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;span style=&quot;font-size: 16px; font-weight: 400;&quot;&gt;sonucunda üretilen durum bilgisidir.&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="56" width="690" x="69" y="2294" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-69" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Nereden:&amp;nbsp;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;5.0 Organizasyon Modülü&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="40" width="690" x="69" y="2350" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-70" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Nereye:&amp;nbsp;&lt;/font&gt;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;Kulüp Yöneticisi&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="40" width="690" x="69" y="2390" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-71" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Veri Yapıları:&amp;nbsp;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;etkinlik_seti&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="40" width="690" x="69" y="2430" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-72" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Açıklama:&amp;nbsp;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;Aynı kulüpte çakışma varsa engelleme, farklı kulüplerle&lt;/span&gt;&lt;/h1&gt;&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;span style=&quot;font-size: 16px; font-weight: 400;&quot;&gt;çakışma varsa uyarı bilgisi üretir.&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="60" width="690" x="69" y="2470" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-73" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;align=center;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;font style=&quot;font-size: 18px;&quot;&gt;Veri Akışı Sözlük Girişi&lt;/font&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="50" width="620" x="104" y="2164" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-74" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=middle;spacing=2;" value="" vertex="1">
+          <mxGeometry height="450" width="746" x="41" y="2614" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-75" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Veri Akış Adı:&amp;nbsp;&lt;/font&gt;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;Geçmiş etkinlikleri görüntüleme&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="40" width="590" x="69" y="2744" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-76" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Tanım:&amp;nbsp;&lt;/font&gt;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;Daha önce gerçekleştirilmiş etkinliklerin arşiv kayıtlarına&lt;/span&gt;&lt;/h1&gt;&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;span style=&quot;font-size: 16px; font-weight: 400;&quot;&gt;erişim sağlayan veri akışıdır.&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="56" width="690" x="69" y="2784" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-77" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Nereden:&amp;nbsp;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;5.0 Organizasyon Modülü&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="40" width="690" x="69" y="2840" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-78" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Nereye:&amp;nbsp;&lt;/font&gt;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;Kulüp Yöneticisi&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="40" width="690" x="69" y="2880" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-79" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Veri Yapıları:&amp;nbsp;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;etkinlik_seti&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="40" width="690" x="69" y="2920" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-80" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Açıklama:&amp;nbsp;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;Tamamlanmış etkinliklerin tarih, içerik, ekip ve sonuç&lt;/span&gt;&lt;/h1&gt;&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;span style=&quot;font-size: 16px; font-weight: 400;&quot;&gt;bilgilerini görüntülemek için kullanılır.&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="60" width="690" x="69" y="2960" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-81" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;align=center;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;font style=&quot;font-size: 18px;&quot;&gt;Veri Akışı Sözlük Girişi&lt;/font&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="50" width="620" x="104" y="2654" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-82" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=middle;spacing=2;" value="" vertex="1">
+          <mxGeometry height="450" width="746" x="41" y="3114" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-83" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Veri Akış Adı:&amp;nbsp;&lt;/font&gt;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;Belge Onay ve Kategorizasyon&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="40" width="590" x="69" y="3244" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-84" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Tanım:&amp;nbsp;&lt;/font&gt;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;Yüklenen belgelerin onaylanması ve uygun kategoriye&lt;/span&gt;&lt;/h1&gt;&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;span style=&quot;font-size: 16px; font-weight: 400;&quot;&gt;yerleştirilmesi için kullanılan veri akışıdır.&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="56" width="690" x="69" y="3284" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-85" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Nereden:&amp;nbsp;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;Ekip Lideri / Kulüp Yöneticisi&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="40" width="690" x="69" y="3340" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-86" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Nereye:&amp;nbsp;&lt;/font&gt;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;4.0 Bilgi ve Kaynak Modülü&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="40" width="690" x="69" y="3380" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-87" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Veri Yapıları:&amp;nbsp;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;belge_seti&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="40" width="690" x="69" y="3420" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-88" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Açıklama:&amp;nbsp;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;Belge adı, kategori türü, onay durumu, açıklama ve sürüm&lt;/span&gt;&lt;/h1&gt;&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;span style=&quot;font-size: 16px; font-weight: 400;&quot;&gt;güncelleme bilgisini kapsar.&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="60" width="690" x="69" y="3460" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-89" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;align=center;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;font style=&quot;font-size: 18px;&quot;&gt;Veri Akışı Sözlük Girişi&lt;/font&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="50" width="620" x="104" y="3154" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-90" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=middle;spacing=2;" value="" vertex="1">
+          <mxGeometry height="450" width="746" x="41" y="3614" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-91" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Veri Akış Adı:&amp;nbsp;&lt;/font&gt;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;Yedekleme periyodu&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="40" width="590" x="69" y="3744" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-92" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Tanım:&amp;nbsp;&lt;/font&gt;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;Belge ve arşiv verilerinin hangi sıklıkla yedekleneceğini&lt;/span&gt;&lt;/h1&gt;&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;span style=&quot;font-size: 16px; font-weight: 400;&quot;&gt;belirleyen zamanlama verisidir.&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="56" width="690" x="69" y="3784" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-93" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Nereden:&amp;nbsp;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;Kulüp Yöneticisi&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="40" width="690" x="69" y="3840" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-94" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Nereye:&amp;nbsp;&lt;/font&gt;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;4.0 Bilgi ve Kaynak Modülü&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="40" width="690" x="69" y="3880" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-95" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Veri Yapıları:&amp;nbsp;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;yedekleme_parametresi&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="40" width="690" x="69" y="3920" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-96" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Açıklama:&amp;nbsp;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;Günlük, haftalık veya aylık yedekleme tercihini ve&lt;/span&gt;&lt;/h1&gt;&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;span style=&quot;font-size: 16px; font-weight: 400;&quot;&gt;yedekleme zaman bilgisini içerir.&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="60" width="690" x="69" y="3960" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-97" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;align=center;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;font style=&quot;font-size: 18px;&quot;&gt;Veri Akışı Sözlük Girişi&lt;/font&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="50" width="620" x="104" y="3654" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-98" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=middle;spacing=2;" value="" vertex="1">
+          <mxGeometry height="450" width="746" x="41" y="4124" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-99" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Veri Akış Adı:&amp;nbsp;&lt;/font&gt;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;Etkinlik detayları&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="40" width="590" x="69" y="4254" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-100" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Tanım:&amp;nbsp;&lt;/font&gt;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;Oluşturulan etkinliğe ait ayrıntıların ekip liderine veya ilgili&lt;/span&gt;&lt;/h1&gt;&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;span style=&quot;font-size: 16px; font-weight: 400;&quot;&gt;kullanıcıya aktarılmasını sağlayan veri akışıdır.&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="66" width="690" x="69" y="4294" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-101" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Nereden:&amp;nbsp;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;5.0 Organizasyon Modülü&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="40" width="690" x="69" y="4360" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-102" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Nereye:&amp;nbsp;&lt;/font&gt;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;Ekip Lideri&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="40" width="690" x="69" y="4400" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-103" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Veri Yapıları:&amp;nbsp;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;etkinlik_seti&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="40" width="690" x="69" y="4440" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-104" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Açıklama:&amp;nbsp;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;Etkinlik adı, açıklama, tarih, saat, kontenjan, görevli ekip&lt;/span&gt;&lt;/h1&gt;&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;span style=&quot;font-size: 16px; font-weight: 400;&quot;&gt;ve lojistik detaylardan oluşur.&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="60" width="690" x="69" y="4480" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-105" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;align=center;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;font style=&quot;font-size: 18px;&quot;&gt;Veri Akışı Sözlük Girişi&lt;/font&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="50" width="620" x="104" y="4164" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-106" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=middle;spacing=2;" value="" vertex="1">
+          <mxGeometry height="450" width="746" x="41" y="4643" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-107" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Veri Akış Adı:&amp;nbsp;&lt;/font&gt;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;Proje detayları&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="40" width="590" x="69" y="4773" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-108" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Tanım:&amp;nbsp;&lt;/font&gt;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;Yönetim modülünde tanımlanan proje veya görev&lt;/span&gt;&lt;/h1&gt;&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;span style=&quot;font-size: 16px; font-weight: 400;&quot;&gt;kümesine ait ayrıntıların ilgili kullanıcılara sunulmasıdır.&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="67" width="690" x="69" y="4813" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-109" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Nereden:&amp;nbsp;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;3.0 Yönetim Modülü&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="40" width="690" x="69" y="4880" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-110" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Nereye:&amp;nbsp;&lt;/font&gt;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;Ekip Lideri / Ekip Üyesi&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="40" width="690" x="69" y="4920" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-111" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Veri Yapıları:&amp;nbsp;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;proje_seti&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="40" width="690" x="69" y="4960" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-112" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Açıklama:&amp;nbsp;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;Proje amacı, kapsamı, ekip büyüklüğü, takvim bilgisi ve&lt;/span&gt;&lt;/h1&gt;&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;span style=&quot;font-size: 16px; font-weight: 400;&quot;&gt;görev dağılımı verilerini içerir.&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="60" width="690" x="69" y="5000" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-113" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;align=center;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;font style=&quot;font-size: 18px;&quot;&gt;Veri Akışı Sözlük Girişi&lt;/font&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="50" width="620" x="104" y="4683" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-114" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=middle;spacing=2;" value="" vertex="1">
+          <mxGeometry height="450" width="746" x="41" y="5164" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-115" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Veri Akış Adı:&amp;nbsp;&lt;/font&gt;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;Üye havuzundan seçim&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="40" width="590" x="69" y="5294" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-116" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Tanım:&amp;nbsp;&lt;/font&gt;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;Ekip liderinin ekip kurmak için mevcut üyeler arasından&lt;/span&gt;&lt;/h1&gt;&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;span style=&quot;font-size: 16px; font-weight: 400;&quot;&gt;seçim yapmasına imkân veren veri akışıdır.&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="66" width="690" x="69" y="5334" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-117" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Nereden:&amp;nbsp;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;2.0 Üye Kontrol Modülü&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="40" width="690" x="69" y="5400" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-118" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Nereye:&amp;nbsp;&lt;/font&gt;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;Ekip Lideri&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="40" width="690" x="69" y="5440" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-119" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Veri Yapıları:&amp;nbsp;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;uye_secim_seti&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="40" width="690" x="69" y="5480" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-120" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Açıklama:&amp;nbsp;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;Aktif üyeler arasından filtrelenmiş seçim listesi üretir;&lt;/span&gt;&lt;/h1&gt;&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;span style=&quot;font-size: 16px; font-weight: 400;&quot;&gt;uygunluk ve temel profil bilgilerini gösterir.&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="60" width="690" x="69" y="5520" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-121" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;align=center;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;font style=&quot;font-size: 18px;&quot;&gt;Veri Akışı Sözlük Girişi&lt;/font&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="50" width="620" x="104" y="5204" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-122" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=middle;spacing=2;" value="" vertex="1">
+          <mxGeometry height="450" width="746" x="41" y="5674" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-123" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Veri Akış Adı:&amp;nbsp;&lt;/font&gt;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;Etkinlik başvuruları&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="40" width="590" x="69" y="5774" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-124" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Tanım:&amp;nbsp;&lt;/font&gt;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;Etkinliğe yapılan başvuruların, değerlendirme için ekip&lt;/span&gt;&lt;/h1&gt;&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;span style=&quot;font-size: 16px; font-weight: 400;&quot;&gt;liderine iletilmesidir.&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="66" width="690" x="69" y="5814" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-125" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Nereden:&amp;nbsp;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;5.0 Organizasyon Modülü&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="40" width="690" x="69" y="5900" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-126" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Nereye:&amp;nbsp;&lt;/font&gt;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;Ekip Lideri&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="40" width="690" x="69" y="5940" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-127" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Veri Yapıları:&amp;nbsp;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;etkinlik_duyuru_seti&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="40" width="690" x="69" y="5980" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-128" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Açıklama:&amp;nbsp;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;Başvuran üyeler, başvuru zamanı, durum bilgisi ve&lt;/span&gt;&lt;/h1&gt;&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;span style=&quot;font-size: 16px; font-weight: 400;&quot;&gt;kontenjan verisini içerir.&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="66" width="690" x="69" y="6020" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-129" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;align=center;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;font style=&quot;font-size: 18px;&quot;&gt;Veri Akışı Sözlük Girişi&lt;/font&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="50" width="620" x="104" y="5684" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-130" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=middle;spacing=2;" value="" vertex="1">
+          <mxGeometry height="450" width="746" x="41" y="6184" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-131" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;&lt;font style=&quot;&quot;&gt;Veri Akış Adı:&amp;nbsp;&lt;/font&gt;&lt;/font&gt;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;Görev özeti &amp;amp; durum&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="40" width="590" x="69" y="6314" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-132" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;&lt;font style=&quot;&quot;&gt;Tanım:&amp;nbsp;&lt;/font&gt;&lt;/font&gt;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;Proje kapsamındaki görevlerin özet ve ilerleme durumunu&lt;/span&gt;&lt;/h1&gt;&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;span style=&quot;font-size: 16px; font-weight: 400;&quot;&gt;sunan veri akışıdır.&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="56" width="690" x="69" y="6354" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-133" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Nereden:&amp;nbsp;&lt;/font&gt;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;3.0 Yönetim Modülü&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="40" width="690" x="69" y="6410" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-134" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;&lt;font style=&quot;&quot;&gt;Nereye:&amp;nbsp;&lt;/font&gt;&lt;/font&gt;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;Ekip Lideri&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="40" width="690" x="69" y="6450" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-135" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Veri Yapıları:&amp;nbsp;&lt;/font&gt;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;gorev_seti&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="40" width="690" x="69" y="6490" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-136" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Açıklama: &lt;span style=&quot;font-weight: normal;&quot;&gt;Görev adı, sorumlu kişi, öncelik, son tarih ve mevcut&lt;/span&gt;&lt;/font&gt;&lt;/h1&gt;&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;span style=&quot;font-weight: normal;&quot;&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;durum bilgisinden oluşur.&lt;/font&gt;&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="60" width="690" x="69" y="6530" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-137" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;align=center;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;font style=&quot;font-size: 18px;&quot;&gt;Veri Akışı Sözlük Girişi&lt;/font&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="50" width="620" x="104" y="6224" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-138" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=middle;spacing=2;" value="" vertex="1">
+          <mxGeometry height="450" width="746" x="41" y="6764" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-139" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Veri Akış Adı:&amp;nbsp;&lt;/font&gt;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;Ekip üye bilgileri&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="40" width="590" x="69" y="6890" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-140" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Tanım:&amp;nbsp;&lt;/font&gt;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;Bir ekipte yer alan üyelerin temel bilgilerinin listelendiği&lt;/span&gt;&lt;/h1&gt;&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;span style=&quot;font-size: 16px; font-weight: 400;&quot;&gt;veri akışıdır.&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="56" width="690" x="69" y="6934" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-141" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Nereden&lt;/font&gt;:&amp;nbsp;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;2.0 Üye Kontrol Modülü&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="40" width="690" x="69" y="6995" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-142" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Nereye:&amp;nbsp;&lt;/font&gt;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;Ekip Lideri&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="40" width="690" x="69" y="7030" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-143" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Veri Yapıları&lt;/font&gt;:&amp;nbsp;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;ekip_seti&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="40" width="690" x="69" y="7070" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-144" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Açıklama&lt;/font&gt;:&amp;nbsp;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;Üye adı, rolü, iletişim bilgisi ve ekip içi durum bilgilerini&lt;/span&gt;&lt;/h1&gt;&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;span style=&quot;font-size: 16px; font-weight: 400;&quot;&gt;içerir.&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="66" width="691" x="69" y="7110" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-145" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;align=center;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;font style=&quot;font-size: 18px;&quot;&gt;Veri Akışı Sözlük Girişi&lt;/font&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="50" width="620" x="104" y="6804" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-154" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=middle;spacing=2;" value="" vertex="1">
+          <mxGeometry height="486" width="746" x="41" y="7274" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-155" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Veri Akış Adı:&amp;nbsp;&lt;/font&gt;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;Toplantı raporu ve organizasyon&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="40" width="590" x="69" y="7404" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-156" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Tanım:&amp;nbsp;&lt;/font&gt;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;Toplantı sırasında alınan kararların ve organizasyon&lt;/span&gt;&lt;/h1&gt;&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;span style=&quot;font-size: 16px; font-weight: 400;&quot;&gt;notlarının ilgili modüllere aktarılmasını sağlayan veri&lt;/span&gt;&lt;/h1&gt;&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;span style=&quot;font-size: 16px; font-weight: 400;&quot;&gt;akışıdır.&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="96" width="690" x="69" y="7444" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-157" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Nereden&lt;/font&gt;:&amp;nbsp;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;Ekip Lideri&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="40" width="690" x="69" y="7540" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-158" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Nereye:&amp;nbsp;&lt;/font&gt;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;3.0 Yönetim Modülü / 4.0 Bilgi ve Kaynak Modülü&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="40" width="690" x="69" y="7580" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-159" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Veri Yapıları&lt;/font&gt;:&amp;nbsp;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;toplanti_raporu_seti&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="40" width="690" x="69" y="7620" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-160" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=9;align=left;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Açıklama&lt;/font&gt;:&amp;nbsp;&lt;span style=&quot;background-color: transparent; font-size: 16px; font-weight: 400;&quot;&gt;Toplantı tarihi, katılımcılar, alınan kararlar, görev dağılımı&lt;/span&gt;&lt;/h1&gt;&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;span style=&quot;font-size: 16px; font-weight: 400;&quot;&gt;ve arşivleme notlarını kapsar.&lt;/span&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="70" width="690" x="69" y="7660" as="geometry" />
+        </mxCell>
+        <mxCell id="i4WIrdZEqCyC5kK2g2Kg-161" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;align=center;verticalAlign=middle;spacing=2;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;font style=&quot;font-size: 18px;&quot;&gt;Veri Akışı Sözlük Girişi&lt;/font&gt;&lt;/h1&gt;" vertex="1">
+          <mxGeometry height="50" width="620" x="104" y="7314" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
