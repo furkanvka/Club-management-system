@@ -1,0 +1,9 @@
+# Git'in satır sonlarını otomatik yönetmesini sağla
+* text=auto
+
+# Windows dosyalarının her zaman CRLF kalmasını sağla (mvnw.cmd gibi)
+*.cmd text eol=crlf
+*.bat text eol=crlf
+
+# Shell scriptlerin Linux'ta bozulmaması için her zaman LF kalmasını sağla
+*.sh text eol=lf
