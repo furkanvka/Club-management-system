@@ -34,11 +34,6 @@ npm start
 
 Uygulama [http://localhost:3000](http://localhost:3000) adresinde çalışacaktır.
 
----
-
-## Create React App ile Başlarken
-
-Bu proje [Create React App](https://github.com/facebook/create-react-app) ile oluşturulmuştur.
 
 ### Kullanılabilir Komutlar
 
