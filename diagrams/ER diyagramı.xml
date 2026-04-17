@@ -1,0 +1,301 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Klasik_ER_Diyagrami" id="Classic_ER">
+    <mxGraphModel dx="1916" dy="1006" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1200" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="E1" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;strokeWidth=2;fontStyle=1;" value="Üye" vertex="1">
+          <mxGeometry height="50" width="100" x="300" y="400" as="geometry" />
+        </mxCell>
+        <mxCell id="E2" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;strokeWidth=2;fontStyle=1;" value="Doküman" vertex="1">
+          <mxGeometry height="50" width="100" x="300" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="E3" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;strokeWidth=2;fontStyle=1;" value="Finans" vertex="1">
+          <mxGeometry height="50" width="100" x="300" y="700" as="geometry" />
+        </mxCell>
+        <mxCell id="E4" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;strokeWidth=2;fontStyle=1;" value="Ekip" vertex="1">
+          <mxGeometry height="50" width="100" x="565" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="E5" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;strokeWidth=2;fontStyle=1;" value="Etkinlik" vertex="1">
+          <mxGeometry height="50" width="100" x="660" y="590" as="geometry" />
+        </mxCell>
+        <mxCell id="E6" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;strokeWidth=2;fontStyle=1;" value="Proje" vertex="1">
+          <mxGeometry height="50" width="100" x="910" y="340" as="geometry" />
+        </mxCell>
+        <mxCell id="E7" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;strokeWidth=2;fontStyle=1;" value="Görev" vertex="1">
+          <mxGeometry height="50" width="100" x="1100" y="500" as="geometry" />
+        </mxCell>
+        <mxCell id="R1" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;strokeWidth=2;fontStyle=1;" value="Yükler" vertex="1">
+          <mxGeometry height="60" width="100" x="300" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="R2" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;strokeWidth=2;fontStyle=1;" value="Kaydeder" vertex="1">
+          <mxGeometry height="60" width="100" x="300" y="550" as="geometry" />
+        </mxCell>
+        <mxCell id="R3" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;strokeWidth=2;fontStyle=1;" value="Üyedir" vertex="1">
+          <mxGeometry height="60" width="100" x="450" y="295" as="geometry" />
+        </mxCell>
+        <mxCell id="R4" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;strokeWidth=2;fontStyle=1;" value="Yönetir" vertex="1">
+          <mxGeometry height="60" width="100" x="460" y="380" as="geometry" />
+        </mxCell>
+        <mxCell id="R5" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;strokeWidth=2;fontStyle=1;" value="Başvurur" vertex="1">
+          <mxGeometry height="60" width="100" x="450" y="590" as="geometry" />
+        </mxCell>
+        <mxCell id="R6" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;strokeWidth=2;fontStyle=1;" value="Yürütür" vertex="1">
+          <mxGeometry height="60" width="100" x="750" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="R7" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;strokeWidth=2;fontStyle=1;" value="Kapsar" vertex="1">
+          <mxGeometry height="60" width="100" x="1100" y="340" as="geometry" />
+        </mxCell>
+        <mxCell id="R8" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;strokeWidth=2;fontStyle=1;" value="Atanır" vertex="1">
+          <mxGeometry height="60" width="100" x="700" y="500" as="geometry" />
+        </mxCell>
+        <mxCell id="A1_1" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="&lt;u&gt;ÜyeID&lt;/u&gt;" vertex="1">
+          <mxGeometry height="35" width="90" x="140" y="320" as="geometry" />
+        </mxCell>
+        <mxCell id="A1_2" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="Ad Soyad" vertex="1">
+          <mxGeometry height="35" width="90" x="140" y="370" as="geometry" />
+        </mxCell>
+        <mxCell id="A1_3" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="Email" vertex="1">
+          <mxGeometry height="35" width="90" x="140" y="420" as="geometry" />
+        </mxCell>
+        <mxCell id="A1_4" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="Rol" vertex="1">
+          <mxGeometry height="35" width="90" x="140" y="470" as="geometry" />
+        </mxCell>
+        <mxCell id="A2_1" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="&lt;u&gt;DokümanID&lt;/u&gt;" vertex="1">
+          <mxGeometry height="35" width="90" x="140" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="A2_2" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="Başlık" vertex="1">
+          <mxGeometry height="35" width="90" x="140" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="A2_3" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="Dosya Yolu" vertex="1">
+          <mxGeometry height="35" width="90" x="140" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="A3_1" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="&lt;u&gt;İşlemID&lt;/u&gt;" vertex="1">
+          <mxGeometry height="35" width="90" x="140" y="650" as="geometry" />
+        </mxCell>
+        <mxCell id="A3_2" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="İşlem Türü" vertex="1">
+          <mxGeometry height="35" width="90" x="140" y="700" as="geometry" />
+        </mxCell>
+        <mxCell id="A3_3" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="Miktar" vertex="1">
+          <mxGeometry height="35" width="90" x="140" y="750" as="geometry" />
+        </mxCell>
+        <mxCell id="A4_1" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="&lt;u&gt;EkipID&lt;/u&gt;" vertex="1">
+          <mxGeometry height="35" width="90" x="490" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="A4_2" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="Ekip Adı" vertex="1">
+          <mxGeometry height="35" width="90" x="685" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="A5_1" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="&lt;u&gt;EtkinlikID&lt;/u&gt;" vertex="1">
+          <mxGeometry height="35" width="90" x="665" y="690" as="geometry" />
+        </mxCell>
+        <mxCell id="A5_2" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="Etkinlik Adı" vertex="1">
+          <mxGeometry height="35" width="90" x="775" y="660" as="geometry" />
+        </mxCell>
+        <mxCell id="A5_3" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="Tarih" vertex="1">
+          <mxGeometry height="35" width="90" x="785" y="610" as="geometry" />
+        </mxCell>
+        <mxCell id="A6_1" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="&lt;u&gt;ProjeID&lt;/u&gt;" vertex="1">
+          <mxGeometry height="35" width="90" x="915" y="170" as="geometry" />
+        </mxCell>
+        <mxCell id="A6_2" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="Proje Adı" vertex="1">
+          <mxGeometry height="35" width="90" x="1060" y="205" as="geometry" />
+        </mxCell>
+        <mxCell id="A7_1" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="&lt;u&gt;GörevID&lt;/u&gt;" vertex="1">
+          <mxGeometry height="35" width="90" x="1250" y="470" as="geometry" />
+        </mxCell>
+        <mxCell id="A7_2" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="Açıklama" vertex="1">
+          <mxGeometry height="35" width="90" x="1250" y="520" as="geometry" />
+        </mxCell>
+        <mxCell id="AL1" edge="1" parent="1" source="A1_1" style="endArrow=none;html=1;strokeWidth=1;" target="E1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="AL2" edge="1" parent="1" source="A1_2" style="endArrow=none;html=1;strokeWidth=1;" target="E1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="AL3" edge="1" parent="1" source="A1_3" style="endArrow=none;html=1;strokeWidth=1;" target="E1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="AL4" edge="1" parent="1" source="A1_4" style="endArrow=none;html=1;strokeWidth=1;" target="E1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="AL5" edge="1" parent="1" source="A2_1" style="endArrow=none;html=1;strokeWidth=1;" target="E2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="AL6" edge="1" parent="1" source="A2_2" style="endArrow=none;html=1;strokeWidth=1;" target="E2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="AL7" edge="1" parent="1" source="A2_3" style="endArrow=none;html=1;strokeWidth=1;" target="E2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="AL8" edge="1" parent="1" source="A3_1" style="endArrow=none;html=1;strokeWidth=1;" target="E3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="AL9" edge="1" parent="1" source="A3_2" style="endArrow=none;html=1;strokeWidth=1;" target="E3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="AL10" edge="1" parent="1" source="A3_3" style="endArrow=none;html=1;strokeWidth=1;" target="E3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="AL11" edge="1" parent="1" source="A4_1" style="endArrow=none;html=1;strokeWidth=1;" target="E4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="AL12" edge="1" parent="1" source="A4_2" style="endArrow=none;html=1;strokeWidth=1;" target="E4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="AL13" edge="1" parent="1" source="A5_1" style="endArrow=none;html=1;strokeWidth=1;" target="E5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="AL14" edge="1" parent="1" source="A5_2" style="endArrow=none;html=1;strokeWidth=1;" target="E5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="AL15" edge="1" parent="1" source="A5_3" style="endArrow=none;html=1;strokeWidth=1;" target="E5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="AL16" edge="1" parent="1" source="A6_1" style="endArrow=none;html=1;strokeWidth=1;" target="E6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="AL17" edge="1" parent="1" source="A6_2" style="endArrow=none;html=1;strokeWidth=1;" target="E6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="AL18" edge="1" parent="1" source="A7_1" style="endArrow=none;html=1;strokeWidth=1;" target="E7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="AL19" edge="1" parent="1" source="A7_2" style="endArrow=none;html=1;strokeWidth=1;" target="E7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="RL1" edge="1" parent="1" source="E1" style="endArrow=none;html=1;strokeWidth=2;" target="R1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="L_RL1" connectable="0" parent="RL1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.5" as="geometry">
+            <mxPoint x="10" y="10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="RL2" edge="1" parent="1" source="R1" style="endArrow=none;html=1;strokeWidth=2;" target="E2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="L_RL2" connectable="0" parent="RL2" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="N" vertex="1">
+          <mxGeometry relative="1" x="0.5" as="geometry">
+            <mxPoint x="10" y="10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="RL3" edge="1" parent="1" source="E1" style="endArrow=none;html=1;strokeWidth=2;" target="R2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="L_RL3" connectable="0" parent="RL3" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.5" as="geometry">
+            <mxPoint x="10" y="10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="RL4" edge="1" parent="1" source="R2" style="endArrow=none;html=1;strokeWidth=2;" target="E3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="L_RL4" connectable="0" parent="RL4" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="N" vertex="1">
+          <mxGeometry relative="1" x="0.5" as="geometry">
+            <mxPoint x="10" y="10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="RL5" edge="1" parent="1" source="E1" style="endArrow=none;html=1;strokeWidth=2;" target="R3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="L_RL5" connectable="0" parent="RL5" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="M" vertex="1">
+          <mxGeometry relative="1" x="-0.5" as="geometry">
+            <mxPoint x="10" y="10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="RL6" edge="1" parent="1" source="R3" style="endArrow=none;html=1;strokeWidth=2;" target="E4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="L_RL6" connectable="0" parent="RL6" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="N" vertex="1">
+          <mxGeometry relative="1" x="0.5" as="geometry">
+            <mxPoint x="-10" y="10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="RL7" edge="1" parent="1" source="E1" style="endArrow=none;html=1;strokeWidth=2;" target="R4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="L_RL7" connectable="0" parent="RL7" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.5" as="geometry">
+            <mxPoint x="10" y="-10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="RL8" edge="1" parent="1" source="R4" style="endArrow=none;html=1;strokeWidth=2;" target="E4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="L_RL8" connectable="0" parent="RL8" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="1" vertex="1">
+          <mxGeometry relative="1" x="0.5" as="geometry">
+            <mxPoint x="-10" y="-10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="RL9" edge="1" parent="1" source="E1" style="endArrow=none;html=1;strokeWidth=2;" target="R5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="L_RL9" connectable="0" parent="RL9" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="M" vertex="1">
+          <mxGeometry relative="1" x="-0.5" as="geometry">
+            <mxPoint x="10" y="10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="RL10" edge="1" parent="1" source="R5" style="endArrow=none;html=1;strokeWidth=2;" target="E5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="L_RL10" connectable="0" parent="RL10" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="N" vertex="1">
+          <mxGeometry relative="1" x="0.5" as="geometry">
+            <mxPoint x="10" y="-10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="RL11" edge="1" parent="1" source="E4" style="endArrow=none;html=1;strokeWidth=2;" target="R6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="L_RL11" connectable="0" parent="RL11" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.5" as="geometry">
+            <mxPoint x="10" y="-10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="RL12" edge="1" parent="1" source="R6" style="endArrow=none;html=1;strokeWidth=2;" target="E6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="L_RL12" connectable="0" parent="RL12" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="N" vertex="1">
+          <mxGeometry relative="1" x="0.5" as="geometry">
+            <mxPoint x="-10" y="10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="RL13" edge="1" parent="1" source="E6" style="endArrow=none;html=1;strokeWidth=2;" target="R7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="L_RL13" connectable="0" parent="RL13" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.5" as="geometry">
+            <mxPoint x="-10" y="10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="RL14" edge="1" parent="1" source="R7" style="endArrow=none;html=1;strokeWidth=2;" target="E7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="L_RL14" connectable="0" parent="RL14" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="N" vertex="1">
+          <mxGeometry relative="1" x="0.5" as="geometry">
+            <mxPoint x="-10" y="-10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="RL15" edge="1" parent="1" source="E1" style="endArrow=none;html=1;strokeWidth=2;" target="R8">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="540" y="530" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="L_RL15" connectable="0" parent="RL15" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.5" as="geometry">
+            <mxPoint x="-10" y="-10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="RL16" edge="1" parent="1" source="R8" style="endArrow=none;html=1;strokeWidth=2;" target="E7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="L_RL16" connectable="0" parent="RL16" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="N" vertex="1">
+          <mxGeometry relative="1" x="0.5" as="geometry">
+            <mxPoint x="-10" y="10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
