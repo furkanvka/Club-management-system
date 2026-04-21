@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import api from '../../services/api';
 import { Input } from '../../components/common/Input';
 import { Button } from '../../components/common/Button';
 
@@ -14,8 +15,12 @@ export const ClubRegister = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // In a real app, this would call a club registration endpoint
-      // await api.post('/clubs/register', { name, category, university, contactEmail });
+      await api.post('/clubs', {
+        name,
+        category,
+        description: `Üniversite: ${university}, İletişim: ${contactEmail}`,
+        isOpen: true
+      });
       alert('Kulüp başvuru talebiniz alındı. Yönetici onayından sonra bilgilendirileceksiniz.');
       navigate('/');
     } catch (err) {
