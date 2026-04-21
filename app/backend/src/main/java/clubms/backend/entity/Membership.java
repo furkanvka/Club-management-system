@@ -2,6 +2,8 @@ package clubms.backend.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 @Entity
 @Table(name = "memberships", uniqueConstraints = {
@@ -24,7 +26,8 @@ public class Membership {
     @Column(nullable = false)
     private String role; // 'uye', 'ekip-uyesi', 'ekip-lideri', 'baskan', 'sayman', 'sekreter'
 
-    @Column(columnDefinition = "JSONB")
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb")
     private String flags; // {"yonetici": true, "finans": true, "docs": true} - Can use string for simplicity or proper JSON mapping
 
     private String status = "pending"; // pending, active, inactive
