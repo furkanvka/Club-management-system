@@ -4,22 +4,29 @@ import { useAuth } from '../../store/AuthContext';
 import { Input } from '../../components/common/Input';
 import { Button } from '../../components/common/Button';
 
-export const Login = () => {
+import { useClub } from '../../store/ClubContext';
+import api from '../../services/api';
+
+export const ClubLogin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const { login } = useAuth();
+  const { clubLogin } = useAuth();
+  const { selectClub } = useClub();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await login({ email, password });
-      if (email === 'admin@admin.com') {
-        navigate('/admin');
-      } else {
-        navigate('/select-club');
-      }
+      await clubLogin({ email, password });
+      // Fetch the club data for this contact email and set it as active
+      try {
+        const res = await api.get('/clubs/my');
+        if (res.data?.length > 0) {
+          selectClub(res.data[0], 'baskan');
+        }
+      } catch (e) {}
+      navigate('/dashboard');
     } catch (err) {
       setError('Giriş başarısız. Lütfen bilgilerinizi kontrol edin.');
     }
@@ -32,22 +39,22 @@ export const Login = () => {
           <div className="w-12 h-12 bg-indigo-600 rounded-lg mx-auto mb-4 flex items-center justify-center text-white font-bold text-xl">
             KY
           </div>
-          <h1 className="text-2xl font-bold text-gray-900">KulüpYönet</h1>
-          <p className="text-sm text-gray-500 mt-2">Hesabınıza giriş yapın</p>
+          <h1 className="text-2xl font-bold text-gray-900">Kulüp Yönetici Girişi</h1>
+          <p className="text-sm text-gray-500 mt-2">Kulübünüzü yönetmek için giriş yapın</p>
         </div>
         <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-6 space-y-5 relative">
           {error && <div className="p-3 bg-red-50 text-red-600 text-sm rounded-md border border-red-200">{error}</div>}
           
           <div className="flex border-b border-gray-200 mb-4">
              <button className="flex-1 py-2 text-center text-indigo-600 border-b-2 border-indigo-600 font-medium">Giriş Yap</button>
-             <button onClick={() => navigate('/register')} className="flex-1 py-2 text-center text-gray-500 hover:text-gray-700 font-medium">Kayıt Ol</button>
+             <button onClick={() => navigate('/club-register')} className="flex-1 py-2 text-center text-gray-500 hover:text-gray-700 font-medium">Yeni Kulüp Kur</button>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <Input
               label="E-posta Adresi"
               type="email"
-              placeholder="ornek@universite.edu.tr"
+              placeholder="kulup@universite.edu.tr"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -70,9 +77,6 @@ export const Login = () => {
             <Button type="submit" className="w-full py-2.5">Giriş Yap</Button>
           </form>
           <div className="border-t border-gray-100 pt-5 text-center flex flex-col gap-2">
-            <p className="text-sm text-gray-500">
-              Hesabınız yok mu? <span onClick={() => navigate('/register')} className="text-indigo-600 font-medium hover:text-indigo-800 cursor-pointer">Kayıt Ol</span>
-            </p>
             <p className="text-sm text-gray-500">
               <span onClick={() => navigate('/')} className="text-gray-500 font-medium hover:text-gray-800 cursor-pointer">&larr; Ana Sayfaya Dön</span>
             </p>

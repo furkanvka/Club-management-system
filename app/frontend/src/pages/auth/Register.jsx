@@ -38,6 +38,12 @@ export const Register = () => {
         </div>
         <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-6 space-y-5">
           {error && <div className="p-3 bg-red-50 text-red-600 text-sm rounded-md border border-red-200">{error}</div>}
+          
+          <div className="flex border-b border-gray-200 mb-4">
+             <button onClick={() => navigate('/login')} className="flex-1 py-2 text-center text-gray-500 hover:text-gray-700 font-medium">Giriş Yap</button>
+             <button className="flex-1 py-2 text-center text-indigo-600 border-b-2 border-indigo-600 font-medium">Kayıt Ol</button>
+          </div>
+
           <form onSubmit={handleSubmit} className="space-y-4">
             <Input 
               label="E-posta Adresi (.edu.tr uzantılı)" 

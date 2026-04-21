@@ -10,15 +10,16 @@ import { DashboardLayout } from './components/layout/DashboardLayout';
 import { Login } from './pages/auth/Login';
 import { Register } from './pages/auth/Register';
 import { ClubRegister } from './pages/auth/ClubRegister';
+import { ClubLogin } from './pages/auth/ClubLogin';
 import { ClubSelect } from './pages/club/ClubSelect';
 import { Landing } from './pages/Landing';
+import { AdminDashboard } from './pages/admin/AdminDashboard';
 
 import { Members } from './pages/dashboard/Members';
 import { Events } from './pages/dashboard/Events';
 import { Documents } from './pages/dashboard/Documents';
 import { Finance } from './pages/dashboard/Finance';
-
-const DashboardHome = () => <div className="p-6 bg-white rounded-xl shadow-sm border border-gray-100"><h2 className="text-xl font-bold mb-4">Dashboard</h2><p className="text-gray-500">Hoş geldiniz.</p></div>;
+import { DashboardHome } from './pages/dashboard/DashboardHome';
 
 const ProtectedRoute = ({ children }) => {
   const { user } = useAuth();
@@ -32,7 +33,13 @@ function AppRoutes() {
       <Route path="/" element={<Landing />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/club-login" element={<ClubLogin />} />
       <Route path="/club-register" element={<ClubRegister />} />
+      <Route path="/admin" element={
+        <ProtectedRoute>
+          <AdminDashboard />
+        </ProtectedRoute>
+      } />
       
       <Route path="/select-club" element={
         <ProtectedRoute>

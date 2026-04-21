@@ -21,10 +21,10 @@ export const clubService = {
     return response.data;
   },
 
-  joinClub: async (clubId) => {
+  joinClub: async (clubId, password) => {
     const response = await api.post(`/clubs/${clubId}/members`, {
       role: 'uye',
-      status: 'active'
+      password: password
     });
     return response.data;
   }

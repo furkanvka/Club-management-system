@@ -16,11 +16,13 @@ export const Landing = () => {
           <span className="text-xl font-bold text-gray-900 tracking-tight">KulüpYönet</span>
         </div>
         <div className="flex items-center gap-3">
-          <Button variant="secondary" onClick={() => navigate('/login')}>
-            Giriş Yap
+          <Button variant="secondary" onClick={() => navigate('/login')} className="flex items-center gap-2">
+            <Users size={18} />
+            Öğrenci
           </Button>
-          <Button onClick={() => navigate('/register')}>
-            Kayıt Ol
+          <Button onClick={() => navigate('/club-login')} className="flex items-center gap-2">
+            <Building2 size={18} />
+            Kulüp
           </Button>
         </div>
       </header>
@@ -37,38 +39,27 @@ export const Landing = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12 max-w-4xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12 max-w-3xl mx-auto">
             <div 
               onClick={() => navigate('/login')}
-              className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 hover:border-indigo-500 hover:shadow-md transition cursor-pointer flex flex-col items-center"
+              className="bg-white p-8 rounded-2xl shadow-sm border border-gray-200 hover:border-indigo-500 hover:shadow-md transition cursor-pointer flex flex-col items-center"
             >
-              <div className="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mb-4">
-                <LogIn size={24} />
+              <div className="w-16 h-16 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mb-6">
+                <Users size={32} />
               </div>
-              <h3 className="text-lg font-bold text-gray-900 mb-2">Giriş Yap</h3>
-              <p className="text-sm text-gray-500 text-center">Mevcut hesabınızla giriş yaparak kulübünüzü yönetmeye devam edin.</p>
+              <h3 className="text-2xl font-bold text-gray-900 mb-3">Öğrenci Portalı</h3>
+              <p className="text-base text-gray-500 text-center">Öğrenci olarak giriş yapın veya yeni kayıt oluşturarak üniversitenizdeki kulüpleri keşfedin.</p>
             </div>
 
             <div 
-              onClick={() => navigate('/register')}
-              className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 hover:border-indigo-500 hover:shadow-md transition cursor-pointer flex flex-col items-center"
+              onClick={() => navigate('/club-login')}
+              className="bg-white p-8 rounded-2xl shadow-sm border border-gray-200 hover:border-indigo-500 hover:shadow-md transition cursor-pointer flex flex-col items-center"
             >
-              <div className="w-12 h-12 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-4">
-                <Users size={24} />
+              <div className="w-16 h-16 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center mb-6">
+                <Building2 size={32} />
               </div>
-              <h3 className="text-lg font-bold text-gray-900 mb-2">Öğrenci Olarak Katıl</h3>
-              <p className="text-sm text-gray-500 text-center">Öğrenci hesabı oluşturun ve üniversitenizdeki kulüplere başvurun.</p>
-            </div>
-
-            <div 
-              onClick={() => navigate('/club-register')}
-              className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 hover:border-indigo-500 hover:shadow-md transition cursor-pointer flex flex-col items-center"
-            >
-              <div className="w-12 h-12 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center mb-4">
-                <Building2 size={24} />
-              </div>
-              <h3 className="text-lg font-bold text-gray-900 mb-2">Yeni Kulüp Kaydet</h3>
-              <p className="text-sm text-gray-500 text-center">Üniversitenizdeki kulübünüzü sisteme kaydedin ve yönetmeye başlayın.</p>
+              <h3 className="text-2xl font-bold text-gray-900 mb-3">Kulüp Yönetimi</h3>
+              <p className="text-base text-gray-500 text-center">Kulübünüzü yönetmek için giriş yapın veya yeni bir kulüp başvurusu oluşturun.</p>
             </div>
           </div>
         </div>

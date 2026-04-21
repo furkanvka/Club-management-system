@@ -11,13 +11,18 @@ export const AuthProvider = ({ children }) => {
     setUser(authService.getCurrentUser());
   };
 
+  const clubLogin = async (credentials) => {
+    await authService.clubLogin(credentials);
+    setUser(authService.getCurrentUser());
+  };
+
   const logout = () => {
     authService.logout();
     setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, login, clubLogin, logout }}>
       {children}
     </AuthContext.Provider>
   );

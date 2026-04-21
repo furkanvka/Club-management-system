@@ -5,6 +5,17 @@ export const authService = {
     const response = await api.post('/auth/login', credentials);
     if (response.data.accessToken) {
       localStorage.setItem('token', response.data.accessToken);
+      const isAdmin = credentials.email === 'admin@admin.com';
+      localStorage.setItem('loginType', isAdmin ? 'admin' : 'user');
+    }
+    return response.data;
+  },
+
+  clubLogin: async (credentials) => {
+    const response = await api.post('/auth/club-login', credentials);
+    if (response.data.accessToken) {
+      localStorage.setItem('token', response.data.accessToken);
+      localStorage.setItem('loginType', 'club');
     }
     return response.data;
   },
@@ -16,15 +27,16 @@ export const authService = {
 
   logout: () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('loginType');
   },
 
   getCurrentUser: () => {
     const token = localStorage.getItem('token');
     if (!token) return null;
     try {
-      // Decode JWT token (basic implementation, payload is 2nd part)
       const payload = JSON.parse(atob(token.split('.')[1]));
-      return payload;
+      const loginType = localStorage.getItem('loginType') || 'user';
+      return { ...payload, loginType };
     } catch (e) {
       return null;
     }

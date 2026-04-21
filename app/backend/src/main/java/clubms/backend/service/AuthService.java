@@ -13,8 +13,21 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import jakarta.annotation.PostConstruct;
+
 @Service
 public class AuthService {
+
+    @PostConstruct
+    public void init() {
+        if (!userRepository.existsByEmail("admin@admin.com")) {
+            User admin = new User();
+            admin.setEmail("admin@admin.com");
+            admin.setPasswordHash(passwordEncoder.encode("admin123"));
+            admin.setRole("ROLE_ADMIN");
+            userRepository.save(admin);
+        }
+    }
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -36,6 +49,29 @@ public class AuthService {
                 )
         );
 
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        return tokenProvider.generateToken(authentication);
+    }
+
+    @Autowired
+    private clubms.backend.repository.ClubRepository clubRepository;
+
+    public String authenticateClub(LoginRequest loginRequest) {
+        clubms.backend.entity.Club club = clubRepository.findByContactEmail(loginRequest.getEmail())
+                .orElseThrow(() -> new RuntimeException("Club not found"));
+
+        if (!club.getPassword().equals(loginRequest.getPassword())) {
+            throw new RuntimeException("Invalid password");
+        }
+
+        clubms.backend.security.UserPrincipal clubPrincipal = new clubms.backend.security.UserPrincipal(
+                -club.getId(),
+                club.getContactEmail(),
+                club.getPassword(),
+                java.util.Collections.singletonList(new org.springframework.security.core.authority.SimpleGrantedAuthority("ROLE_CLUB"))
+        );
+
+        Authentication authentication = new UsernamePasswordAuthenticationToken(clubPrincipal, null, clubPrincipal.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
         return tokenProvider.generateToken(authentication);
     }

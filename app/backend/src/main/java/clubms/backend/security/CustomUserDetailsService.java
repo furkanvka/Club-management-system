@@ -21,7 +21,17 @@ public class CustomUserDetailsService implements UserDetailsService {
         return UserPrincipal.create(user);
     }
 
+    @Autowired
+    private clubms.backend.repository.ClubRepository clubRepository;
+
     public UserDetails loadUserById(Long id) {
+        if (id < 0) {
+            clubms.backend.entity.Club club = clubRepository.findById(-id)
+                    .orElseThrow(() -> new UsernameNotFoundException("Club not found with id: " + -id));
+            return new UserPrincipal(id, club.getContactEmail(), club.getPassword(), 
+                java.util.Collections.singletonList(new org.springframework.security.core.authority.SimpleGrantedAuthority("ROLE_CLUB")));
+        }
+
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with id: " + id));
         return UserPrincipal.create(user);

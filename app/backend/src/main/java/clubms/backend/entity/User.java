@@ -17,6 +17,8 @@ public class User {
     @Column(nullable = false)
     private String passwordHash;
 
+    private String role = "ROLE_USER";
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
@@ -34,4 +36,6 @@ public class User {
     public void setPasswordHash(String passwordHash) { this.passwordHash = passwordHash; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    public String getRole() { return role; }
+    public void setRole(String role) { this.role = role; }
 }

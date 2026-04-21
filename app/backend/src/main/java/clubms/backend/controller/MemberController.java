@@ -32,15 +32,22 @@ public class MemberController {
     }
 
     @PostMapping
-    public ResponseEntity<Membership> addMember(@PathVariable Long clubId, @RequestBody Membership membership) {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (principal instanceof UserPrincipal) {
-            UserPrincipal userPrincipal = (UserPrincipal) principal;
-            User user = userRepository.findById(userPrincipal.getId()).orElse(null);
-            membership.setUser(user);
-        }
-
+    public ResponseEntity<?> addMember(@PathVariable Long clubId, @RequestBody clubms.backend.dto.request.JoinRequest joinRequest) {
         return clubService.getClubById(clubId).map(club -> {
+            if (club.getPassword() != null && !club.getPassword().equals(joinRequest.getPassword())) {
+                return ResponseEntity.status(403).body("Invalid club password");
+            }
+            Membership membership = new Membership();
+            membership.setRole(joinRequest.getRole() != null ? joinRequest.getRole() : "uye");
+            membership.setStatus("active");
+            
+            Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            if (principal instanceof UserPrincipal) {
+                UserPrincipal userPrincipal = (UserPrincipal) principal;
+                User user = userRepository.findById(userPrincipal.getId()).orElse(null);
+                membership.setUser(user);
+            }
+            
             membership.setClub(club);
             return ResponseEntity.ok(memberService.createMembership(membership));
         }).orElse(ResponseEntity.notFound().build());
