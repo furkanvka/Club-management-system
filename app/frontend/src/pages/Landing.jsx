@@ -1,67 +1,82 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { W, ImgBox } from '../components/ui';
+import { useNavigate } from 'react-router-dom';
+import { Button } from '../components/common/Button';
+import { Users, Building2, LogIn } from 'lucide-react';
 
-export default function Landing() {
-  const clubs = [
-    {name:"IEEE Ogrenci Kolu",   cat:"Teknik",    members:124, open:true},
-    {name:"Fotografi Kulubu",    cat:"Sanat",     members:87,  open:true},
-    {name:"Girisimcilik Kulubu", cat:"Is Dunyasi",members:203, open:false},
-    {name:"Satranc Kulubu",      cat:"Spor",      members:56,  open:true},
-    {name:"Muzik Toplulugu",     cat:"Sanat",     members:145, open:false},
-    {name:"Yapay Zeka Kulubu",   cat:"Teknik",    members:98,  open:true},
-  ];
+export const Landing = () => {
+  const navigate = useNavigate();
 
   return (
-    <div className={W.page}>
-      <header className="border-b border-gray-300 px-8 py-3 flex items-center justify-between bg-white">
+    <div className="min-h-screen bg-white font-sans flex flex-col">
+      <header className="border-b border-gray-200 px-8 py-4 flex items-center justify-between bg-white">
         <div className="flex items-center gap-2">
-          <div className="w-6 h-6 border-2 border-gray-800 rounded"/>
-          <span className="text-sm font-bold text-gray-800 tracking-tight">KulupYonet</span>
+          <div className="w-8 h-8 bg-indigo-600 rounded flex items-center justify-center text-white font-bold">
+            KY
+          </div>
+          <span className="text-xl font-bold text-gray-900 tracking-tight">KulüpYönet</span>
         </div>
-        <div className="flex items-center gap-2">
-          <Link to="/register" className={W.btn}>Kulubunuzu Kaydedin</Link>
-          <Link to="/login" className={W.btnFill}>Giris Yap</Link>
+        <div className="flex items-center gap-3">
+          <Button variant="secondary" onClick={() => navigate('/login')}>
+            Giriş Yap
+          </Button>
+          <Button onClick={() => navigate('/register')}>
+            Kayıt Ol
+          </Button>
         </div>
       </header>
-      
-      <div className="border-b border-gray-200 px-8 py-14 text-center bg-gray-50">
-        <div className="text-gray-400 uppercase tracking-widest mb-3" style={{fontSize:"9px"}}>— Universite Kulup Platformu —</div>
-        <h1 className="text-4xl font-bold text-gray-900 mb-3">Kulubu Yonet. Odaklan.</h1>
-        <p className="text-sm text-gray-500 max-w-md mx-auto mb-8">Etkinlik, gorev, belge ve finans yonetimini tek cercevede birlestiren platform.</p>
-        <div className="flex justify-center gap-2">
-          <Link to="/login" className={W.btnFill}>Giris Yap</Link>
-          <Link to="/register" className={W.btn}>Kulubunuzu Kaydedin</Link>
-        </div>
-      </div>
-      
-      <div className="px-8 py-10 max-w-5xl mx-auto">
-        <div className="flex items-center justify-between mb-5">
-          <h2 className="text-sm font-bold text-gray-800">Kayitli Kulupler</h2>
-          <input placeholder="Ara..." className="border border-gray-300 rounded px-3 py-1.5 text-xs text-gray-400 w-48 outline-none focus:border-gray-500" />
-        </div>
-        
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-          {clubs.map((c,i) => (
-            <div key={i} className="border border-gray-300 rounded p-4 hover:bg-gray-50 cursor-pointer transition-colors">
-              <div className="flex justify-between items-start mb-3">
-                <ImgBox w="w-10" h="h-10"/>
-                <span className={`${W.tag}`} style={{fontSize:"10px"}}>{c.open ? "Acik" : "Kapali"}</span>
+
+      <main className="flex-1 flex flex-col items-center justify-center px-4 text-center bg-gray-50">
+        <div className="max-w-3xl mx-auto space-y-8">
+          <div className="space-y-4">
+            <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight">
+              Kulübünüzü Tek Bir Yerden Yönetin
+            </h1>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Etkinlikler, görevler, belgeler ve finans yönetimini tek bir platformda birleştirin.
+              Üyelerinizle etkileşimi artırın ve kulübünüzü bir adım öteye taşıyın.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12 max-w-4xl mx-auto">
+            <div 
+              onClick={() => navigate('/login')}
+              className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 hover:border-indigo-500 hover:shadow-md transition cursor-pointer flex flex-col items-center"
+            >
+              <div className="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mb-4">
+                <LogIn size={24} />
               </div>
-              <div className="text-sm font-semibold text-gray-800 mb-0.5">{c.name}</div>
-              <div className="text-xs text-gray-400 mb-3">{c.cat}</div>
-              <div className="border-t border-gray-100 pt-2.5 flex justify-between items-center">
-                <span className="text-gray-400" style={{fontSize:"10px"}}>{c.members} uye</span>
-                <span className="text-gray-500 hover:text-gray-800 transition-colors" style={{fontSize:"10px"}}>Detay &gt;</span>
-              </div>
+              <h3 className="text-lg font-bold text-gray-900 mb-2">Giriş Yap</h3>
+              <p className="text-sm text-gray-500 text-center">Mevcut hesabınızla giriş yaparak kulübünüzü yönetmeye devam edin.</p>
             </div>
-          ))}
+
+            <div 
+              onClick={() => navigate('/register')}
+              className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 hover:border-indigo-500 hover:shadow-md transition cursor-pointer flex flex-col items-center"
+            >
+              <div className="w-12 h-12 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-4">
+                <Users size={24} />
+              </div>
+              <h3 className="text-lg font-bold text-gray-900 mb-2">Öğrenci Olarak Katıl</h3>
+              <p className="text-sm text-gray-500 text-center">Öğrenci hesabı oluşturun ve üniversitenizdeki kulüplere başvurun.</p>
+            </div>
+
+            <div 
+              onClick={() => navigate('/club-register')}
+              className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 hover:border-indigo-500 hover:shadow-md transition cursor-pointer flex flex-col items-center"
+            >
+              <div className="w-12 h-12 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center mb-4">
+                <Building2 size={24} />
+              </div>
+              <h3 className="text-lg font-bold text-gray-900 mb-2">Yeni Kulüp Kaydet</h3>
+              <p className="text-sm text-gray-500 text-center">Üniversitenizdeki kulübünüzü sisteme kaydedin ve yönetmeye başlayın.</p>
+            </div>
+          </div>
         </div>
-      </div>
-      
-      <footer className="border-t border-gray-200 px-8 py-4 text-center text-gray-400" style={{fontSize:"10px"}}>
-        KulupYonet · Universite Kulup Yonetim Sistemi
+      </main>
+
+      <footer className="border-t border-gray-200 py-6 text-center text-sm text-gray-500 bg-white">
+        &copy; {new Date().getFullYear()} KulüpYönet. Tüm hakları saklıdır.
       </footer>
     </div>
   );
-}
+};
