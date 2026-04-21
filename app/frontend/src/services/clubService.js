@@ -14,5 +14,18 @@ export const clubService = {
   createClub: async (clubData) => {
     const response = await api.post('/clubs', clubData);
     return response.data;
+  },
+
+  getMyClubs: async () => {
+    const response = await api.get('/clubs/my');
+    return response.data;
+  },
+
+  joinClub: async (clubId) => {
+    const response = await api.post(`/clubs/${clubId}/members`, {
+      role: 'uye',
+      status: 'active'
+    });
+    return response.data;
   }
 };

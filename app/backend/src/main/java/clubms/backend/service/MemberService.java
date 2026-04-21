@@ -18,6 +18,10 @@ public class MemberService {
         return membershipRepository.findByClubId(clubId);
     }
 
+    public List<Membership> getMembershipsByUserId(Long userId) {
+        return membershipRepository.findByUserId(userId);
+    }
+
     public Membership createMembership(Membership membership) {
         return membershipRepository.save(membership);
     }

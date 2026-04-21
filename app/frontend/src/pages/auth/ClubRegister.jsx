@@ -24,7 +24,8 @@ export const ClubRegister = () => {
       alert('Kulüp başvuru talebiniz alındı. Yönetici onayından sonra bilgilendirileceksiniz.');
       navigate('/');
     } catch (err) {
-      setError('Başvuru gönderilirken bir hata oluştu.');
+      console.error("Club Registration Error: ", err);
+      setError('Başvuru gönderilirken bir hata oluştu: ' + (err.response?.data?.message || err.message));
     }
   };
 

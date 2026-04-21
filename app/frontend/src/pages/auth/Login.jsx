@@ -15,7 +15,7 @@ export const Login = () => {
     e.preventDefault();
     try {
       await login({ email, password });
-      navigate('/dashboard');
+      navigate('/select-club');
     } catch (err) {
       setError('Giriş başarısız. Lütfen bilgilerinizi kontrol edin.');
     }

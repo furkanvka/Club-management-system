@@ -5,27 +5,32 @@ const ClubContext = createContext();
 
 export const ClubProvider = ({ children }) => {
   const [activeClub, setActiveClub] = useState(null);
-  const [clubs, setClubs] = useState([]);
+  const [myClubs, setMyClubs] = useState([]);
+  const [allClubs, setAllClubs] = useState([]);
+
+  const refreshClubs = async () => {
+    try {
+      const [myData, allData] = await Promise.all([
+        clubService.getMyClubs(),
+        clubService.getAllClubs()
+      ]);
+      setMyClubs(myData);
+      setAllClubs(allData);
+    } catch (error) {
+      console.error('Failed to fetch clubs', error);
+    }
+  };
 
   useEffect(() => {
-    const fetchClubs = async () => {
-      try {
-        const data = await clubService.getAllClubs();
-        setClubs(data);
-      } catch (error) {
-        console.error('Failed to fetch clubs', error);
-      }
-    };
-    fetchClubs();
+    refreshClubs();
   }, []);
 
-  const selectClub = (clubId) => {
-    const club = clubs.find(c => c.id === clubId);
+  const selectClub = (club) => {
     setActiveClub(club);
   };
 
   return (
-    <ClubContext.Provider value={{ clubs, activeClub, selectClub, setClubs }}>
+    <ClubContext.Provider value={{ myClubs, allClubs, activeClub, selectClub, refreshClubs }}>
       {children}
     </ClubContext.Provider>
   );
