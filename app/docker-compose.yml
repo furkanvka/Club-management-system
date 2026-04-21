@@ -6,10 +6,18 @@ services:
     container_name: spring-backend
     expose:
       - "8080"
+    ports:
+      - "8080:8080"   # see issue #2 below
     volumes:
       - ./backend:/app
       - maven-repo:/root/.m2
     working_dir: /app
+    depends_on:
+      - postgres
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/mydb
+      SPRING_DATASOURCE_USERNAME: myuser
+      SPRING_DATASOURCE_PASSWORD: mypassword
 
   frontend:
     build: ./frontend
@@ -22,5 +30,18 @@ services:
     stdin_open: true
     tty: true
 
+  postgres:
+    image: postgres:15
+    container_name: postgres
+    environment:
+      POSTGRES_DB: mydb
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+    ports:
+      - "5432:5432"   # see issue #2 below
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
 volumes:
   maven-repo:
+  postgres-data:
