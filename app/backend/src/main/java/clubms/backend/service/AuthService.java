@@ -45,51 +45,26 @@ public class AuthService {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginRequest.getEmail(),
-                        loginRequest.getPassword()
-                )
-        );
+                        loginRequest.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         return tokenProvider.generateToken(authentication);
     }
 
-    @Autowired
-    private clubms.backend.repository.ClubRepository clubRepository;
-
     public String authenticateClub(LoginRequest loginRequest) {
-        clubms.backend.entity.Club club = clubRepository.findByContactEmail(loginRequest.getEmail())
-                .orElseThrow(() -> new RuntimeException("Club not found with email: " + loginRequest.getEmail()));
+        // We can now use the standard authentication flow because loadUserByUsername
+        // handles both
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        loginRequest.getEmail(),
+                        loginRequest.getPassword()));
 
-        // Support both plaintext and BCrypt-encoded passwords
-        String storedPwd = club.getPassword();
-        if (storedPwd == null) {
-            throw new RuntimeException("Club has no password set");
-        }
-        boolean matches;
-        try {
-            matches = passwordEncoder.matches(loginRequest.getPassword(), storedPwd);
-        } catch (Exception e) {
-            // Plaintext password (legacy)
-            matches = storedPwd.equals(loginRequest.getPassword());
-        }
-        if (!matches) {
-            throw new RuntimeException("Invalid password");
-        }
-
-        clubms.backend.security.UserPrincipal clubPrincipal = new clubms.backend.security.UserPrincipal(
-                -club.getId(),
-                club.getContactEmail(),
-                storedPwd,
-                java.util.Collections.singletonList(new org.springframework.security.core.authority.SimpleGrantedAuthority("ROLE_CLUB"))
-        );
-
-        Authentication authentication = new UsernamePasswordAuthenticationToken(clubPrincipal, null, clubPrincipal.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
         return tokenProvider.generateToken(authentication);
     }
 
     public User registerUser(RegisterRequest signUpRequest) {
-        if(userRepository.existsByEmail(signUpRequest.getEmail())) {
+        if (userRepository.existsByEmail(signUpRequest.getEmail())) {
             throw new RuntimeException("Email is already taken!");
         }
 

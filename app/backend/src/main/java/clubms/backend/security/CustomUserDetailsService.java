@@ -16,9 +16,25 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
-        return UserPrincipal.create(user);
+        // Try to find in users table
+        java.util.Optional<User> user = userRepository.findByEmail(email);
+        if (user.isPresent()) {
+            return UserPrincipal.create(user.get());
+        }
+
+        // Try to find in clubs table
+        java.util.Optional<clubms.backend.entity.Club> club = clubRepository.findByContactEmail(email);
+        if (club.isPresent()) {
+            clubms.backend.entity.Club c = club.get();
+            return new UserPrincipal(
+                    -c.getId(),
+                    c.getContactEmail(),
+                    c.getPassword(),
+                    java.util.Collections.singletonList(new org.springframework.security.core.authority.SimpleGrantedAuthority("ROLE_CLUB"))
+            );
+        }
+
+        throw new UsernameNotFoundException("User or Club not found with email: " + email);
     }
 
     @Autowired

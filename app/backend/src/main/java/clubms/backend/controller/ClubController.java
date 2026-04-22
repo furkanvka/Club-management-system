@@ -102,23 +102,37 @@ public class ClubController {
     @Autowired
     private clubms.backend.repository.UserRepository userRepository;
 
-    @PostMapping
-    public ResponseEntity<Club> createClub(@RequestBody Club club) {
-        Club savedClub = clubService.createClub(club);
+    @Autowired
+    private org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
 
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (principal instanceof UserPrincipal) {
-            UserPrincipal userPrincipal = (UserPrincipal) principal;
-            userRepository.findById(userPrincipal.getId()).ifPresent(user -> {
-                clubms.backend.entity.Membership membership = new clubms.backend.entity.Membership();
-                membership.setClub(savedClub);
-                membership.setUser(user);
-                membership.setRole("baskan");
-                membership.setStatus("active");
-                membership.setFlags("{\"yonetici\": true}");
-                memberService.createMembership(membership);
-            });
+    @PostMapping
+    public ResponseEntity<?> createClub(@RequestBody Club club) {
+        try {
+            if (club.getPassword() != null && !club.getPassword().isEmpty()) {
+                club.setPassword(passwordEncoder.encode(club.getPassword()));
+            }
+            
+            Club savedClub = clubService.createClub(club);
+
+            org.springframework.security.core.Authentication currentAuth = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
+            if (currentAuth != null && currentAuth.isAuthenticated() && currentAuth.getPrincipal() instanceof UserPrincipal) {
+                UserPrincipal userPrincipal = (UserPrincipal) currentAuth.getPrincipal();
+                if (userPrincipal.getId() != null && userPrincipal.getId() > 0) { // Only if it's a real user, not a club
+                    userRepository.findById(userPrincipal.getId()).ifPresent(user -> {
+                        clubms.backend.entity.Membership membership = new clubms.backend.entity.Membership();
+                        membership.setClub(savedClub);
+                        membership.setUser(user);
+                        membership.setRole("baskan");
+                        membership.setStatus("active");
+                        membership.setFlags("{\"yonetici\": true}");
+                        memberService.createMembership(membership);
+                    });
+                }
+            }
+            return ResponseEntity.ok(savedClub);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body("Error creating club: " + e.getMessage());
         }
-        return ResponseEntity.ok(savedClub);
     }
 }
