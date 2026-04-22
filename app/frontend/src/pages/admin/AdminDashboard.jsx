@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import api from '../../services/api';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../store/AuthContext';
+import { Database } from 'lucide-react';
 
 export const AdminDashboard = () => {
   const [pendingClubs, setPendingClubs] = useState([]);
@@ -47,6 +48,21 @@ export const AdminDashboard = () => {
     }
   };
 
+  const handleBackup = async () => {
+    try {
+      const res = await api.get('/admin/backup/download');
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(res.data, null, 2));
+      const downloadAnchorNode = document.createElement('a');
+      downloadAnchorNode.setAttribute("href", dataStr);
+      downloadAnchorNode.setAttribute("download", `clubms_backup_${new Date().toISOString()}.json`);
+      document.body.appendChild(downloadAnchorNode);
+      downloadAnchorNode.click();
+      downloadAnchorNode.remove();
+    } catch (err) {
+      alert('Yedek alınırken hata oluştu.');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 p-8 font-sans">
       <div className="max-w-5xl mx-auto">
@@ -55,12 +71,20 @@ export const AdminDashboard = () => {
             <h1 className="text-3xl font-bold text-gray-900">Sistem Yönetimi (Admin)</h1>
             <p className="text-gray-500 mt-2">Onay bekleyen kulüp başvurularını buradan yönetebilirsiniz.</p>
           </div>
-          <button
-            onClick={() => navigate('/')}
-            className="px-4 py-2 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50"
-          >
-            Ana Sayfaya Dön
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={handleBackup}
+              className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg shadow-sm hover:bg-indigo-700 transition font-semibold"
+            >
+              <Database size={18} /> Sistem Yedeği Al
+            </button>
+            <button
+              onClick={() => navigate('/')}
+              className="px-4 py-2 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 font-semibold"
+            >
+              Ana Sayfaya Dön
+            </button>
+          </div>
         </div>
 
         <div className="bg-white shadow rounded-xl border border-gray-200 overflow-hidden">

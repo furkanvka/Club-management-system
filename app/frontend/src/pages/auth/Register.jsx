@@ -3,15 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { authService } from '../../services/authService';
 import { Button } from '../../components/common/Button';
 import { 
-  Building2, 
   ArrowLeft, 
   Mail, 
   Lock, 
-  UserCircle, 
   Info,
-  ChevronRight,
   ArrowRight,
-  GraduationCap,
   ShieldCheck,
   UserPlus
 } from 'lucide-react';

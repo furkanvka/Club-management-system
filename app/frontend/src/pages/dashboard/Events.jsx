@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useClub } from '../../store/ClubContext';
 import { useAuth } from '../../store/AuthContext';
 import api from '../../services/api';
+import { QRCodeSVG } from 'qrcode.react';
 import {
   Plus, Calendar, MapPin, Users, Trash2,
-  Clock, CheckCircle, XCircle, AlertCircle, X
+  Clock, CheckCircle, XCircle, AlertCircle, X,
+  Send, QrCode, UserCheck, UserX, Loader2
 } from 'lucide-react';
 
 const STATUS = {
@@ -25,18 +27,63 @@ export const Events = () => {
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState(EMPTY_FORM);
   const [saving, setSaving] = useState(false);
+  const [showApps, setShowApps] = useState(null); // event object
+  const [apps, setApps] = useState([]);
+  const [loadingApps, setLoadingApps] = useState(false);
+  const [myApps, setMyApps] = useState({}); // eventId -> application status
 
   const canManage = activeRole === 'baskan' || user?.loginType === 'club';
 
-  const fetchEvents = () => {
+  const fetchEvents = useCallback(async () => {
     if (!activeClub?.id) return;
     setLoading(true);
-    api.get(`/clubs/${activeClub.id}/events`)
-      .then(r => { setEvents(r.data); setLoading(false); })
-      .catch(() => setLoading(false));
+    try {
+      const res = await api.get(`/clubs/${activeClub.id}/events`);
+      setEvents(res.data);
+      
+      // Fetch my applications for these events
+      const myAppsMap = {};
+      for (const ev of res.data) {
+        try {
+          const appRes = await api.get(`/clubs/${activeClub.id}/events/${ev.id}/applications`);
+          const myApp = appRes.data.find(a => a.membership?.user?.email === user?.email);
+          if (myApp) myAppsMap[ev.id] = myApp;
+        } catch (e) {}
+      }
+      setMyApps(myAppsMap);
+    } catch (e) {}
+    setLoading(false);
+  }, [activeClub?.id, user?.email]);
+
+  useEffect(() => { fetchEvents(); }, [fetchEvents]);
+
+  const handleApply = async (eventId) => {
+    try {
+      await api.post(`/clubs/${activeClub.id}/events/${eventId}/applications/apply`);
+      alert('Başvurunuz başarıyla alındı!');
+      fetchEvents();
+    } catch (err) {
+      alert('Başvuru sırasında hata oluştu.');
+    }
   };
 
-  useEffect(() => { fetchEvents(); }, [activeClub]);
+  const fetchApplications = async (eventId) => {
+    setLoadingApps(true);
+    try {
+      const res = await api.get(`/clubs/${activeClub.id}/events/${eventId}/applications`);
+      setApps(res.data);
+    } catch (e) {}
+    setLoadingApps(false);
+  };
+
+  const handleUpdateAppStatus = async (appId, newStatus) => {
+    try {
+      await api.put(`/clubs/${activeClub.id}/events/${showApps.id}/applications/${appId}/status`, JSON.stringify(newStatus));
+      fetchApplications(showApps.id);
+    } catch (e) {
+      alert('Durum güncellenemedi.');
+    }
+  };
 
   const handleCreate = async (e) => {
     e.preventDefault();
@@ -157,8 +204,10 @@ export const Events = () => {
           {events.map(ev => {
             const s = STATUS[ev.status] || STATUS.upcoming;
             const SIcon = s.icon;
+            const myApp = myApps[ev.id];
+
             return (
-              <div key={ev.id} className="bg-white border border-gray-100 rounded-2xl p-5 hover:shadow-md transition group">
+              <div key={ev.id} className="bg-white border border-gray-100 rounded-2xl p-5 hover:shadow-md transition group flex flex-col">
                 <div className="flex items-start justify-between gap-2">
                   <h3 className="font-bold text-gray-900 text-base leading-tight">{ev.name}</h3>
                   <span className={`inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full shrink-0 ${s.cls}`}>
@@ -166,7 +215,8 @@ export const Events = () => {
                   </span>
                 </div>
                 {ev.description && <p className="text-sm text-gray-500 mt-2 line-clamp-2">{ev.description}</p>}
-                <div className="mt-4 space-y-1.5">
+                
+                <div className="mt-4 space-y-1.5 flex-1">
                   {ev.eventDate && (
                     <div className="flex items-center gap-2 text-xs text-gray-500">
                       <Calendar size={13} className="text-indigo-400" />
@@ -184,17 +234,130 @@ export const Events = () => {
                     </div>
                   )}
                 </div>
-                {canManage && (
-                  <div className="mt-4 pt-3 border-t border-gray-50 flex justify-end">
+
+                {/* My Application Status */}
+                {myApp && (
+                   <div className="mt-4 p-3 bg-gray-50 rounded-xl border border-gray-100 flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                         {myApp.status === 'approved' ? <QrCode size={24} className="text-indigo-600" /> : <Clock size={20} className="text-amber-500" />}
+                         <div>
+                            <p className="text-[10px] font-black uppercase text-gray-400">Başvuru Durumu</p>
+                            <p className={`text-xs font-bold ${myApp.status === 'approved' ? 'text-indigo-600' : 'text-amber-600'}`}>
+                               {myApp.status === 'approved' ? 'Onaylandı' : myApp.status === 'pending' ? 'Beklemede' : 'Reddedildi'}
+                            </p>
+                         </div>
+                      </div>
+                      {myApp.status === 'approved' && (
+                         <div className="bg-white p-1 rounded-lg border border-gray-200">
+                            <QRCodeSVG value={`https://clubms.app/checkin/${ev.id}/${myApp.id}`} size={32} />
+                         </div>
+                      )}
+                   </div>
+                )}
+
+                <div className="mt-4 pt-3 border-t border-gray-50 flex items-center justify-between">
+                  <div className="flex gap-2">
+                    {canManage ? (
+                      <button 
+                        onClick={() => { setShowApps(ev); fetchApplications(ev.id); }}
+                        className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-50 text-indigo-600 rounded-lg text-xs font-bold hover:bg-indigo-100 transition"
+                      >
+                        <Users size={14} /> Başvurular
+                      </button>
+                    ) : !myApp && (
+                      <button 
+                        onClick={() => handleApply(ev.id)}
+                        className="flex items-center gap-1.5 px-4 py-1.5 bg-indigo-600 text-white rounded-lg text-xs font-bold hover:bg-indigo-700 transition"
+                      >
+                        <Send size={14} /> Katıl
+                      </button>
+                    )}
+                  </div>
+                  
+                  {canManage && (
                     <button onClick={() => handleDelete(ev.id)}
                       className="text-red-400 hover:text-red-600 p-1.5 rounded-lg hover:bg-red-50 transition">
                       <Trash2 size={15} />
                     </button>
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
             );
           })}
+        </div>
+      )}
+
+      {/* Applications Modal */}
+      {showApps && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[80vh] flex flex-col">
+            <div className="flex items-center justify-between px-8 py-6 border-b border-gray-100">
+              <div>
+                 <h2 className="text-xl font-black text-gray-900">{showApps.name}</h2>
+                 <p className="text-xs text-gray-400 font-bold uppercase tracking-widest mt-1">Katılımcı Başvuruları</p>
+              </div>
+              <button onClick={() => setShowApps(null)} className="text-gray-400 hover:text-gray-600 bg-gray-50 p-2 rounded-xl transition-all">
+                <X size={24} />
+              </button>
+            </div>
+            
+            <div className="flex-1 overflow-y-auto p-6">
+               {loadingApps ? (
+                  <div className="flex flex-col items-center justify-center py-20 gap-3">
+                     <Loader2 className="w-10 h-10 text-indigo-600 animate-spin" />
+                     <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Başvurular Getiriliyor...</p>
+                  </div>
+               ) : apps.length === 0 ? (
+                  <div className="text-center py-20">
+                     <Users size={48} className="mx-auto text-gray-100 mb-4" />
+                     <p className="text-gray-400 font-bold">Henüz başvuru yapılmamış.</p>
+                  </div>
+               ) : (
+                  <div className="grid grid-cols-1 gap-3">
+                     {apps.map(app => (
+                        <div key={app.id} className="flex items-center justify-between p-4 bg-gray-50 border border-gray-100 rounded-2xl group hover:bg-white hover:border-indigo-100 hover:shadow-md transition-all">
+                           <div className="flex items-center gap-4">
+                              <div className="w-10 h-10 rounded-xl bg-white border border-gray-100 shadow-sm flex items-center justify-center font-black text-indigo-600">
+                                 {app.membership?.user?.email?.[0].toUpperCase() || '?'}
+                              </div>
+                              <div>
+                                 <p className="text-sm font-bold text-gray-800 leading-tight">{app.membership?.user?.email?.split('@')[0]}</p>
+                                 <p className="text-[10px] text-gray-400 font-black uppercase mt-0.5">{app.membership?.user?.email}</p>
+                              </div>
+                           </div>
+                           
+                           <div className="flex items-center gap-2">
+                              {app.status === 'pending' ? (
+                                 <>
+                                    <button 
+                                       onClick={() => handleUpdateAppStatus(app.id, 'rejected')}
+                                       className="w-10 h-10 flex items-center justify-center bg-white border border-gray-200 text-red-500 rounded-xl hover:bg-red-50 hover:border-red-100 transition-all shadow-sm"
+                                       title="Reddet"
+                                    >
+                                       <UserX size={18} />
+                                    </button>
+                                    <button 
+                                       onClick={() => handleUpdateAppStatus(app.id, 'approved')}
+                                       className="w-10 h-10 flex items-center justify-center bg-white border border-indigo-200 text-indigo-600 rounded-xl hover:bg-indigo-50 hover:border-indigo-300 transition-all shadow-sm"
+                                       title="Onayla"
+                                    >
+                                       <UserCheck size={18} />
+                                    </button>
+                                 </>
+                              ) : (
+                                 <div className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest border ${
+                                    app.status === 'approved' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-red-50 text-red-600 border-red-100'
+                                 }`}>
+                                    {app.status === 'approved' ? 'Kabul Edildi' : 'Reddedildi'}
+                                 </div>
+                              )}
+                           </div>
+                        </div>
+                     ))}
+                  </div>
+               )}
+            </div>
+          </div>
         </div>
       )}
     </div>

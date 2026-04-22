@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useClub } from '../../store/ClubContext';
 import { useAuth } from '../../store/AuthContext';
 import api from '../../services/api';
-import { Plus, FileText, Trash2, ExternalLink, X, Folder } from 'lucide-react';
+import { Plus, FileText, Trash2, ExternalLink, X, Folder, Check, XCircle, AlertCircle } from 'lucide-react';
 
 const CATEGORIES = ['Resmi', 'Finans', 'Etkinlik', 'Şablon', 'Diğer'];
 const EMPTY_FORM = { title: '', fileUrl: '', category: 'Resmi', description: '' };
@@ -18,16 +18,31 @@ export const Documents = () => {
   const [saving, setSaving] = useState(false);
 
   const canManage = activeRole === 'baskan' || user?.loginType === 'club';
+  const canApprove = activeRole === 'baskan' || user?.loginType === 'club' || (activeRole === 'ekip-lideri'); // Simplified
 
-  const fetchDocs = () => {
+  const fetchDocs = useCallback(() => {
     if (!activeClub?.id) return;
     setLoading(true);
     api.get(`/clubs/${activeClub.id}/documents`)
       .then(r => { setDocs(r.data); setLoading(false); })
       .catch(() => setLoading(false));
+  }, [activeClub?.id]);
+
+  useEffect(() => { fetchDocs(); }, [fetchDocs]);
+
+  const handleApprove = async (id) => {
+    try {
+      await api.put(`/clubs/${activeClub.id}/documents/${id}/approve`);
+      fetchDocs();
+    } catch (e) {}
   };
 
-  useEffect(() => { fetchDocs(); }, [activeClub]);
+  const handleReject = async (id) => {
+    try {
+      await api.put(`/clubs/${activeClub.id}/documents/${id}/reject`);
+      fetchDocs();
+    } catch (e) {}
+  };
 
   const handleCreate = async (e) => {
     e.preventDefault();
@@ -150,12 +165,31 @@ export const Documents = () => {
                 </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="font-semibold text-gray-900 text-sm leading-tight truncate">{doc.title}</h3>
-                  <span className={`inline-block text-xs font-medium px-2 py-0.5 rounded-full mt-1 ${getCatColor(doc.category)}`}>
-                    {doc.category || 'Diğer'}
-                  </span>
+                  <div className="flex gap-1 items-center flex-wrap">
+                    <span className={`inline-block text-[10px] font-bold px-2 py-0.5 rounded-full mt-1 ${getCatColor(doc.category)}`}>
+                      {doc.category || 'Diğer'}
+                    </span>
+                    {doc.approvalStatus === 'PENDING' && (
+                      <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full mt-1 bg-amber-50 text-amber-600 border border-amber-100">
+                        <AlertCircle size={10} /> Beklemede
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
               {doc.description && <p className="text-xs text-gray-500 line-clamp-2 flex-1">{doc.description}</p>}
+              
+              {canApprove && doc.approvalStatus === 'PENDING' && (
+                <div className="mt-4 grid grid-cols-2 gap-2">
+                  <button onClick={() => handleReject(doc.id)} className="flex items-center justify-center gap-1 py-1.5 border border-red-200 text-red-500 rounded-lg text-[10px] font-bold hover:bg-red-50 transition">
+                    <XCircle size={12} /> Reddet
+                  </button>
+                  <button onClick={() => handleApprove(doc.id)} className="flex items-center justify-center gap-1 py-1.5 bg-emerald-500 text-white rounded-lg text-[10px] font-bold hover:bg-emerald-600 transition">
+                    <Check size={12} /> Onayla
+                  </button>
+                </div>
+              )}
+
               <div className="flex items-center justify-between mt-4 pt-3 border-t border-gray-50">
                 <span className="text-xs text-gray-400">
                   {doc.createdAt ? new Date(doc.createdAt).toLocaleDateString('tr-TR') : ''}

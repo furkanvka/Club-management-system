@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useClub } from '../../store/ClubContext';
 import { useAuth } from '../../store/AuthContext';
 import api from '../../services/api';
-import { Plus, TrendingUp, TrendingDown, DollarSign, Trash2, X } from 'lucide-react';
+import { Plus, TrendingUp, TrendingDown, DollarSign, X, FileDown } from 'lucide-react';
 
 const EMPTY_FORM = { type: 'income', description: '', amount: '', category: '', transactionDate: '' };
 
@@ -17,15 +17,37 @@ export const Finance = () => {
 
   const canManage = activeRole === 'baskan' || user?.loginType === 'club';
 
-  const fetchTx = () => {
+  const fetchTx = useCallback(() => {
     if (!activeClub?.id) return;
     setLoading(true);
     api.get(`/clubs/${activeClub.id}/transactions`)
       .then(r => { setTransactions(r.data); setLoading(false); })
       .catch(() => setLoading(false));
-  };
+  }, [activeClub?.id]);
 
-  useEffect(() => { fetchTx(); }, [activeClub]);
+  useEffect(() => { fetchTx(); }, [fetchTx]);
+
+  const handleExport = () => {
+    const headers = ['Aciklama', 'Kategori', 'Tur', 'Tutar', 'Tarih'];
+    const rows = transactions.map(t => [
+      t.description,
+      t.category || '',
+      t.type,
+      t.amount,
+      t.transactionDate || ''
+    ]);
+    
+    const csvContent = "data:text/csv;charset=utf-8," 
+      + [headers, ...rows].map(e => e.join(",")).join("\n");
+    
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `finans_raporu_${activeClub.name}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   const income = transactions.filter(t => t.type === 'income').reduce((s, t) => s + Number(t.amount), 0);
   const expense = transactions.filter(t => t.type === 'expense').reduce((s, t) => s + Number(t.amount), 0);
@@ -57,12 +79,18 @@ export const Finance = () => {
           <h1 className="text-2xl font-bold text-gray-900">Finans</h1>
           <p className="text-sm text-gray-500 mt-0.5">{activeClub?.name} — {transactions.length} işlem</p>
         </div>
-        {canManage && (
-          <button onClick={() => setShowForm(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-xl text-sm font-semibold hover:bg-indigo-700 transition shadow-sm">
-            <Plus size={16} /> Yeni İşlem
+        <div className="flex gap-2">
+          <button onClick={handleExport}
+            className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-xl text-sm font-semibold hover:bg-gray-50 transition shadow-sm">
+            <FileDown size={16} /> Rapor Al
           </button>
-        )}
+          {canManage && (
+            <button onClick={() => setShowForm(true)}
+              className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-xl text-sm font-semibold hover:bg-indigo-700 transition shadow-sm">
+              <Plus size={16} /> Yeni İşlem
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Stats */}

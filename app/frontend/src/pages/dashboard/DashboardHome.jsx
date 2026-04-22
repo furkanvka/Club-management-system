@@ -141,7 +141,6 @@ const PresidentDashboard = ({ activeClub, loginType }) => {
 // ─── Öğrenci / Üye Dashboard ───────────────────────────────────────────────
 const MemberDashboard = ({ activeClub, user }) => {
   const navigate = useNavigate();
-  const [clubInfo, setClubInfo] = useState(activeClub);
   const [memberCount, setMemberCount] = useState(null);
 
   useEffect(() => {

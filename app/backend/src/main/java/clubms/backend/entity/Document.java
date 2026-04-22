@@ -35,6 +35,14 @@ public class Document {
 
     private String status = "active";
 
+    @Column(name = "approval_status")
+    private String approvalStatus = "PENDING"; // PENDING, APPROVED, REJECTED
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "approved_by")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    private Membership approvedBy;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
@@ -62,4 +70,8 @@ public class Document {
     public void setStatus(String status) { this.status = status; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    public String getApprovalStatus() { return approvalStatus; }
+    public void setApprovalStatus(String approvalStatus) { this.approvalStatus = approvalStatus; }
+    public Membership getApprovedBy() { return approvedBy; }
+    public void setApprovedBy(Membership approvedBy) { this.approvedBy = approvedBy; }
 }

@@ -11,7 +11,9 @@ import {
   Shield, 
   Star, 
   UserCircle2,
-  MoreHorizontal
+  MoreHorizontal,
+  DollarSign,
+  Folder
 } from 'lucide-react';
 
 export const Members = () => {
@@ -39,6 +41,23 @@ export const Members = () => {
       await api.delete(`/clubs/${activeClub.id}/members/${memberId}`);
       fetchMembers();
     } catch (e) { alert('Üye silinemedi.'); }
+  };
+
+  const handleUpdateFlags = async (memberId, currentFlags, flagKey) => {
+    try {
+      let flagsObj = {};
+      try {
+        flagsObj = currentFlags ? JSON.parse(currentFlags) : {};
+      } catch (e) {
+        flagsObj = {};
+      }
+      
+      flagsObj[flagKey] = !flagsObj[flagKey];
+      await api.put(`/clubs/${activeClub.id}/members/${memberId}/flags`, JSON.stringify(flagsObj));
+      fetchMembers();
+    } catch (err) {
+      alert('Yetki güncellenemedi.');
+    }
   };
 
   const roleDisplay = (role) => {
@@ -160,9 +179,37 @@ export const Members = () => {
                         </div>
                       </td>
                       <td className="px-8 py-6">
-                        <div className={`inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-2xl border ${rd.cls} shadow-sm`}>
-                          <RIcon size={14} />
-                          {rd.label}
+                        <div className="flex flex-col gap-2">
+                          <div className={`inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-2xl border ${rd.cls} shadow-sm w-fit`}>
+                            <RIcon size={14} />
+                            {rd.label}
+                          </div>
+                          {isBaskan && !isUserBaskan && (
+                            <div className="flex gap-1">
+                              {[
+                                { key: 'yonetici', label: 'Ynt', icon: Shield, color: 'text-red-500' },
+                                { key: 'finans', label: 'Fin', icon: DollarSign, color: 'text-green-500' },
+                                { key: 'docs', label: 'Bel', icon: Folder, color: 'text-blue-500' },
+                              ].map(f => {
+                                const Icon = f.icon;
+                                const active = m.flags && m.flags.includes(`"${f.key}":true`);
+                                return (
+                                  <button
+                                    key={f.key}
+                                    onClick={() => handleUpdateFlags(m.id, m.flags, f.key)}
+                                    className={`px-2 py-1 rounded-lg text-[9px] font-black uppercase flex items-center gap-1 border transition-all ${
+                                      active 
+                                      ? `bg-white ${f.color} border-current shadow-sm` 
+                                      : 'bg-gray-50 text-gray-300 border-gray-100 hover:border-gray-200'
+                                    }`}
+                                    title={`${f.label} Yetkisi`}
+                                  >
+                                    <Icon size={10} /> {f.label}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          )}
                         </div>
                       </td>
                       <td className="px-8 py-6">

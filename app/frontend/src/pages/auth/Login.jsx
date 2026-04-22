@@ -7,7 +7,6 @@ import {
   ArrowLeft, 
   Mail, 
   Lock, 
-  UserCircle, 
   Info,
   ChevronRight,
   ArrowRight,

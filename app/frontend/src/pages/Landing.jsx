@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../components/common/Button';
-import { Users, Building2, LogIn } from 'lucide-react';
+import { Users, Building2 } from 'lucide-react';
 
 export const Landing = () => {
   const navigate = useNavigate();

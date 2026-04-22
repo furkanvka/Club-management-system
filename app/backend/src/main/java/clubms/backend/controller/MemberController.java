@@ -61,4 +61,9 @@ public class MemberController {
         memberService.deleteMembership(memberId);
         return ResponseEntity.noContent().build();
     }
+
+    @PutMapping("/{memberId}/flags")
+    public ResponseEntity<Membership> updateFlags(@PathVariable Long clubId, @PathVariable Long memberId, @RequestBody String flags) {
+        return ResponseEntity.ok(memberService.updateMembershipFlags(memberId, flags));
+    }
 }

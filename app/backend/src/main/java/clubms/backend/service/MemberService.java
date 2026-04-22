@@ -26,6 +26,17 @@ public class MemberService {
         return membershipRepository.save(membership);
     }
 
+    public Optional<Membership> getMembershipById(Long id) {
+        return membershipRepository.findById(id);
+    }
+
+    public Membership updateMembershipFlags(Long membershipId, String flags) {
+        return membershipRepository.findById(membershipId).map(membership -> {
+            membership.setFlags(flags);
+            return membershipRepository.save(membership);
+        }).orElseThrow(() -> new RuntimeException("Membership not found"));
+    }
+
     public void deleteMembership(Long membershipId) {
         membershipRepository.deleteById(membershipId);
     }
