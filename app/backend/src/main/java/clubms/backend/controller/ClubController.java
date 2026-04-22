@@ -63,7 +63,7 @@ public class ClubController {
     @GetMapping
     public ResponseEntity<List<Club>> getAllClubs() {
         List<Club> visibleClubs = clubService.getAllClubs().stream()
-            .filter(c -> !"REJECTED".equals(c.getStatus()))
+            .filter(c -> "APPROVED".equals(c.getStatus()))
             .collect(Collectors.toList());
         return ResponseEntity.ok(visibleClubs);
     }
