@@ -41,7 +41,15 @@ public class AuthService {
     @Autowired
     private JwtTokenProvider tokenProvider;
 
+    @Autowired
+    private clubms.backend.repository.ClubRepository clubRepository;
+
     public String authenticateUser(LoginRequest loginRequest) {
+        // Strict Check: Must exist in users table
+        if (!userRepository.existsByEmail(loginRequest.getEmail())) {
+            throw new RuntimeException("Bu e-posta adresi ile kayıtlı bir öğrenci hesabı bulunamadı.");
+        }
+
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginRequest.getEmail(),
@@ -52,8 +60,11 @@ public class AuthService {
     }
 
     public String authenticateClub(LoginRequest loginRequest) {
-        // We can now use the standard authentication flow because loadUserByUsername
-        // handles both
+        // Strict Check: Must exist in clubs table
+        if (clubRepository.findByContactEmail(loginRequest.getEmail()).isEmpty()) {
+            throw new RuntimeException("Bu e-posta adresi ile kayıtlı bir kulüp hesabı bulunamadı.");
+        }
+
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginRequest.getEmail(),

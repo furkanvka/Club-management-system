@@ -7,33 +7,44 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
+import clubms.backend.repository.ProjectRepository;
+
 @RestController
-@RequestMapping("/api/projects/{projectId}/tasks")
+@RequestMapping("/api/clubs/{clubId}/projects/{projectId}/tasks")
 public class TaskController {
     @Autowired private TaskService taskService;
+    @Autowired private ProjectRepository projectRepository;
 
     @GetMapping
-    public ResponseEntity<List<Task>> getTasks(@PathVariable Long projectId) {
-        return ResponseEntity.ok(taskService.getTasksByProjectId(projectId));
+    public ResponseEntity<List<Task>> getTasks(@PathVariable Long clubId, @PathVariable Long projectId) {
+        return projectRepository.findByIdAndClubId(projectId, clubId)
+            .map(p -> ResponseEntity.ok(taskService.getTasksByProjectId(projectId)))
+            .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public ResponseEntity<Task> createTask(@PathVariable Long projectId, @RequestBody Task task) {
-        clubms.backend.entity.Project p = new clubms.backend.entity.Project();
-        p.setId(projectId);
-        task.setProject(p);
-        return ResponseEntity.ok(taskService.createTask(task));
+    public ResponseEntity<Task> createTask(@PathVariable Long clubId, @PathVariable Long projectId, @RequestBody Task task) {
+        return projectRepository.findByIdAndClubId(projectId, clubId).map(p -> {
+            task.setProject(p);
+            return ResponseEntity.ok(taskService.createTask(task));
+        }).orElse(ResponseEntity.notFound().build());
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Task> updateTask(@PathVariable Long id, @RequestBody Task task) {
-        task.setId(id);
-        return ResponseEntity.ok(taskService.updateTask(task));
+    public ResponseEntity<Task> updateTask(@PathVariable Long clubId, @PathVariable Long projectId, @PathVariable Long id, @RequestBody Task task) {
+        return projectRepository.findByIdAndClubId(projectId, clubId).map(p -> {
+            task.setId(id);
+            task.setProject(p);
+            return ResponseEntity.ok(taskService.updateTask(task));
+        }).orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
-        taskService.deleteTask(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<Void> deleteTask(@PathVariable Long clubId, @PathVariable Long projectId, @PathVariable Long id) {
+        if (projectRepository.findByIdAndClubId(projectId, clubId).isPresent()) {
+            taskService.deleteTask(id);
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.notFound().build();
     }
 }

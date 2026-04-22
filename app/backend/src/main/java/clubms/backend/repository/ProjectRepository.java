@@ -6,8 +6,11 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+import java.util.Optional;
+
 @Repository
 public interface ProjectRepository extends JpaRepository<Project, Long> {
     List<Project> findByClubId(Long clubId);
     List<Project> findByTeamId(Long teamId);
+    Optional<Project> findByIdAndClubId(Long id, Long clubId);
 }
