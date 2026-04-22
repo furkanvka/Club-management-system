@@ -40,6 +40,7 @@ public class ClubController {
             List<Club> myClubs = memberService.getMembershipsByUserId(userPrincipal.getId())
                 .stream()
                 .map(m -> m.getClub())
+                .filter(club -> club != null)
                 .collect(Collectors.toList());
             return ResponseEntity.ok(myClubs);
         }

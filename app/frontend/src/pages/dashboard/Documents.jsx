@@ -1,61 +1,184 @@
-import React from 'react';
-import { Table } from '../../components/common/Table';
-import { Button } from '../../components/common/Button';
-import { Upload, FileText, Download } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { useClub } from '../../store/ClubContext';
+import { useAuth } from '../../store/AuthContext';
+import api from '../../services/api';
+import { Plus, FileText, Trash2, ExternalLink, X, Folder } from 'lucide-react';
+
+const CATEGORIES = ['Resmi', 'Finans', 'Etkinlik', 'Şablon', 'Diğer'];
+const EMPTY_FORM = { title: '', fileUrl: '', category: 'Resmi', description: '' };
 
 export const Documents = () => {
-  const headers = ['Belge Adı', 'Kategori', 'Tarih', 'Boyut', 'İşlem'];
-  
-  const mockDocs = [
-    { id: 1, title: '2025_Genel_Kurul_Tutanagi.pdf', category: 'Resmi', createdAt: '2026-01-15T00:00:00Z', size: '2.4 MB' },
-    { id: 2, title: 'Bahar_Senligi_Butce_Plani.xlsx', category: 'Finans', createdAt: '2026-03-10T00:00:00Z', size: '1.1 MB' },
-    { id: 3, title: 'Yeni_Uye_Kayit_Formu.docx', category: 'Şablon', createdAt: '2026-02-05T00:00:00Z', size: '450 KB' },
-  ];
+  const { activeClub, activeRole } = useClub();
+  const { user } = useAuth();
+  const [docs, setDocs] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [activeCategory, setActiveCategory] = useState('Tümü');
+  const [showForm, setShowForm] = useState(false);
+  const [form, setForm] = useState(EMPTY_FORM);
+  const [saving, setSaving] = useState(false);
+
+  const canManage = activeRole === 'baskan' || user?.loginType === 'club';
+
+  const fetchDocs = () => {
+    if (!activeClub?.id) return;
+    setLoading(true);
+    api.get(`/clubs/${activeClub.id}/documents`)
+      .then(r => { setDocs(r.data); setLoading(false); })
+      .catch(() => setLoading(false));
+  };
+
+  useEffect(() => { fetchDocs(); }, [activeClub]);
+
+  const handleCreate = async (e) => {
+    e.preventDefault();
+    setSaving(true);
+    try {
+      await api.post(`/clubs/${activeClub.id}/documents`, form);
+      setForm(EMPTY_FORM);
+      setShowForm(false);
+      fetchDocs();
+    } catch (err) {
+      alert('Belge eklenemedi: ' + (err.response?.data || err.message));
+    } finally { setSaving(false); }
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm('Bu belgeyi silmek istediğinize emin misiniz?')) return;
+    try {
+      await api.delete(`/clubs/${activeClub.id}/documents/${id}`);
+      fetchDocs();
+    } catch (e) { alert('Silinemedi.'); }
+  };
+
+  const filtered = activeCategory === 'Tümü' ? docs : docs.filter(d => d.category === activeCategory);
+
+  const getCatColor = (cat) => {
+    const map = { Resmi: 'bg-blue-100 text-blue-700', Finans: 'bg-green-100 text-green-700', Etkinlik: 'bg-purple-100 text-purple-700', Şablon: 'bg-yellow-100 text-yellow-700', Diğer: 'bg-gray-100 text-gray-600' };
+    return map[cat] || 'bg-gray-100 text-gray-600';
+  };
 
   return (
     <div className="space-y-6">
+      {/* Header */}
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900">Belgeler</h1>
-        <Button className="flex items-center gap-2">
-          <Upload size={16} /> Belge Yükle
-        </Button>
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">Belgeler</h1>
+          <p className="text-sm text-gray-500 mt-0.5">{activeClub?.name} — {docs.length} belge</p>
+        </div>
+        {canManage && (
+          <button onClick={() => setShowForm(true)}
+            className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-xl text-sm font-semibold hover:bg-indigo-700 transition shadow-sm">
+            <Plus size={16} /> Belge Ekle
+          </button>
+        )}
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-        <div className="px-6 py-5 border-b border-gray-200 flex gap-2">
-          {['Tümü', 'Resmi', 'Finans', 'Şablon', 'Etkinlik'].map(cat => (
-             <span key={cat} className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800 cursor-pointer hover:bg-gray-200">
-               {cat}
-             </span>
+      {/* Category filters */}
+      <div className="flex gap-2 flex-wrap">
+        {['Tümü', ...CATEGORIES].map(cat => (
+          <button key={cat} onClick={() => setActiveCategory(cat)}
+            className={`px-3 py-1.5 rounded-full text-xs font-semibold transition ${activeCategory === cat ? 'bg-indigo-600 text-white' : 'bg-white border border-gray-200 text-gray-600 hover:border-indigo-300'}`}>
+            {cat}
+          </button>
+        ))}
+      </div>
+
+      {/* Modal */}
+      {showForm && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+              <h2 className="font-bold text-gray-900">Yeni Belge</h2>
+              <button onClick={() => setShowForm(false)} className="text-gray-400 hover:text-gray-600"><X size={20} /></button>
+            </div>
+            <form onSubmit={handleCreate} className="p-6 space-y-4">
+              <div>
+                <label className="text-xs font-semibold text-gray-500 uppercase">Belge Adı *</label>
+                <input required value={form.title} onChange={e => setForm({...form, title: e.target.value})}
+                  className="mt-1 w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400" placeholder="2025_Tüzük.pdf" />
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-gray-500 uppercase">Dosya URL / Bağlantı</label>
+                <input value={form.fileUrl} onChange={e => setForm({...form, fileUrl: e.target.value})}
+                  className="mt-1 w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400" placeholder="https://drive.google.com/..." />
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-gray-500 uppercase">Kategori</label>
+                <select value={form.category} onChange={e => setForm({...form, category: e.target.value})}
+                  className="mt-1 w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400">
+                  {CATEGORIES.map(c => <option key={c}>{c}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-gray-500 uppercase">Açıklama</label>
+                <textarea value={form.description} onChange={e => setForm({...form, description: e.target.value})}
+                  rows={2} className="mt-1 w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400" placeholder="Kısa açıklama..." />
+              </div>
+              <div className="flex gap-3 pt-2">
+                <button type="button" onClick={() => setShowForm(false)}
+                  className="flex-1 py-2.5 border border-gray-200 rounded-xl text-sm font-medium text-gray-600 hover:bg-gray-50">İptal</button>
+                <button type="submit" disabled={saving}
+                  className="flex-1 py-2.5 bg-indigo-600 text-white rounded-xl text-sm font-semibold hover:bg-indigo-700 disabled:opacity-50">
+                  {saving ? 'Kaydediliyor...' : 'Ekle'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Docs Grid */}
+      {loading ? (
+        <div className="flex justify-center items-center h-40">
+          <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+        </div>
+      ) : filtered.length === 0 ? (
+        <div className="bg-white border border-gray-100 rounded-2xl p-16 text-center">
+          <Folder size={40} className="text-gray-200 mx-auto mb-3" />
+          <p className="text-gray-400 font-medium">{activeCategory === 'Tümü' ? 'Henüz belge eklenmemiş.' : `Bu kategoride belge yok.`}</p>
+          {canManage && activeCategory === 'Tümü' && (
+            <button onClick={() => setShowForm(true)} className="mt-4 text-sm text-indigo-600 hover:underline">İlk belgeyi ekle →</button>
+          )}
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {filtered.map(doc => (
+            <div key={doc.id} className="bg-white border border-gray-100 rounded-2xl p-5 hover:shadow-md transition group flex flex-col">
+              <div className="flex items-start gap-3 mb-3">
+                <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center shrink-0">
+                  <FileText size={20} className="text-indigo-500" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-semibold text-gray-900 text-sm leading-tight truncate">{doc.title}</h3>
+                  <span className={`inline-block text-xs font-medium px-2 py-0.5 rounded-full mt-1 ${getCatColor(doc.category)}`}>
+                    {doc.category || 'Diğer'}
+                  </span>
+                </div>
+              </div>
+              {doc.description && <p className="text-xs text-gray-500 line-clamp-2 flex-1">{doc.description}</p>}
+              <div className="flex items-center justify-between mt-4 pt-3 border-t border-gray-50">
+                <span className="text-xs text-gray-400">
+                  {doc.createdAt ? new Date(doc.createdAt).toLocaleDateString('tr-TR') : ''}
+                </span>
+                <div className="flex items-center gap-1">
+                  {doc.fileUrl && (
+                    <a href={doc.fileUrl} target="_blank" rel="noreferrer"
+                      className="text-indigo-500 hover:text-indigo-700 p-1.5 rounded-lg hover:bg-indigo-50 transition">
+                      <ExternalLink size={15} />
+                    </a>
+                  )}
+                  {canManage && (
+                    <button onClick={() => handleDelete(doc.id)}
+                      className="text-red-400 hover:text-red-600 p-1.5 rounded-lg hover:bg-red-50 transition">
+                      <Trash2 size={15} />
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
           ))}
         </div>
-        <Table 
-          headers={headers} 
-          data={mockDocs} 
-          renderRow={(row) => (
-            <>
-              <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 flex items-center">
-                <FileText className="h-5 w-5 text-gray-400 mr-2" />
-                {row.title}
-              </td>
-              <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
-                  {row.category}
-                </span>
-              </td>
-              <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                {new Date(row.createdAt).toLocaleDateString('tr-TR')}
-              </td>
-              <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{row.size}</td>
-              <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                <button className="text-indigo-600 hover:text-indigo-900 flex items-center justify-end w-full">
-                  <Download className="h-4 w-4 mr-1" /> İndir
-                </button>
-              </td>
-            </>
-          )}
-        />
-      </div>
+      )}
     </div>
   );
 };

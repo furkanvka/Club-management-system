@@ -32,22 +32,25 @@ public class MemberController {
     }
 
     @PostMapping
-    public ResponseEntity<?> addMember(@PathVariable Long clubId, @RequestBody clubms.backend.dto.request.JoinRequest joinRequest) {
+    public ResponseEntity<?> addMember(@PathVariable Long clubId) {
         return clubService.getClubById(clubId).map(club -> {
-            if (club.getPassword() != null && !club.getPassword().equals(joinRequest.getPassword())) {
-                return ResponseEntity.status(403).body("Invalid club password");
-            }
-            Membership membership = new Membership();
-            membership.setRole(joinRequest.getRole() != null ? joinRequest.getRole() : "uye");
-            membership.setStatus("active");
-            
             Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            if (principal instanceof UserPrincipal) {
-                UserPrincipal userPrincipal = (UserPrincipal) principal;
-                User user = userRepository.findById(userPrincipal.getId()).orElse(null);
-                membership.setUser(user);
+            if (!(principal instanceof UserPrincipal)) {
+                return ResponseEntity.status(401).body("Unauthorized");
             }
-            
+            UserPrincipal userPrincipal = (UserPrincipal) principal;
+            User user = userRepository.findById(userPrincipal.getId()).orElse(null);
+            if (user == null) return ResponseEntity.status(404).body("User not found");
+
+            // Prevent duplicate membership
+            boolean alreadyMember = memberService.getMembersByClubId(clubId)
+                .stream().anyMatch(m -> m.getUser() != null && m.getUser().getId().equals(userPrincipal.getId()));
+            if (alreadyMember) return ResponseEntity.status(409).body("Already a member");
+
+            Membership membership = new Membership();
+            membership.setRole("uye");
+            membership.setStatus("active");
+            membership.setUser(user);
             membership.setClub(club);
             return ResponseEntity.ok(memberService.createMembership(membership));
         }).orElse(ResponseEntity.notFound().build());

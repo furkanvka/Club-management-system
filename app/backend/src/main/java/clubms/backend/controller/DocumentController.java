@@ -30,4 +30,10 @@ public class DocumentController {
             return ResponseEntity.ok(documentService.saveDocumentInfo(document));
         }).orElse(ResponseEntity.notFound().build());
     }
+
+    @DeleteMapping("/{documentId}")
+    public ResponseEntity<Void> deleteDocument(@PathVariable Long clubId, @PathVariable Long documentId) {
+        documentService.deleteDocument(documentId);
+        return ResponseEntity.noContent().build();
+    }
 }

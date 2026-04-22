@@ -30,4 +30,10 @@ public class EventController {
             return ResponseEntity.ok(eventService.createEvent(event));
         }).orElse(ResponseEntity.notFound().build());
     }
+
+    @DeleteMapping("/{eventId}")
+    public ResponseEntity<Void> deleteEvent(@PathVariable Long clubId, @PathVariable Long eventId) {
+        eventService.deleteEvent(eventId);
+        return ResponseEntity.noContent().build();
+    }
 }

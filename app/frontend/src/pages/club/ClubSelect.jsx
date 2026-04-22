@@ -25,15 +25,15 @@ export const ClubSelect = () => {
   };
 
   const handleJoin = async (club) => {
-    const pwd = prompt(`"${club.name}" kulübüne katılmak için kulüp şifresini girin:`);
-    if (pwd === null) return;
+    if (!window.confirm(`"${club.name}" kulübüne katılmak istediğinize emin misiniz?`)) return;
     try {
-      await clubService.joinClub(club.id, pwd);
+      await clubService.joinClub(club.id);
       alert('Kulübe başarıyla katıldınız!');
       refreshClubs();
     } catch (err) {
-      const msg = err.response?.data || err.message;
-      alert('Katılırken hata oluştu: ' + msg);
+      const status = err.response?.status;
+      if (status === 409) alert('Zaten bu kulübün üyesisiniz.');
+      else alert('Katılırken hata oluştu: ' + (err.response?.data || err.message));
     }
   };
 

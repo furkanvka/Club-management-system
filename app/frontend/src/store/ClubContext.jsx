@@ -12,24 +12,34 @@ export const ClubProvider = ({ children }) => {
   const [myMemberships, setMyMemberships] = useState([]); // full membership objects
 
   const refreshClubs = useCallback(async () => {
+    // Always fetch all clubs (public endpoint)
     try {
-      const [myData, allData] = await Promise.all([
-        clubService.getMyClubs(),
-        clubService.getAllClubs()
-      ]);
-      setMyClubs(myData);
+      const allData = await clubService.getAllClubs();
       setAllClubs(allData);
+    } catch (e) {
+      console.error('Failed to fetch all clubs', e);
+    }
 
-      // Also fetch memberships to know roles
-      try {
-        const memRes = await api.get('/clubs/my-memberships');
-        setMyMemberships(memRes.data);
-      } catch (e) {
-        // fallback: if endpoint doesn't exist yet, leave empty
-        setMyMemberships([]);
-      }
-    } catch (error) {
-      console.error('Failed to fetch clubs', error);
+    // Fetch user's clubs only if token exists
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setMyClubs([]);
+      setMyMemberships([]);
+      return;
+    }
+
+    try {
+      const myData = await clubService.getMyClubs();
+      setMyClubs(myData || []);
+    } catch (e) {
+      setMyClubs([]);
+    }
+
+    try {
+      const memRes = await api.get('/clubs/my-memberships');
+      setMyMemberships(memRes.data || []);
+    } catch (e) {
+      setMyMemberships([]);
     }
   }, []);
 

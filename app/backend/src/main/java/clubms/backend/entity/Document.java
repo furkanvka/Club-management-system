@@ -2,6 +2,7 @@ package clubms.backend.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "documents")
@@ -13,31 +14,26 @@ public class Document {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "club_id")
+    @JsonIgnoreProperties({"events", "documents", "transactions", "memberships", "hibernateLazyInitializer", "password"})
     private Club club;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "uploaded_by")
-    private Membership uploadedBy;
 
     @Column(nullable = false)
     private String title;
 
     private String category;
 
-    @Column(name = "file_path", nullable = false)
+    // fileUrl for external links (Google Drive, etc.)
+    @Column(name = "file_url")
+    private String fileUrl;
+
+    // optional file path for local uploads
+    @Column(name = "file_path")
     private String filePath;
 
-    @Column(name = "file_size")
-    private Long fileSize;
+    @Column(columnDefinition = "TEXT")
+    private String description;
 
-    @Column(name = "mime_type")
-    private String mimeType;
-
-    private String status = "pending"; // pending, approved, rejected
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "approved_by")
-    private Membership approvedBy;
+    private String status = "active";
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -52,22 +48,18 @@ public class Document {
     public void setId(Long id) { this.id = id; }
     public Club getClub() { return club; }
     public void setClub(Club club) { this.club = club; }
-    public Membership getUploadedBy() { return uploadedBy; }
-    public void setUploadedBy(Membership uploadedBy) { this.uploadedBy = uploadedBy; }
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
     public String getCategory() { return category; }
     public void setCategory(String category) { this.category = category; }
+    public String getFileUrl() { return fileUrl; }
+    public void setFileUrl(String fileUrl) { this.fileUrl = fileUrl; }
     public String getFilePath() { return filePath; }
     public void setFilePath(String filePath) { this.filePath = filePath; }
-    public Long getFileSize() { return fileSize; }
-    public void setFileSize(Long fileSize) { this.fileSize = fileSize; }
-    public String getMimeType() { return mimeType; }
-    public void setMimeType(String mimeType) { this.mimeType = mimeType; }
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
-    public Membership getApprovedBy() { return approvedBy; }
-    public void setApprovedBy(Membership approvedBy) { this.approvedBy = approvedBy; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 }

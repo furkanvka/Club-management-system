@@ -21,11 +21,8 @@ export const clubService = {
     return response.data;
   },
 
-  joinClub: async (clubId, password) => {
-    const response = await api.post(`/clubs/${clubId}/members`, {
-      role: 'uye',
-      password: password
-    });
+  joinClub: async (clubId) => {
+    const response = await api.post(`/clubs/${clubId}/members`);
     return response.data;
   }
 };

@@ -58,16 +58,28 @@ public class AuthService {
 
     public String authenticateClub(LoginRequest loginRequest) {
         clubms.backend.entity.Club club = clubRepository.findByContactEmail(loginRequest.getEmail())
-                .orElseThrow(() -> new RuntimeException("Club not found"));
+                .orElseThrow(() -> new RuntimeException("Club not found with email: " + loginRequest.getEmail()));
 
-        if (!club.getPassword().equals(loginRequest.getPassword())) {
+        // Support both plaintext and BCrypt-encoded passwords
+        String storedPwd = club.getPassword();
+        if (storedPwd == null) {
+            throw new RuntimeException("Club has no password set");
+        }
+        boolean matches;
+        try {
+            matches = passwordEncoder.matches(loginRequest.getPassword(), storedPwd);
+        } catch (Exception e) {
+            // Plaintext password (legacy)
+            matches = storedPwd.equals(loginRequest.getPassword());
+        }
+        if (!matches) {
             throw new RuntimeException("Invalid password");
         }
 
         clubms.backend.security.UserPrincipal clubPrincipal = new clubms.backend.security.UserPrincipal(
                 -club.getId(),
                 club.getContactEmail(),
-                club.getPassword(),
+                storedPwd,
                 java.util.Collections.singletonList(new org.springframework.security.core.authority.SimpleGrantedAuthority("ROLE_CLUB"))
         );
 
