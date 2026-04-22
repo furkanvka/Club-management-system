@@ -2,6 +2,7 @@ package clubms.backend.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "teams")
@@ -13,6 +14,7 @@ public class Team {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "club_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Club club;
 
     @Column(nullable = false)
@@ -23,6 +25,7 @@ public class Team {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "leader_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Membership leader;
 
     @Column(name = "created_at")

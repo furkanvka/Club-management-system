@@ -19,6 +19,8 @@ import { Members } from './pages/dashboard/Members';
 import { Events } from './pages/dashboard/Events';
 import { Documents } from './pages/dashboard/Documents';
 import { Finance } from './pages/dashboard/Finance';
+import { Teams } from './pages/dashboard/Teams';
+import { Projects } from './pages/dashboard/Projects';
 import { DashboardHome } from './pages/dashboard/DashboardHome';
 
 const ProtectedRoute = ({ children }) => {
@@ -57,6 +59,8 @@ function AppRoutes() {
         <Route path="events" element={<Events />} />
         <Route path="documents" element={<Documents />} />
         <Route path="finance" element={<Finance />} />
+        <Route path="teams" element={<Teams />} />
+        <Route path="projects" element={<Projects />} />
       </Route>
     </Routes>
   );

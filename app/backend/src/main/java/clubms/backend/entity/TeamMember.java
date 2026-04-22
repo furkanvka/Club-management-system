@@ -2,6 +2,7 @@ package clubms.backend.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "team_members", uniqueConstraints = {
@@ -15,10 +16,12 @@ public class TeamMember {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Team team;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "membership_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Membership membership;
 
     @Column(name = "joined_at")

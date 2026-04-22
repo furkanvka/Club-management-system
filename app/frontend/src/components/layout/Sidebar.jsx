@@ -2,7 +2,7 @@ import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useClub } from '../../store/ClubContext';
 import { useAuth } from '../../store/AuthContext';
-import { Home, Users, Calendar, Folder, DollarSign, LogOut, ChevronRight } from 'lucide-react';
+import { Home, Users, Calendar, Folder, DollarSign, LogOut, ChevronRight, Briefcase, LayoutGrid } from 'lucide-react';
 
 export const Sidebar = () => {
   const { activeClub, activeRole, myClubs, selectClub } = useClub();
@@ -14,7 +14,9 @@ export const Sidebar = () => {
   const allNavItems = [
     { name: 'Genel Bakış', path: '/dashboard', icon: Home, adminOnly: false },
     { name: 'Etkinlikler', path: '/dashboard/events', icon: Calendar, adminOnly: false },
+    { name: 'Projeler', path: '/dashboard/projects', icon: Briefcase, adminOnly: false },
     { name: 'Belgeler', path: '/dashboard/documents', icon: Folder, adminOnly: false },
+    { name: 'Ekipler', path: '/dashboard/teams', icon: LayoutGrid, adminOnly: true },
     { name: 'Üye Yönetimi', path: '/dashboard/members', icon: Users, adminOnly: true },
     { name: 'Finans', path: '/dashboard/finance', icon: DollarSign, adminOnly: true },
   ];
