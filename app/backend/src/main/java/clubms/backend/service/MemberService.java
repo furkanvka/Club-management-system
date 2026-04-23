@@ -2,6 +2,8 @@ package clubms.backend.service;
 
 import clubms.backend.entity.Membership;
 import clubms.backend.repository.MembershipRepository;
+import clubms.backend.repository.TeamMemberRepository;
+import clubms.backend.repository.EventApplicationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,15 +16,49 @@ public class MemberService {
     @Autowired
     private MembershipRepository membershipRepository;
 
+    @Autowired
+    private TeamMemberRepository teamMemberRepository;
+
+    @Autowired
+    private EventApplicationRepository eventApplicationRepository;
+
     public List<Membership> getMembersByClubId(Long clubId) {
-        return membershipRepository.findByClubId(clubId);
+        List<Membership> memberships = membershipRepository.findByClubId(clubId);
+        memberships.forEach(this::calculateDynamicStatus);
+        return memberships;
     }
 
     public List<Membership> getMembershipsByUserId(Long userId) {
-        return membershipRepository.findByUserId(userId);
+        List<Membership> memberships = membershipRepository.findByUserId(userId);
+        memberships.forEach(this::calculateDynamicStatus);
+        return memberships;
+    }
+
+    private void calculateDynamicStatus(Membership m) {
+        // Başkanlar her zaman aktiftir
+        if ("baskan".equals(m.getRole())) {
+            m.setStatus("active");
+            return;
+        }
+
+        // Bir ekipte üyeliği var mı?
+        boolean inTeam = !teamMemberRepository.findByMembershipId(m.getId()).isEmpty();
+        
+        // Etkinlik başvurusu var mı?
+        boolean inEvent = !eventApplicationRepository.findByMembershipId(m.getId()).isEmpty();
+
+        if (inTeam || inEvent) {
+            m.setStatus("active");
+        } else {
+            m.setStatus("passive");
+        }
     }
 
     public Membership createMembership(Membership membership) {
+        // Yeni üyelik varsayılan olarak pasiftir (henüz bir ekipte değil)
+        if (!"baskan".equals(membership.getRole())) {
+            membership.setStatus("passive");
+        }
         return membershipRepository.save(membership);
     }
 

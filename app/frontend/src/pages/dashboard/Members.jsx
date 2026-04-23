@@ -61,7 +61,7 @@ export const Members = () => {
   };
 
   const roleDisplay = (role) => {
-    const normalized = (role || '').toUpperCase();
+    const normalized = (role || '').toUpperCase().replace('-', '_');
     switch (normalized) {
       case 'KULUP_BASKANI':
       case 'BASKAN':
@@ -215,7 +215,7 @@ export const Members = () => {
                       <td className="px-8 py-6">
                         <div className={`inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-2xl ${m.status === 'active' ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-gray-50 text-gray-400 border border-gray-100'}`}>
                           <span className={`w-1.5 h-1.5 rounded-full ${m.status === 'active' ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)]' : 'bg-gray-300'}`}></span>
-                          {m.status === 'active' ? 'Aktif Üye' : 'Beklemede'}
+                          {m.status === 'active' ? 'Aktif Üye' : 'Pasif'}
                         </div>
                       </td>
                       {isBaskan && (

@@ -1,51 +1,71 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useClub } from '../../store/ClubContext';
 import { useAuth } from '../../store/AuthContext';
+import api from '../../services/api';
 import { Home, Users, Calendar, Folder, DollarSign, LogOut, ChevronRight, Briefcase, LayoutGrid, User, BookOpen } from 'lucide-react';
 
 export const Sidebar = () => {
-  const { activeClub, activeRole, myClubs, selectClub } = useClub();
+  const { activeClub, activeRole, activeMembershipId, myClubs, selectClub } = useClub();
   const { logout } = useAuth();
   const navigate = useNavigate();
+  const [myTeams, setMyTeams] = useState([]);
 
   const isBaskan = activeRole === 'baskan';
+  const isLider = activeRole === 'ekip_lideri' || activeRole === 'ekip-lideri';
+
+  useEffect(() => {
+    const memId = activeMembershipId || localStorage.getItem('activeMembershipId');
+    if (activeClub?.id && memId) {
+      api.get(`/clubs/${activeClub.id}/teams/my-teams`, { params: { membershipId: memId } })
+        .then(r => setMyTeams(r.data))
+        .catch(() => setMyTeams([]));
+    } else {
+      setMyTeams([]);
+    }
+  }, [activeClub?.id, activeMembershipId]);
 
   const allNavItems = [
-    { name: 'Genel Bakış', path: '/dashboard', icon: Home, adminOnly: false },
-    { name: 'Profilim', path: '/dashboard/profile', icon: User, adminOnly: false },
-    { name: 'Etkinlikler', path: '/dashboard/events', icon: Calendar, adminOnly: false },
-    { name: 'Toplantı Raporları', path: '/dashboard/meetings', icon: BookOpen, adminOnly: false },
-    { name: 'Projeler', path: '/dashboard/projects', icon: Briefcase, adminOnly: false },
-    { name: 'Belgeler', path: '/dashboard/documents', icon: Folder, adminOnly: false },
-    { name: 'Ekipler', path: '/dashboard/teams', icon: LayoutGrid, adminOnly: true },
-    { name: 'Üye Yönetimi', path: '/dashboard/members', icon: Users, adminOnly: true },
-    { name: 'Finans', path: '/dashboard/finance', icon: DollarSign, adminOnly: true },
+    { name: 'Genel Bakış', path: '/dashboard', icon: Home, access: 'all' },
+    { name: 'Profilim', path: '/dashboard/profile', icon: User, access: 'all' },
+    { name: 'Etkinlikler', path: '/dashboard/events', icon: Calendar, access: 'all' },
+    { name: 'Toplantı Raporları', path: '/dashboard/meetings', icon: BookOpen, access: 'all' },
+    { name: 'Projeler', path: '/dashboard/projects', icon: Briefcase, access: 'all' },
+    { name: 'Belgeler', path: '/dashboard/documents', icon: Folder, access: 'all' },
+    { name: 'Ekipler', path: '/dashboard/teams', icon: LayoutGrid, access: 'management' },
+    { name: 'Üye Yönetimi', path: '/dashboard/members', icon: Users, access: 'admin' },
+    { name: 'Finans', path: '/dashboard/finance', icon: DollarSign, access: 'admin' },
   ];
 
-  const navItems = allNavItems.filter(item => !item.adminOnly || isBaskan);
+  const navItems = allNavItems.filter(item => {
+    if (item.access === 'all') return true;
+    if (isBaskan) return true;
+    if (item.access === 'management' && (isBaskan || isLider)) return true;
+    return false;
+  });
 
-  const handleLogout = () => {
-    logout();
-    navigate('/');
+  const roleLabel = (role) => {
+    const r = (role || '').toLowerCase().replace('-', '_');
+    if (r === 'baskan') return '👑 Başkan';
+    if (r === 'ekip_lideri') return '⭐ Ekip Lideri';
+    if (r === 'ekip_uyesi') return '🛡️ Ekip Üyesi';
+    return '👤 Üye';
   };
 
   return (
     <div className="w-64 bg-indigo-900 text-white flex flex-col min-h-screen">
-      {/* Club Name Header */}
       <div className="h-16 flex items-center px-6 border-b border-indigo-800">
         <div>
           <div className="font-bold text-base leading-tight">{activeClub ? activeClub.name : 'KulüpYönet'}</div>
           {activeRole && (
-            <div className={`text-xs mt-0.5 font-medium ${isBaskan ? 'text-yellow-300' : 'text-indigo-300'}`}>
-              {isBaskan ? '👑 Başkan' : '👤 Üye'}
+            <div className={`text-[10px] mt-0.5 font-black uppercase tracking-wider ${isBaskan ? 'text-yellow-300' : isLider ? 'text-amber-300' : 'text-indigo-300'}`}>
+              {roleLabel(activeRole)}
             </div>
           )}
         </div>
       </div>
 
-      {/* Navigation */}
-      <div className="flex-1 py-6 overflow-y-auto">
+      <div className="flex-1 py-6 overflow-y-auto scrollbar-hide">
         <nav className="space-y-1 px-3">
           {navItems.map((item) => {
             const Icon = item.icon;
@@ -67,40 +87,24 @@ export const Sidebar = () => {
           })}
         </nav>
 
-        {/* Switch Club */}
-        {myClubs.length > 1 && (
-          <div className="mt-6 px-3">
-            <p className="text-xs text-indigo-400 uppercase font-semibold px-3 mb-2">Kulüp Değiştir</p>
-            {myClubs.map(club => (
-              club.id !== activeClub?.id && (
-                <button
-                  key={club.id}
-                  onClick={() => { selectClub(club); navigate('/dashboard'); }}
-                  className="w-full text-left flex items-center justify-between px-3 py-2 text-sm text-indigo-200 hover:bg-indigo-800 rounded-md transition"
-                >
-                  <span className="truncate">{club.name}</span>
-                  <ChevronRight size={14} />
-                </button>
-              )
-            ))}
+        {myTeams.length > 0 && (
+          <div className="mt-8 px-3">
+            <p className="text-[10px] text-indigo-400 uppercase font-black tracking-widest px-3 mb-3">Ekiplerim</p>
+            <div className="space-y-1">
+              {myTeams.map(team => (
+                <div key={team.id} className="flex items-center gap-3 px-3 py-2 text-xs font-bold text-indigo-200 hover:text-white hover:bg-indigo-800/50 rounded-lg transition-all">
+                  <div className="w-1.5 h-1.5 rounded-full bg-indigo-400"></div>
+                  <span className="truncate">{team.name}</span>
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </div>
 
-      {/* Bottom: Kulüp Seç + Logout */}
       <div className="p-4 border-t border-indigo-800 space-y-2">
-        <button
-          onClick={() => navigate('/select-club')}
-          className="w-full text-left text-xs text-indigo-300 hover:text-white py-1 transition"
-        >
-          ← Kulüp Seçimine Dön
-        </button>
-        <button
-          onClick={handleLogout}
-          className="w-full flex items-center gap-2 text-sm text-indigo-200 hover:text-red-300 py-1 transition"
-        >
-          <LogOut size={16} /> Çıkış Yap
-        </button>
+        <button onClick={() => navigate('/select-club')} className="w-full text-left text-xs text-indigo-300 hover:text-white py-1">← Kulüp Değiştir</button>
+        <button onClick={() => { logout(); navigate('/'); }} className="w-full flex items-center gap-2 text-sm text-indigo-200 hover:text-red-300 py-1"><LogOut size={16} /> Çıkış Yap</button>
       </div>
     </div>
   );

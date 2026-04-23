@@ -20,16 +20,16 @@ public class ProjectController {
     }
 
     @PostMapping
-    public ResponseEntity<Project> createProject(@PathVariable Long clubId, @RequestBody Project project) {
+    public ResponseEntity<Project> createProject(@PathVariable Long clubId, @RequestBody Project project, @RequestParam Long requesterId) {
         return clubService.getClubById(clubId).map(club -> {
             project.setClub(club);
-            return ResponseEntity.ok(projectService.createProject(project));
+            return ResponseEntity.ok(projectService.createProject(project, requesterId));
         }).orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProject(@PathVariable Long id) {
-        projectService.deleteProject(id);
+    public ResponseEntity<Void> deleteProject(@PathVariable Long id, @RequestParam Long requesterId) {
+        projectService.deleteProject(id, requesterId);
         return ResponseEntity.noContent().build();
     }
 }

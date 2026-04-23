@@ -17,6 +17,11 @@ public class Document {
     @JsonIgnoreProperties({"events", "documents", "transactions", "memberships", "hibernateLazyInitializer", "password"})
     private Club club;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "team_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    private Team team;
+
     @Column(nullable = false)
     private String title;
 

@@ -49,7 +49,7 @@ public class MemberController {
 
             Membership membership = new Membership();
             membership.setRole("uye");
-            membership.setStatus("active");
+            membership.setStatus("passive"); // Değişiklik: Yeni üye henüz ekipte olmadığı için pasif başlar
             membership.setUser(user);
             membership.setClub(club);
             return ResponseEntity.ok(memberService.createMembership(membership));

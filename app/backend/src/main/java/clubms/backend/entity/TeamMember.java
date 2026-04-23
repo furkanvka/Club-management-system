@@ -27,6 +27,12 @@ public class TeamMember {
     @Column(name = "joined_at")
     private LocalDateTime joinedAt;
 
+    @Column(nullable = false)
+    private String role = "EKIP_UYESI"; // EKIP_LIDERI, EKIP_UYESI
+
+    @Column(nullable = false)
+    private String status = "AKTIF"; // AKTIF, PASIF
+
     @PrePersist
     protected void onCreate() {
         joinedAt = LocalDateTime.now();
@@ -41,4 +47,8 @@ public class TeamMember {
     public void setMembership(Membership membership) { this.membership = membership; }
     public LocalDateTime getJoinedAt() { return joinedAt; }
     public void setJoinedAt(LocalDateTime joinedAt) { this.joinedAt = joinedAt; }
+    public String getRole() { return role; }
+    public void setRole(String role) { this.role = role; }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
 }

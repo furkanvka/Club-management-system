@@ -28,6 +28,9 @@ export const authService = {
   logout: () => {
     localStorage.removeItem('token');
     localStorage.removeItem('loginType');
+    localStorage.removeItem('activeClub');
+    localStorage.removeItem('activeRole');
+    localStorage.removeItem('activeMembershipId');
   },
 
   getCurrentUser: () => {

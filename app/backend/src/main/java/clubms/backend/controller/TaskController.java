@@ -23,26 +23,28 @@ public class TaskController {
     }
 
     @PostMapping
-    public ResponseEntity<Task> createTask(@PathVariable Long clubId, @PathVariable Long projectId, @RequestBody Task task) {
+    public ResponseEntity<Task> createTask(@PathVariable Long clubId, @PathVariable Long projectId, 
+                                          @RequestBody Task task, @RequestParam Long requesterId) {
         return projectRepository.findByIdAndClubId(projectId, clubId).map(p -> {
             task.setProject(p);
-            return ResponseEntity.ok(taskService.createTask(task));
+            return ResponseEntity.ok(taskService.createTask(task, requesterId));
         }).orElse(ResponseEntity.notFound().build());
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Task> updateTask(@PathVariable Long clubId, @PathVariable Long projectId, @PathVariable Long id, @RequestBody Task task) {
+    @PutMapping("/{id}/status")
+    public ResponseEntity<Task> updateTaskStatus(@PathVariable Long clubId, @PathVariable Long projectId, 
+                                                @PathVariable Long id, @RequestParam String status, 
+                                                @RequestParam Long requesterId) {
         return projectRepository.findByIdAndClubId(projectId, clubId).map(p -> {
-            task.setId(id);
-            task.setProject(p);
-            return ResponseEntity.ok(taskService.updateTask(task));
+            return ResponseEntity.ok(taskService.updateTaskStatus(id, status, requesterId));
         }).orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTask(@PathVariable Long clubId, @PathVariable Long projectId, @PathVariable Long id) {
+    public ResponseEntity<Void> deleteTask(@PathVariable Long clubId, @PathVariable Long projectId, 
+                                          @PathVariable Long id, @RequestParam Long requesterId) {
         if (projectRepository.findByIdAndClubId(projectId, clubId).isPresent()) {
-            taskService.deleteTask(id);
+            taskService.deleteTask(id, requesterId);
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.notFound().build();

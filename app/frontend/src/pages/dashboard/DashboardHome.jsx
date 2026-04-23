@@ -4,134 +4,126 @@ import { useAuth } from '../../store/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import {
   Users, Calendar, Folder, DollarSign, ChevronRight,
-  Crown, UserCheck, Building2, Bell, Info, ArrowRight
+  Crown, UserCheck, Building2, Bell, Info, ArrowRight,
+  Briefcase, LayoutGrid, Star, Target, TrendingUp
 } from 'lucide-react';
 import api from '../../services/api';
 
-// ─── Kulüp Başkanı & Club-Login Dashboard ─────────────────────────────────
-const PresidentDashboard = ({ activeClub, loginType }) => {
+// ─── Liderlik & Başkanlık Dashboard (Yönetim Paneli) ──────────────────────
+const PresidentDashboard = ({ activeClub, loginType, activeRole, activeMembershipId }) => {
   const navigate = useNavigate();
   const [members, setMembers] = useState([]);
-  const [loadingMembers, setLoadingMembers] = useState(true);
+  const [myTeams, setMyTeams] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const isBaskan = activeRole === 'baskan' || loginType === 'club';
 
   useEffect(() => {
     if (!activeClub?.id) return;
-    api.get(`/clubs/${activeClub.id}/members`)
-      .then(r => { setMembers(r.data); setLoadingMembers(false); })
-      .catch(() => setLoadingMembers(false));
-  }, [activeClub]);
+    setLoading(true);
 
-  const totalMembers = members.length;
-  const activeMembers = members.filter(m => m.status === 'active').length;
-  const isClubAccount = loginType === 'club';
+    const memId = activeMembershipId || localStorage.getItem('activeMembershipId');
+    const requests = [api.get(`/clubs/${activeClub.id}/members`)];
+    
+    if (memId) {
+        requests.push(api.get(`/clubs/${activeClub.id}/teams/my-teams`, { params: { membershipId: memId } }));
+    }
 
-  const cards = [
-    { label: 'Üye Yönetimi', icon: Users, path: '/dashboard/members', gradient: 'from-violet-500 to-purple-600', desc: `${totalMembers} üye kayıtlı` },
-    { label: 'Etkinlikler', icon: Calendar, path: '/dashboard/events', gradient: 'from-blue-500 to-cyan-600', desc: 'Etkinlik planla ve takip et' },
-    { label: 'Belgeler', icon: Folder, path: '/dashboard/documents', gradient: 'from-emerald-500 to-green-600', desc: 'Tüzük ve dokümanlar' },
-    { label: 'Finans', icon: DollarSign, path: '/dashboard/finance', gradient: 'from-amber-500 to-orange-600', desc: 'Bütçe ve harcama takibi' },
+    Promise.all(requests)
+      .then(([membersRes, teamsRes]) => {
+        setMembers(membersRes.data);
+        if (teamsRes) setMyTeams(teamsRes.data);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, [activeClub, activeMembershipId]);
+
+  const allCards = [
+    { label: 'Üye Yönetimi', icon: Users, path: '/dashboard/members', gradient: 'from-violet-500 to-purple-600', desc: 'Topluluk üyelerini yönet', role: 'admin' },
+    { label: 'Etkinlikler', icon: Calendar, path: '/dashboard/events', gradient: 'from-blue-500 to-cyan-600', desc: 'Etkinlikleri takip et', role: 'all' },
+    { label: 'Projeler', icon: Briefcase, path: '/dashboard/projects', gradient: 'from-indigo-500 to-blue-600', desc: 'Görevleri yönet', role: 'all' },
+    { label: 'Ekipler', icon: LayoutGrid, path: '/dashboard/teams', gradient: 'from-amber-500 to-orange-600', desc: 'Ekip performansını gör', role: 'all' },
+    { label: 'Finans', icon: DollarSign, path: '/dashboard/finance', gradient: 'from-emerald-500 to-green-600', desc: 'Bütçe takibi', role: 'admin' },
   ];
 
-  const bannerGradient = isClubAccount
-    ? 'from-violet-700 via-purple-700 to-indigo-800'
-    : 'from-purple-600 via-indigo-700 to-blue-800';
+  const cards = allCards.filter(c => c.role === 'all' || (c.role === 'admin' && isBaskan));
 
   return (
-    <div className="space-y-6">
-      {/* Onay bekliyor uyarısı */}
-      {activeClub?.status === 'PENDING' && (
-        <div className="flex items-start gap-3 bg-amber-50 border border-amber-200 rounded-2xl p-4">
-          <Bell size={18} className="text-amber-500 shrink-0 mt-0.5" />
-          <div>
-            <p className="text-sm font-bold text-amber-800">Kulüp Onay Bekliyor</p>
-            <p className="text-xs text-amber-700 mt-0.5">Başvurunuz sistem yöneticisi tarafından inceleniyor. Onaylanınca üyeler kulübünüzü görebilecek.</p>
-          </div>
-        </div>
-      )}
-
-      {/* Hero */}
-      <div className={`bg-gradient-to-br ${bannerGradient} rounded-2xl p-6 text-white relative overflow-hidden`}>
-        <div className="absolute -top-10 -right-10 w-48 h-48 bg-white/5 rounded-full" />
-        <div className="absolute -bottom-12 -left-6 w-36 h-36 bg-white/5 rounded-full" />
-        <div className="relative">
-          <div className="flex items-center gap-2 mb-3">
-            {isClubAccount
-              ? <Building2 size={18} className="text-violet-300" />
-              : <Crown size={18} className="text-yellow-300" />}
-            <span className="text-xs font-bold uppercase tracking-widest opacity-70">
-              {isClubAccount ? 'Kulüp Yönetim Girişi' : 'Başkan Paneli'}
+    <div className="space-y-8 animate-in fade-in duration-500">
+      {/* Hero Section */}
+      <div className={`bg-gradient-to-br ${isBaskan ? 'from-indigo-700 via-purple-700 to-indigo-900' : 'from-amber-600 via-orange-700 to-red-700'} rounded-[3rem] p-8 md:p-12 text-white relative overflow-hidden shadow-2xl`}>
+        <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
+        <div className="relative z-10">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="bg-white/20 backdrop-blur-md p-2 rounded-2xl">
+                {isBaskan ? <Crown size={20} className="text-yellow-300" /> : <Star size={20} className="text-amber-200" />}
+            </div>
+            <span className="text-xs font-black uppercase tracking-widest opacity-80">
+              {isBaskan ? 'Yönetim Merkezi' : 'Liderlik Paneli'}
             </span>
           </div>
-          <h1 className="text-3xl font-extrabold">{activeClub?.name}</h1>
-          <p className="text-sm opacity-60 mt-1">{activeClub?.category}</p>
+          
+          <div className="max-w-2xl">
+            <h1 className="text-4xl md:text-5xl font-black tracking-tighter leading-tight mb-4">{activeClub?.name}</h1>
+            <p className="text-lg opacity-70 font-medium">{isBaskan ? 'Kulübünüzü ve tüm operasyonları buradan kontrol edin.' : 'Ekibinizin performansını ve projelerini yönetin.'}</p>
+          </div>
 
-          {/* Stats */}
-          <div className="mt-6 grid grid-cols-3 gap-4">
-            {[
-              { label: 'Toplam Üye', value: loadingMembers ? '—' : totalMembers },
-              { label: 'Aktif Üye', value: loadingMembers ? '—' : activeMembers },
-              {
-                label: 'Durum', value: activeClub?.status === 'APPROVED' ? 'Onaylı ✓'
-                  : activeClub?.status === 'PENDING' ? 'Beklemede' : 'Reddedildi'
-              },
-            ].map(s => (
-              <div key={s.label} className="bg-white/10 rounded-xl p-3 text-center">
-                <p className="text-xl font-extrabold">{s.value}</p>
-                <p className="text-xs opacity-60 mt-0.5">{s.label}</p>
-              </div>
-            ))}
+          <div className="mt-10 flex flex-wrap gap-4">
+            <div className="bg-white/10 backdrop-blur-md rounded-3xl px-6 py-4 border border-white/10">
+                <p className="text-xs font-bold uppercase opacity-60 mb-1">Durum</p>
+                <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></div>
+                    <p className="text-lg font-black">{activeClub?.status === 'APPROVED' ? 'Aktif Kulüp' : 'Onay Bekliyor'}</p>
+                </div>
+            </div>
+            <div className="bg-white/10 backdrop-blur-md rounded-3xl px-6 py-4 border border-white/10">
+                <p className="text-xs font-bold uppercase opacity-60 mb-1">Yetkiniz</p>
+                <p className="text-lg font-black">{isBaskan ? 'Kurucu Başkan' : 'Ekip Lideri'}</p>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Son üyeler preview */}
-      {!loadingMembers && members.length > 0 && (
-        <div className="bg-white border border-gray-100 rounded-2xl shadow-sm overflow-hidden">
-          <div className="px-5 py-3.5 border-b border-gray-100 flex items-center justify-between">
-            <span className="text-sm font-bold text-gray-800">Son Eklenen Üyeler</span>
-            <button onClick={() => navigate('/dashboard/members')} className="text-xs text-indigo-600 hover:underline flex items-center gap-1">
-              Tümünü Gör <ArrowRight size={12} />
-            </button>
-          </div>
-          <div className="divide-y divide-gray-50">
-            {members.slice(0, 4).map(m => (
-              <div key={m.id} className="px-5 py-3 flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-sm shrink-0">
-                  {(m.user?.email?.[0] || '?').toUpperCase()}
-                </div>
-                <span className="text-sm font-medium text-gray-700 flex-1 truncate">{m.user?.email || 'Bilinmiyor'}</span>
-                <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${m.role === 'baskan' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'}`}>
-                  {m.role === 'baskan' ? 'Başkan' : 'Üye'}
-                </span>
-              </div>
-            ))}
-          </div>
+      {/* Sorumlu Olduğu Ekipler (Sadece Lider Görür ve Varsa) */}
+      {!isBaskan && myTeams.length > 0 && (
+        <div className="space-y-4">
+            <h2 className="text-sm font-black text-gray-400 uppercase tracking-widest ml-4">Lideri Olduğunuz Ekipler</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {myTeams.map(team => (
+                    <div key={team.id} className="bg-white p-6 rounded-[2.5rem] border border-gray-100 shadow-sm hover:shadow-xl transition-all group">
+                        <div className="w-12 h-12 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-amber-600 group-hover:text-white transition-colors">
+                            <LayoutGrid size={24} />
+                        </div>
+                        <h3 className="font-black text-gray-900 text-xl mb-1">{team.name}</h3>
+                        <p className="text-xs text-gray-400 font-bold uppercase tracking-widest">Sorumlu Lider</p>
+                    </div>
+                ))}
+            </div>
         </div>
       )}
 
-      {/* Quick access cards */}
+      {/* Yönetim Araçları Grid */}
       <div>
-        <h2 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Yönetim Araçları</h2>
-        <div className="grid grid-cols-2 gap-3">
-          {cards.map(card => {
-            const Icon = card.icon;
-            return (
+        <h2 className="text-sm font-black text-gray-400 uppercase tracking-widest mb-6 ml-4">Erişim Araçları</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {cards.map(card => (
               <button
                 key={card.label}
                 onClick={() => navigate(card.path)}
-                className="bg-white border border-gray-100 rounded-2xl p-4 text-left hover:shadow-md hover:border-indigo-200 transition-all group flex items-center gap-3"
+                className="bg-white border border-gray-100 rounded-[2.5rem] p-7 text-left hover:shadow-2xl hover:border-indigo-100 transition-all group relative overflow-hidden"
               >
-                <div className={`w-10 h-10 bg-gradient-to-br ${card.gradient} rounded-xl flex items-center justify-center shrink-0 shadow-sm`}>
-                  <Icon size={18} className="text-white" />
+                <div className="relative z-10">
+                    <div className={`w-14 h-14 bg-gradient-to-br ${card.gradient} rounded-2xl flex items-center justify-center text-white mb-6 shadow-lg shadow-indigo-100 group-hover:scale-110 transition-transform`}>
+                        <card.icon size={28} />
+                    </div>
+                    <h3 className="text-xl font-black text-gray-900 mb-2">{card.label}</h3>
+                    <p className="text-sm text-gray-500 font-medium mb-4">{card.desc}</p>
+                    <div className="flex items-center text-indigo-600 text-xs font-black uppercase tracking-widest gap-2">
+                        Hemen Aç <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                    </div>
                 </div>
-                <div className="min-w-0">
-                  <div className="text-sm font-semibold text-gray-900 group-hover:text-indigo-700">{card.label}</div>
-                  <div className="text-xs text-gray-400 truncate">{card.desc}</div>
-                </div>
-                <ChevronRight size={14} className="text-gray-300 group-hover:text-indigo-400 ml-auto shrink-0" />
               </button>
-            );
-          })}
+          ))}
         </div>
       </div>
     </div>
@@ -141,97 +133,78 @@ const PresidentDashboard = ({ activeClub, loginType }) => {
 // ─── Öğrenci / Üye Dashboard ───────────────────────────────────────────────
 const MemberDashboard = ({ activeClub, user }) => {
   const navigate = useNavigate();
-  const [memberCount, setMemberCount] = useState(null);
+  const [myTeams, setMyTeams] = useState([]);
+  const { activeMembershipId } = useClub();
 
   useEffect(() => {
-    if (!activeClub?.id) return;
-    api.get(`/clubs/${activeClub.id}/members`)
-      .then(r => setMemberCount(r.data.length))
+    const memId = activeMembershipId || localStorage.getItem('activeMembershipId');
+    if (!activeClub?.id || !memId) return;
+    api.get(`/clubs/${activeClub.id}/teams/my-teams`, { params: { membershipId: memId } })
+      .then(r => setMyTeams(r.data))
       .catch(() => {});
-  }, [activeClub]);
-
-  const cards = [
-    { label: 'Etkinlikler', icon: Calendar, path: '/dashboard/events', gradient: 'from-blue-500 to-cyan-600', desc: 'Yaklaşan etkinlikleri gör' },
-    { label: 'Belgeler', icon: Folder, path: '/dashboard/documents', gradient: 'from-emerald-500 to-green-600', desc: 'Kulüp belgelerine eriş' },
-  ];
+  }, [activeClub, activeMembershipId]);
 
   return (
-    <div className="space-y-6">
-      {/* Hero */}
-      <div className="bg-gradient-to-br from-indigo-600 via-blue-700 to-cyan-700 rounded-2xl p-6 text-white relative overflow-hidden">
-        <div className="absolute -top-10 -right-10 w-48 h-48 bg-white/5 rounded-full" />
-        <div className="relative">
-          <div className="flex items-center gap-2 mb-3">
-            <UserCheck size={18} className="text-blue-300" />
-            <span className="text-xs font-bold uppercase tracking-widest opacity-70">Üye Paneli</span>
-          </div>
-          <h1 className="text-3xl font-extrabold">{activeClub?.name}</h1>
-          <p className="text-sm opacity-60 mt-1">{activeClub?.category}</p>
-
-          <div className="mt-5 flex items-center gap-4">
-            <div className="w-12 h-12 rounded-full bg-white/20 border-2 border-white/30 flex items-center justify-center text-xl font-extrabold">
-              {(user?.email?.[0] || 'U').toUpperCase()}
+    <div className="space-y-8 animate-in fade-in duration-500">
+      {/* Üye Hero */}
+      <div className="bg-gradient-to-br from-blue-600 via-indigo-700 to-indigo-900 rounded-[3rem] p-8 md:p-12 text-white relative overflow-hidden shadow-2xl">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
+        <div className="relative z-10">
+            <div className="flex items-center gap-3 mb-6">
+                <div className="bg-white/20 backdrop-blur-md p-2 rounded-2xl">
+                    <UserCheck size={20} className="text-blue-300" />
+                </div>
+                <span className="text-xs font-black uppercase tracking-widest opacity-80">Üye Paneli</span>
             </div>
-            <div>
-              <p className="font-bold">{user?.email?.split('@')[0]}</p>
-              <p className="text-xs opacity-60">{user?.email}</p>
+            <h1 className="text-4xl md:text-5xl font-black tracking-tighter leading-tight mb-8">{activeClub?.name}</h1>
+            
+            <div className="flex items-center gap-4 bg-white/10 backdrop-blur-md rounded-[2rem] p-6 border border-white/10 w-fit">
+                <div className="w-16 h-14 rounded-2xl bg-indigo-500 flex items-center justify-center text-2xl font-black shadow-lg">
+                    {(user?.email?.[0] || 'U').toUpperCase()}
+                </div>
+                <div>
+                    <p className="text-2xl font-black leading-none">{user?.email?.split('@')[0]}</p>
+                    <p className="text-xs font-bold opacity-60 tracking-wider uppercase mt-1">{user?.email}</p>
+                </div>
             </div>
-          </div>
-
-          <div className="mt-4 flex gap-4">
-            <div className="bg-white/10 rounded-xl px-4 py-2 text-center">
-              <p className="text-lg font-extrabold">{memberCount ?? '—'}</p>
-              <p className="text-xs opacity-60">Toplam Üye</p>
-            </div>
-            <div className="bg-white/10 rounded-xl px-4 py-2 text-center">
-              <p className={`text-sm font-bold ${activeClub?.status === 'APPROVED' ? 'text-green-300' : 'text-yellow-300'}`}>
-                {activeClub?.status === 'APPROVED' ? '✓ Aktif' : '⏳ Bekliyor'}
-              </p>
-              <p className="text-xs opacity-60">Kulüp Durumu</p>
-            </div>
-          </div>
         </div>
       </div>
 
-      {/* Info */}
-      <div className="flex items-start gap-3 bg-indigo-50 border border-indigo-100 rounded-2xl p-4">
-        <Info size={16} className="text-indigo-400 shrink-0 mt-0.5" />
-        <p className="text-sm text-indigo-700">
-          Bu kulüpte <strong>üye</strong> olarak görüntülüyorsunuz. Üye yönetimi ve finans bölümlerine erişmek için başkan yetkisi gerekir.
-        </p>
-      </div>
-
-      {/* Cards */}
-      <div>
-        <h2 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Erişebileceğiniz Bölümler</h2>
-        <div className="grid grid-cols-2 gap-3">
-          {cards.map(card => {
-            const Icon = card.icon;
-            return (
-              <button
-                key={card.label}
-                onClick={() => navigate(card.path)}
-                className="bg-white border border-gray-100 rounded-2xl p-4 text-left hover:shadow-md hover:border-blue-200 transition-all group flex items-center gap-3"
-              >
-                <div className={`w-10 h-10 bg-gradient-to-br ${card.gradient} rounded-xl flex items-center justify-center shrink-0 shadow-sm`}>
-                  <Icon size={18} className="text-white" />
-                </div>
-                <div className="min-w-0">
-                  <div className="text-sm font-semibold text-gray-900 group-hover:text-blue-700">{card.label}</div>
-                  <div className="text-xs text-gray-400 truncate">{card.desc}</div>
-                </div>
-                <ChevronRight size={14} className="text-gray-300 group-hover:text-blue-400 ml-auto shrink-0" />
-              </button>
-            );
-          })}
+      {/* Üyenin Ekipleri */}
+      {myTeams.length > 0 && (
+        <div className="space-y-4">
+            <h2 className="text-sm font-black text-gray-400 uppercase tracking-widest ml-4">Dahil Olduğunuz Ekipler</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {myTeams.map(team => (
+                    <div key={team.id} className="bg-white p-6 rounded-[2.5rem] border border-gray-100 shadow-sm flex items-center gap-4 hover:shadow-lg transition-all">
+                        <div className="w-14 h-14 bg-indigo-50 text-indigo-600 rounded-[1.5rem] flex items-center justify-center">
+                            <Users size={28} />
+                        </div>
+                        <div>
+                            <h3 className="font-black text-gray-900 text-lg leading-tight">{team.name}</h3>
+                            <p className="text-[10px] font-black text-indigo-400 uppercase tracking-widest mt-1">Aktif Üye</p>
+                        </div>
+                    </div>
+                ))}
+            </div>
         </div>
-      </div>
+      )}
 
-      {/* Switch club */}
-      <div className="text-center">
-        <button onClick={() => navigate('/select-club')} className="text-sm text-indigo-500 hover:text-indigo-700 font-medium transition">
-          ← Başka bir kulüp seç
-        </button>
+      {/* Menü Kartları */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {[
+          { label: 'Etkinlikler', icon: Calendar, path: '/dashboard/events', desc: 'Kulüp etkinliklerine katıl', gradient: 'from-blue-500 to-indigo-600' },
+          { label: 'Belgeler', icon: Folder, path: '/dashboard/documents', desc: 'Dosyalara eriş', gradient: 'from-emerald-500 to-teal-600' },
+          { label: 'Projeler', icon: Briefcase, path: '/dashboard/projects', desc: 'Görevlerini izle', gradient: 'from-purple-500 to-indigo-600' }
+        ].map(card => (
+            <button key={card.label} onClick={() => navigate(card.path)} className="bg-white border border-gray-100 rounded-[2.5rem] p-8 text-left hover:shadow-2xl transition-all group">
+                <div className={`w-14 h-14 bg-gradient-to-br ${card.gradient} rounded-2xl flex items-center justify-center text-white mb-6 shadow-lg shadow-indigo-50`}>
+                    <card.icon size={28} />
+                </div>
+                <h3 className="font-black text-gray-900 text-xl mb-1">{card.label}</h3>
+                <p className="text-sm text-gray-400 font-medium">{card.desc}</p>
+            </button>
+        ))}
       </div>
     </div>
   );
@@ -239,50 +212,55 @@ const MemberDashboard = ({ activeClub, user }) => {
 
 // ─── Ana Export ────────────────────────────────────────────────────────────
 export const DashboardHome = () => {
-  const { activeClub, activeRole, myClubs, selectClub } = useClub();
+  const { activeClub, activeRole, activeMembershipId, myClubs, selectClub } = useClub();
   const { user } = useAuth();
   const navigate = useNavigate();
 
   const loginType = user?.loginType || 'user';
 
-  // Kulüp hesabıyla giriş → her zaman başkan paneli
   if (loginType === 'club') {
-    return <PresidentDashboard activeClub={activeClub} loginType="club" />;
+    return <PresidentDashboard activeClub={activeClub} loginType="club" activeRole="baskan" />;
   }
 
-  // Aktif kulüp seçilmemiş → seçim ekranı
   if (!activeClub) {
     return (
-      <div className="flex flex-col items-center justify-center h-64 space-y-4">
-        <Building2 size={48} className="text-gray-200" />
-        <p className="text-gray-500 font-medium text-lg">Bir kulüp seçmediniz.</p>
+      <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-8">
+        <div className="w-32 h-32 bg-gray-50 rounded-[3rem] flex items-center justify-center text-gray-200">
+            <Building2 size={64} />
+        </div>
+        <div className="text-center">
+            <h2 className="text-3xl font-black text-gray-900">Hoş Geldiniz</h2>
+            <p className="text-gray-500 text-lg font-medium">Başlamak için kulübünüzü seçin.</p>
+        </div>
         {myClubs.length > 0 ? (
-          <div className="flex flex-col gap-2 w-full max-w-xs">
+          <div className="grid grid-cols-1 gap-4 w-full max-w-sm">
             {myClubs.map(c => (
               <button
                 key={c.id}
-                onClick={() => { selectClub(c, 'uye'); }}
-                className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl hover:border-indigo-400 hover:bg-indigo-50 text-sm font-medium text-gray-700 transition"
+                onClick={() => { selectClub(c); }}
+                className="w-full px-8 py-5 bg-white border border-gray-100 rounded-[2rem] hover:border-indigo-400 hover:shadow-2xl text-lg font-black text-gray-700 transition-all flex items-center justify-between"
               >
                 {c.name}
+                <ChevronRight size={20} className="text-indigo-500" />
               </button>
             ))}
           </div>
         ) : (
           <button
             onClick={() => navigate('/select-club')}
-            className="px-5 py-2.5 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition text-sm font-semibold"
+            className="px-10 py-5 bg-indigo-600 text-white rounded-[2rem] hover:bg-indigo-700 transition-all text-lg font-black shadow-2xl shadow-indigo-200"
           >
-            Kulüp Seç / Katıl
+            Kulüp Bul / Katıl
           </button>
         )}
       </div>
     );
   }
 
-  // Başkan ise başkan paneli, üye ise üye paneli
-  if (activeRole === 'baskan') {
-    return <PresidentDashboard activeClub={activeClub} loginType="user" />;
+  const isManagement = activeRole === 'baskan' || activeRole === 'ekip_lideri' || activeRole === 'ekip-lideri';
+
+  if (isManagement) {
+    return <PresidentDashboard activeClub={activeClub} loginType={loginType} activeRole={activeRole} activeMembershipId={activeMembershipId} />;
   }
 
   return <MemberDashboard activeClub={activeClub} user={user} />;

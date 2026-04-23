@@ -11,88 +11,117 @@ export const ClubProvider = ({ children }) => {
     const saved = localStorage.getItem('activeClub');
     return saved ? JSON.parse(saved) : null;
   });
-  const [activeRole, setActiveRole] = useState(() => localStorage.getItem('activeRole')); // 'baskan' | 'uye'
+  const [activeRole, setActiveRole] = useState(() => localStorage.getItem('activeRole'));
+  const [activeMembershipId, setActiveMembershipId] = useState(() => localStorage.getItem('activeMembershipId'));
+  const [activeMembershipStatus, setActiveMembershipStatus] = useState(() => localStorage.getItem('activeMembershipStatus') || 'passive');
   
   const [myClubs, setMyClubs] = useState([]);
   const [allClubs, setAllClubs] = useState([]);
-  const [myMemberships, setMyMemberships] = useState([]); // full membership objects
+  const [myMemberships, setMyMemberships] = useState([]);
 
   const refreshClubs = useCallback(async () => {
     const token = localStorage.getItem('token');
     const loginType = localStorage.getItem('loginType');
-
-    // Always fetch all clubs (public endpoint)
-    try {
-      const allData = await clubService.getAllClubs();
-      setAllClubs(allData);
-    } catch (e) {
-      console.error('Failed to fetch all clubs', e);
-    }
 
     if (!token) {
       setMyClubs([]);
       setMyMemberships([]);
       setActiveClub(null);
       setActiveRole(null);
+      setActiveMembershipId(null);
+      setActiveMembershipStatus('passive');
       localStorage.removeItem('activeClub');
       localStorage.removeItem('activeRole');
+      localStorage.removeItem('activeMembershipId');
+      localStorage.removeItem('activeMembershipStatus');
       return;
     }
 
-    let currentMyClubs = [];
     try {
+      const allDataRes = await clubService.getAllClubs();
+      setAllClubs(allDataRes || []);
+
       const myData = await clubService.getMyClubs();
-      currentMyClubs = myData || [];
+      const currentMyClubs = myData || [];
       setMyClubs(currentMyClubs);
-    } catch (e) {
-      setMyClubs([]);
-    }
-
-    let currentMemberships = [];
-    try {
+      
       const memRes = await api.get('/clubs/my-memberships');
-      currentMemberships = memRes.data || [];
+      const currentMemberships = memRes.data || [];
       setMyMemberships(currentMemberships);
-    } catch (e) {
-      setMyMemberships([]);
-    }
 
-    // Auto-select logic: Only set if not already set to avoid loops
-    if (loginType === 'club' && currentMyClubs.length > 0) {
-      const club = currentMyClubs[0];
-      setActiveClub(prev => (prev?.id === club.id ? prev : club));
-      setActiveRole('baskan');
-      localStorage.setItem('activeClub', JSON.stringify(club));
-      localStorage.setItem('activeRole', 'baskan');
-    } else if (currentMyClubs.length === 1) {
-      const club = currentMyClubs[0];
-      const membership = currentMemberships.find(m => m.club?.id === club.id);
-      const role = membership?.role || 'uye';
-      setActiveClub(prev => (prev?.id === club.id ? prev : club));
-      setActiveRole(role);
-      localStorage.setItem('activeClub', JSON.stringify(club));
-      localStorage.setItem('activeRole', role);
+      // Otomatik seçim veya mevcut seçimi güncelleme
+      if (activeClub) {
+          const currentMem = currentMemberships.find(m => m.club?.id === activeClub.id);
+          if (currentMem) {
+              if (currentMem.role !== activeRole) {
+                  setActiveRole(currentMem.role);
+                  localStorage.setItem('activeRole', currentMem.role);
+              }
+              if (String(currentMem.id) !== String(activeMembershipId)) {
+                  setActiveMembershipId(currentMem.id);
+                  localStorage.setItem('activeMembershipId', currentMem.id);
+              }
+              if (currentMem.status !== activeMembershipStatus) {
+                  setActiveMembershipStatus(currentMem.status || 'passive');
+                  localStorage.setItem('activeMembershipStatus', currentMem.status || 'passive');
+              }
+          }
+      } else if (loginType === 'club' && currentMyClubs.length > 0) {
+          selectClub(currentMyClubs[0], 'baskan');
+      } else if (currentMyClubs.length === 1) {
+          const club = currentMyClubs[0];
+          const m = currentMemberships.find(mem => mem.club?.id === club.id);
+          selectClub(club, m?.role || 'uye');
+      }
+    } catch (e) {
+      console.error("Bilgiler tazelenirken hata oluştu", e);
     }
-  }, []);
+  }, [activeClub?.id, activeRole, activeMembershipId, activeMembershipStatus]); // IDs are enough for deps
 
   useEffect(() => {
     refreshClubs();
-  }, [user, refreshClubs]);
+  }, [user]); // Sadece kullanıcı değiştiğinde en baştan tazele
 
-  const selectClub = (club, role) => {
-    setActiveClub(club);
-    setActiveRole(role || 'uye');
-    if (club) {
-      localStorage.setItem('activeClub', JSON.stringify(club));
-      localStorage.setItem('activeRole', role || 'uye');
-    } else {
-      localStorage.removeItem('activeClub');
-      localStorage.removeItem('activeRole');
+  const selectClub = (club, role, membershipId, status) => {
+    if (!club) {
+        setActiveClub(null);
+        setActiveRole(null);
+        setActiveMembershipId(null);
+        setActiveMembershipStatus('passive');
+        localStorage.removeItem('activeClub');
+        localStorage.removeItem('activeRole');
+        localStorage.removeItem('activeMembershipId');
+        localStorage.removeItem('activeMembershipStatus');
+        return;
     }
+
+    // Eğer ID veya status gönderilmediyse, mevcut üyelikler arasından bul
+    let finalId = membershipId;
+    let finalStatus = status;
+    let finalRole = role;
+
+    if (!finalId || !finalStatus) {
+        const found = myMemberships.find(m => m.club?.id === club.id);
+        if (found) {
+            finalId = found.id;
+            finalStatus = found.status;
+            if (!finalRole) finalRole = found.role;
+        }
+    }
+
+    setActiveClub(club);
+    setActiveRole(finalRole || 'uye');
+    setActiveMembershipId(finalId || null);
+    setActiveMembershipStatus(finalStatus || 'passive');
+    
+    localStorage.setItem('activeClub', JSON.stringify(club));
+    localStorage.setItem('activeRole', finalRole || 'uye');
+    if (finalId) localStorage.setItem('activeMembershipId', finalId);
+    if (finalStatus) localStorage.setItem('activeMembershipStatus', finalStatus);
   };
 
   return (
-    <ClubContext.Provider value={{ myClubs, allClubs, myMemberships, activeClub, activeRole, selectClub, refreshClubs }}>
+    <ClubContext.Provider value={{ myClubs, allClubs, myMemberships, activeClub, activeRole, activeMembershipId, activeMembershipStatus, selectClub, refreshClubs }}>
       {children}
     </ClubContext.Provider>
   );

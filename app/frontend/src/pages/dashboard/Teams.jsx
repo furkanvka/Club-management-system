@@ -5,11 +5,13 @@ import api from '../../services/api';
 import { 
   Users, Plus, Trash2, Shield, UserPlus, 
   X, ChevronRight, LayoutGrid, Search, 
-  UserCircle2, Mail, Info, UserMinus, ArrowLeft
+  UserCircle2, Mail, Info, UserMinus, ArrowLeft,
+  CheckCircle2, AlertCircle, BarChart3, FileText, 
+  FolderClosed, History, TrendingUp, Clock, Target
 } from 'lucide-react';
 
 export const Teams = () => {
-  const { activeClub, activeRole } = useClub();
+  const { activeClub, activeRole, activeMembershipId, refreshClubs } = useClub();
   const { user } = useAuth();
   const [teams, setTeams] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -18,13 +20,23 @@ export const Teams = () => {
   const [teamMembers, setTeamMembers] = useState([]);
   const [loadingMembers, setLoadingMembers] = useState(false);
   
+  // Performance & History Stats
+  const [teamStats, setTeamStats] = useState(null);
+  const [selectedMemberHistory, setSelectedMemberHistory] = useState(null);
+  const [activeTab, setActiveTab] = useState('members'); // members, meetings, documents
+
+  // Member Selection State
+  const [allMembers, setAllMembers] = useState([]);
+  const [showMemberPicker, setShowMemberPicker] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+
   // Form States
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
-  const [memberEmail, setMemberEmail] = useState('');
+  const [selectedLeaderId, setSelectedLeaderId] = useState('');
   const [saving, setSaving] = useState(false);
 
-  const canManage = activeRole === 'baskan' || user?.loginType === 'club';
+  const isAdmin = activeRole === 'baskan' || user?.loginType === 'club';
 
   const fetchTeams = () => {
     if (!activeClub?.id) return;
@@ -34,27 +46,48 @@ export const Teams = () => {
       .catch(() => setLoading(false));
   };
 
-  const fetchTeamMembers = (teamId) => {
+  const fetchTeamDetails = (teamId) => {
     setLoadingMembers(true);
-    api.get(`/clubs/${activeClub.id}/teams/${teamId}/members`)
-      .then(r => { setTeamMembers(r.data); setLoadingMembers(false); })
-      .catch(() => setLoadingMembers(false));
+    Promise.all([
+        api.get(`/clubs/${activeClub.id}/teams/${teamId}/members`),
+        api.get(`/clubs/${activeClub.id}/teams/${teamId}/performance`)
+    ]).then(([membersRes, statsRes]) => {
+        setTeamMembers(membersRes.data);
+        setTeamStats(statsRes.data);
+        setLoadingMembers(false);
+    }).catch(() => setLoadingMembers(false));
+  };
+
+  const fetchMemberHistory = (membershipId) => {
+    api.get(`/clubs/${activeClub.id}/teams/${selectedTeam.id}/members/${membershipId}/history`)
+        .then(r => setSelectedMemberHistory(r.data))
+        .catch(() => alert("Üye geçmişi getirilemedi."));
+  };
+
+  const fetchAllClubMembers = () => {
+    api.get(`/clubs/${activeClub.id}/members`)
+      .then(r => setAllMembers(r.data))
+      .catch(err => console.error("Üyeler getirilemedi", err));
   };
 
   useEffect(() => { 
     fetchTeams(); 
-    setSelectedTeam(null);
-    setTeamMembers([]);
+    fetchAllClubMembers();
   }, [activeClub]);
 
   const handleCreateTeam = async (e) => {
     e.preventDefault();
-    if (!name.trim()) return;
+    if (!name.trim() || !selectedLeaderId) return;
     setSaving(true);
     try {
-      await api.post(`/clubs/${activeClub.id}/teams`, { name, description });
+      await api.post(`/clubs/${activeClub.id}/teams`, { 
+        name, 
+        description,
+        leader: { id: selectedLeaderId }
+      });
       setName('');
       setDescription('');
+      setSelectedLeaderId('');
       setShowForm(false);
       fetchTeams();
     } catch (e) {
@@ -64,23 +97,37 @@ export const Teams = () => {
     }
   };
 
+  const handleAddMemberToTeam = async (membershipId) => {
+    try {
+      await api.post(`/clubs/${activeClub.id}/teams/${selectedTeam.id}/members`, {
+        membership: { id: membershipId }
+      }, { params: { requesterId: activeMembershipId } });
+      
+      await Promise.all([
+        fetchTeamDetails(selectedTeam.id),
+        fetchAllClubMembers(),
+        refreshClubs()
+      ]);
+      
+      setShowMemberPicker(false);
+    } catch (e) {
+      alert(e.response?.data?.message || 'Üye eklenemedi.');
+    }
+  };
+
   const handleRemoveMember = async (tmId) => {
     if (!window.confirm('Üyeyi ekipten çıkarmak istediğinize emin misiniz?')) return;
     try {
-      await api.delete(`/clubs/${activeClub.id}/teams/${selectedTeam.id}/members/${tmId}`);
-      fetchTeamMembers(selectedTeam.id);
-    } catch (e) { alert('Üye çıkarılamadı.'); }
+      await api.delete(`/clubs/${activeClub.id}/teams/${selectedTeam.id}/members/${tmId}`, {
+        params: { requesterId: activeMembershipId }
+      });
+      fetchTeamDetails(selectedTeam.id);
+    } catch (e) { 
+        alert(e.response?.data?.message || 'Üye çıkarılamadı.'); 
+    }
   };
 
-  const handleDeleteTeam = async (id, e) => {
-    e.stopPropagation();
-    if (!window.confirm('Bu ekibi silmek istediğinize emin misiniz?')) return;
-    try {
-      await api.delete(`/clubs/${activeClub.id}/teams/${id}`);
-      if (selectedTeam?.id === id) setSelectedTeam(null);
-      fetchTeams();
-    } catch (e) { alert('Silinemedi.'); }
-  };
+  const isLeaderOfSelectedTeam = Number(selectedTeam?.leader?.id) === Number(activeMembershipId);
 
   return (
     <div className="space-y-6">
@@ -89,25 +136,19 @@ export const Teams = () => {
         <div>
           <h1 className="text-2xl font-black text-gray-900 tracking-tight flex items-center gap-2">
             <LayoutGrid className="text-indigo-600" size={24} />
-            Ekipler & Komiteler
+            Ekipler & Performans
           </h1>
           <p className="text-sm text-gray-500 font-medium mt-1">
-            {activeClub?.name} içindeki çalışma gruplarını yönetin
+            {activeClub?.name} çalışma gruplarını ve verimliliği izleyin
           </p>
         </div>
-        {canManage && !selectedTeam && (
-          <button 
-            onClick={() => setShowForm(true)} 
-            className="flex items-center justify-center gap-2 px-5 py-2.5 bg-indigo-600 text-white rounded-xl text-sm font-bold hover:bg-indigo-700 transition shadow-lg shadow-indigo-100"
-          >
+        {isAdmin && !selectedTeam && (
+          <button onClick={() => setShowForm(true)} className="flex items-center justify-center gap-2 px-5 py-2.5 bg-indigo-600 text-white rounded-xl text-sm font-bold hover:bg-indigo-700 transition shadow-lg shadow-indigo-100">
             <Plus size={18} /> Yeni Ekip Oluştur
           </button>
         )}
         {selectedTeam && (
-          <button 
-            onClick={() => setSelectedTeam(null)} 
-            className="flex items-center justify-center gap-2 px-5 py-2.5 bg-white border border-gray-200 text-gray-600 rounded-2xl text-sm font-bold hover:bg-gray-50 transition"
-          >
+          <button onClick={() => { setSelectedTeam(null); setSelectedMemberHistory(null); }} className="flex items-center justify-center gap-2 px-5 py-2.5 bg-white border border-gray-200 text-gray-600 rounded-2xl text-sm font-bold hover:bg-gray-50 transition">
             <ArrowLeft size={18} /> Ekiplere Dön
           </button>
         )}
@@ -123,73 +164,35 @@ export const Teams = () => {
                 <button onClick={() => setShowForm(false)} className="text-gray-400 hover:text-gray-600"><X size={18} /></button>
               </div>
               <div className="space-y-3">
-                <input 
-                  placeholder="Ekip Adı (Örn: Tanıtım Ekibi)" 
-                  value={name} 
-                  onChange={e => setName(e.target.value)} 
-                  className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500/20 focus:bg-white focus:outline-none font-medium transition-all" 
-                />
-                <textarea 
-                  placeholder="Ekip görevi ve açıklaması..." 
-                  value={description} 
-                  onChange={e => setDescription(e.target.value)} 
-                  rows={3} 
-                  className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500/20 focus:bg-white focus:outline-none font-medium transition-all" 
-                />
+                <input placeholder="Ekip Adı..." value={name} onChange={e => setName(e.target.value)} className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500/20" />
+                <div className="space-y-1">
+                  <label className="text-[10px] font-black uppercase text-gray-400 ml-1">Ekip Lideri</label>
+                  <select value={selectedLeaderId} onChange={e => setSelectedLeaderId(e.target.value)} className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500/20">
+                    <option value="">Lider Seçiniz...</option>
+                    {allMembers.map(m => <option key={m.id} value={m.id}>{m.user?.email}</option>)}
+                  </select>
+                </div>
               </div>
-              <button 
-                onClick={handleCreateTeam} 
-                disabled={saving || !name.trim()} 
-                className="w-full py-3 bg-indigo-600 text-white rounded-xl text-sm font-bold hover:bg-indigo-700 disabled:opacity-50 transition-all shadow-md shadow-indigo-100"
-              >
-                {saving ? 'Oluşturuluyor...' : 'Ekibi Kur'}
+              <button onClick={handleCreateTeam} disabled={saving || !name.trim() || !selectedLeaderId} className="w-full py-3 bg-indigo-600 text-white rounded-xl text-sm font-bold hover:bg-indigo-700 disabled:opacity-50 transition-all">
+                {saving ? 'Kuruluyor...' : 'Ekibi Kur'}
               </button>
             </div>
           )}
 
           {loading ? (
             <div className="flex justify-center py-20"><div className="w-10 h-10 border-4 border-indigo-100 border-t-indigo-600 rounded-full animate-spin" /></div>
-          ) : teams.length === 0 ? (
-            <div className="bg-white border border-dashed border-gray-200 rounded-[2rem] p-16 text-center">
-              <div className="w-16 h-16 bg-gray-50 rounded-2xl mx-auto flex items-center justify-center text-gray-300 mb-4">
-                <Users size={32} />
-              </div>
-              <h4 className="font-bold text-gray-800">Henüz Ekip Kurulmamış</h4>
-              <p className="text-sm text-gray-400 mt-1">Kulüp üyelerinizi ekiplere ayırarak iş birliğini artırın.</p>
-            </div>
           ) : (
             <div className={`grid grid-cols-1 ${selectedTeam ? 'gap-3' : 'md:grid-cols-2 lg:grid-cols-3 gap-6'}`}>
               {teams.map(t => (
-                <div 
-                  key={t.id} 
-                  onClick={() => { setSelectedTeam(t); fetchTeamMembers(t.id); }}
-                  className={`group cursor-pointer bg-white border rounded-[2rem] p-6 transition-all duration-300 relative overflow-hidden ${
-                    selectedTeam?.id === t.id 
-                    ? 'border-indigo-500 ring-4 ring-indigo-50 shadow-none' 
-                    : 'border-gray-100 hover:border-indigo-300 hover:shadow-xl hover:shadow-gray-200/50'
-                  }`}
-                >
+                <div key={t.id} onClick={() => { setSelectedTeam(t); fetchTeamDetails(t.id); }} className={`group cursor-pointer bg-white border rounded-[2rem] p-6 transition-all duration-300 ${selectedTeam?.id === t.id ? 'border-indigo-500 ring-4 ring-indigo-50' : 'border-gray-100 hover:border-indigo-300'}`}>
                   <div className="flex items-start justify-between mb-4">
-                    <div className="p-3 bg-gray-50 rounded-2xl group-hover:bg-indigo-50 transition-colors text-gray-400 group-hover:text-indigo-600">
-                      <Users size={20} />
-                    </div>
-                    {canManage && (
-                      <button 
-                        onClick={(e) => handleDeleteTeam(t.id, e)} 
-                        className="p-2 text-gray-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
-                      >
-                        <Trash2 size={16} />
-                      </button>
-                    )}
+                    <div className="p-3 bg-indigo-50 text-indigo-600 rounded-2xl"><Users size={20} /></div>
+                    <div className="px-2 py-1 bg-amber-50 text-amber-600 rounded-lg text-[9px] font-black uppercase">Lider: {t.leader?.user?.email?.split('@')[0]}</div>
                   </div>
-                  <h3 className="font-black text-gray-900 group-hover:text-indigo-700 transition-colors mb-2 line-clamp-1">{t.name}</h3>
-                  <p className="text-xs text-gray-500 font-medium line-clamp-2 mb-6 h-8">{t.description || 'Ekip açıklaması yok.'}</p>
-                  
-                  <div className="flex items-center justify-between pt-4 border-t border-gray-50">
-                    <div className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-gray-400">
-                      Üye Listesini Gör
-                    </div>
-                    <ChevronRight size={16} className={`text-gray-300 transition-transform duration-300 ${selectedTeam?.id === t.id ? 'translate-x-1 text-indigo-500' : 'group-hover:translate-x-1'}`} />
+                  <h3 className="font-black text-gray-900 group-hover:text-indigo-700 transition-colors mb-2">{t.name}</h3>
+                  <div className="flex items-center justify-between pt-4 border-t border-gray-50 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                    <span>Performansı Gör</span>
+                    <ChevronRight size={16} />
                   </div>
                 </div>
               ))}
@@ -197,72 +200,189 @@ export const Teams = () => {
           )}
         </div>
 
-        {/* Ekip Üyeleri (Sağ Panel) */}
+        {/* Detay Paneli */}
         {selectedTeam && (
-          <div className="lg:col-span-8 animate-in fade-in slide-in-from-right-4 duration-500">
-            <div className="bg-white border border-gray-100 rounded-[2.5rem] shadow-xl shadow-gray-200/40 overflow-hidden sticky top-6">
-              <div className="p-8 border-b border-gray-50 bg-gradient-to-br from-indigo-50/30 to-white">
-                <div className="flex items-center gap-2 text-[11px] font-black uppercase tracking-widest text-indigo-500 mb-2">
-                  <Shield size={14} /> Ekip Yönetimi
+          <div className="lg:col-span-8 space-y-6 animate-in fade-in slide-in-from-right-4 duration-500">
+            {/* Team Performance Dashboard */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm flex items-center gap-4">
+                    <div className="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center"><TrendingUp size={24} /></div>
+                    <div>
+                        <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Başarı Oranı</div>
+                        <div className="text-xl font-black text-gray-900">%{teamStats?.completionRate || 0}</div>
+                    </div>
                 </div>
-                <h2 className="text-3xl font-black text-gray-900 mb-3">{selectedTeam.name}</h2>
-                <p className="text-gray-500 font-medium text-sm leading-relaxed max-w-2xl">{selectedTeam.description}</p>
+                <div className="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm flex items-center gap-4">
+                    <div className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center"><Target size={24} /></div>
+                    <div>
+                        <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Toplam Görev</div>
+                        <div className="text-xl font-black text-gray-900">{teamStats?.totalTasks || 0}</div>
+                    </div>
+                </div>
+                <div className="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm flex items-center gap-4">
+                    <div className="w-12 h-12 bg-red-50 text-red-600 rounded-2xl flex items-center justify-center"><Clock size={24} /></div>
+                    <div>
+                        <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Gecikenler</div>
+                        <div className="text-xl font-black text-gray-900">{teamStats?.overdueTasks || 0}</div>
+                    </div>
+                </div>
+            </div>
+
+            <div className="bg-white border border-gray-100 rounded-[2.5rem] shadow-xl shadow-gray-200/40 overflow-hidden">
+              <div className="p-8 border-b border-gray-50 flex items-center justify-between">
+                <div>
+                    <h2 className="text-3xl font-black text-gray-900 mb-1">{selectedTeam.name}</h2>
+                    <p className="text-sm text-gray-500 font-medium">{selectedTeam.description}</p>
+                </div>
+                {isLeaderOfSelectedTeam && (
+                    <button onClick={() => setShowMemberPicker(true)} className="px-4 py-2 bg-indigo-600 text-white rounded-xl text-xs font-bold hover:bg-indigo-700 transition flex items-center gap-2">
+                        <UserPlus size={16} /> Üye Ekle
+                    </button>
+                )}
               </div>
 
-              <div className="p-8 space-y-8">
-                {/* Üye Ekleme (Arayüz Olarak Hazır) */}
-                {canManage && (
-                  <div className="flex items-start gap-3 bg-amber-50 border border-amber-100 p-4 rounded-2xl">
-                    <Info className="text-amber-500 shrink-0 mt-0.5" size={18} />
-                    <p className="text-xs font-bold text-amber-800 leading-relaxed">
-                      Ekip üyelerini yönetmek için üyeler listesinden kişileri bu ekibe atayabilirsiniz. (Yakında aktif olacak)
-                    </p>
-                  </div>
+              {/* Tabs */}
+              <div className="flex border-b border-gray-50 px-8">
+                {['members', 'performance', 'meetings', 'documents'].map(tab => (
+                    <button key={tab} onClick={() => setActiveTab(tab)} className={`py-4 px-6 text-xs font-black uppercase tracking-widest transition-all border-b-2 ${activeTab === tab ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-400 hover:text-gray-600'}`}>
+                        {tab === 'members' && 'Üyeler'}
+                        {tab === 'performance' && 'Performans Analizi'}
+                        {tab === 'meetings' && 'Toplantılar'}
+                        {tab === 'documents' && 'Belgeler'}
+                    </button>
+                ))}
+              </div>
+
+              <div className="p-8">
+                {activeTab === 'members' && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {teamMembers.map(tm => (
+                            <div key={tm.id} className={`flex items-center justify-between p-4 bg-gray-50/50 border rounded-2xl group transition-all ${isLeaderOfSelectedTeam ? 'cursor-pointer hover:border-indigo-300 hover:bg-white' : 'border-gray-100'}`} onClick={() => isLeaderOfSelectedTeam && fetchMemberHistory(tm.membership.id)}>
+                                <div className="flex items-center gap-3">
+                                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold ${tm.role === 'EKIP_LIDERI' ? 'bg-amber-50 text-amber-600' : 'bg-white text-indigo-500'}`}>
+                                        {tm.membership.user?.email?.[0].toUpperCase()}
+                                    </div>
+                                    <div>
+                                        <div className="text-sm font-bold text-gray-800">{tm.membership.user?.email}</div>
+                                        <div className="text-[9px] font-black uppercase tracking-widest text-gray-400">{tm.role === 'EKIP_LIDERI' ? 'Lider' : 'Ekip Üyesi'}</div>
+                                    </div>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    {isLeaderOfSelectedTeam && tm.role !== 'EKIP_LIDERI' && (
+                                        <button onClick={(e) => { e.stopPropagation(); handleRemoveMember(tm.id); }} className="p-2 text-gray-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all">
+                                            <UserMinus size={16} />
+                                        </button>
+                                    )}
+                                    <ChevronRight size={16} className="text-gray-300" />
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )}
+                
+                {/* Picker, Performance Tab etc (Remaining parts are already in the file) */}
+                {/* (Keeping the logic same as before but ensuring isLeaderOfSelectedTeam is used strictly) */}
+                
+                {showMemberPicker && (
+                    <div className="bg-indigo-50/50 border border-indigo-100 rounded-3xl p-6 mt-4 space-y-4 animate-in zoom-in-95 duration-200">
+                        <div className="flex items-center justify-between">
+                            <h4 className="font-black text-gray-800 text-sm uppercase tracking-wider">Ekibe Üye Seç</h4>
+                            <button onClick={() => setShowMemberPicker(false)} className="text-gray-400 hover:text-gray-600"><X size={18} /></button>
+                        </div>
+                        <div className="relative">
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+                            <input 
+                                placeholder="İsim veya e-posta ile ara..." 
+                                value={searchQuery}
+                                onChange={e => setSearchQuery(e.target.value)}
+                                className="w-full pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500/20 outline-none"
+                            />
+                        </div>
+                        <div className="max-h-[200px] overflow-y-auto space-y-2 pr-2 custom-scrollbar">
+                            {allMembers
+                                .filter(m => m.user?.email?.toLowerCase().includes(searchQuery.toLowerCase()))
+                                .filter(m => !teamMembers.find(tm => tm.membership.id === m.id))
+                                .map(m => (
+                                    <div key={m.id} className="flex items-center justify-between p-3 bg-white rounded-xl border border-gray-100 hover:border-indigo-300 transition-all group">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-8 h-8 bg-gray-50 rounded-lg flex items-center justify-center text-xs font-bold text-gray-500">
+                                                {m.user?.email?.[0].toUpperCase()}
+                                            </div>
+                                            <span className="text-sm font-medium text-gray-700">{m.user?.email}</span>
+                                        </div>
+                                        <button 
+                                            onClick={() => handleAddMemberToTeam(m.id)}
+                                            className="p-1.5 text-indigo-500 hover:bg-indigo-50 rounded-lg transition-colors"
+                                        >
+                                            <Plus size={18} />
+                                        </button>
+                                    </div>
+                                ))
+                            }
+                        </div>
+                    </div>
                 )}
 
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <h3 className="text-lg font-black text-gray-800 flex items-center gap-2">
-                      <Users size={20} className="text-indigo-500" /> Ekip Üyeleri
-                    </h3>
-                    <div className="px-3 py-1 bg-indigo-50 text-indigo-600 rounded-full text-[10px] font-black uppercase tracking-wider">
-                      {teamMembers.length} Üye
-                    </div>
-                  </div>
-
-                  {loadingMembers ? (
-                    <div className="flex flex-col items-center justify-center py-12 space-y-3">
-                      <div className="w-8 h-8 border-3 border-indigo-100 border-t-indigo-600 rounded-full animate-spin" />
-                      <p className="text-xs text-gray-400 font-bold uppercase tracking-widest">Üyeler Getiriliyor...</p>
-                    </div>
-                  ) : teamMembers.length === 0 ? (
-                    <div className="text-center py-16 bg-gray-50/50 rounded-3xl border border-dashed border-gray-100">
-                      <UserCircle2 className="mx-auto text-gray-200 mb-3" size={48} />
-                      <p className="text-gray-400 font-bold text-sm">Bu ekipte henüz üye bulunmuyor.</p>
-                    </div>
-                  ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                      {teamMembers.map(tm => (
-                        <div key={tm.id} className="flex items-center justify-between p-4 bg-gray-50/50 border border-gray-100 rounded-2xl group hover:bg-white hover:border-indigo-100 hover:shadow-md transition-all">
-                          <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-indigo-500 font-bold border border-gray-100 shadow-sm">
-                              {tm.user?.email?.[0].toUpperCase() || 'U'}
+                {activeTab === 'performance' && (
+                    <div className="space-y-6">
+                        <div className="bg-indigo-50/50 p-6 rounded-3xl border border-indigo-100">
+                            <h4 className="text-sm font-black text-indigo-900 uppercase tracking-wider mb-4 flex items-center gap-2"><BarChart3 size={18} /> Ekip Verimliliği</h4>
+                            <div className="w-full bg-indigo-100 h-4 rounded-full overflow-hidden">
+                                <div className="bg-indigo-600 h-full transition-all duration-1000" style={{ width: `${teamStats?.completionRate || 0}%` }} />
                             </div>
-                            <div className="min-w-0">
-                              <div className="text-sm font-bold text-gray-800 truncate">{tm.user?.email || 'Bilinmeyen Üye'}</div>
-                              <div className="text-[10px] font-black uppercase tracking-widest text-gray-400">{tm.role || 'Üye'}</div>
-                            </div>
-                          </div>
-                          {canManage && (
-                            <button onClick={() => handleRemoveMember(tm.id)} className="p-2 text-gray-300 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100">
-                              <UserMinus size={16} />
-                            </button>
-                          )}
+                            <p className="mt-2 text-xs font-bold text-indigo-600 text-right">Projeler %{teamStats?.completionRate || 0} tamamlandı</p>
                         </div>
-                      ))}
                     </div>
-                  )}
-                </div>
+                )}
+
+                {selectedMemberHistory && (
+                    <div className="fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-50 flex items-center justify-end">
+                        <div className="bg-white w-full max-w-md h-full shadow-2xl p-8 space-y-8 animate-in slide-in-from-right duration-300">
+                            <div className="flex items-center justify-between">
+                                <h3 className="text-2xl font-black text-gray-900 flex items-center gap-2"><History className="text-indigo-600" /> Üye Geçmişi</h3>
+                                <button onClick={() => setSelectedMemberHistory(null)} className="p-2 hover:bg-gray-100 rounded-xl"><X size={24} /></button>
+                            </div>
+                            
+                            <div className="bg-gray-50 p-6 rounded-3xl space-y-4">
+                                <div className="text-center">
+                                    <div className="text-3xl font-black text-indigo-600">%{selectedMemberHistory.performanceScore}</div>
+                                    <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Genel Performans Skoru</div>
+                                </div>
+                                <div className="grid grid-cols-2 gap-4 pt-4 border-t border-gray-200">
+                                    <div className="text-center"><div className="font-bold">{selectedMemberHistory.completedTasks}</div><div className="text-[9px] text-gray-400 font-black uppercase">Tamamlanan</div></div>
+                                    <div className="text-center"><div className="font-bold">{selectedMemberHistory.totalTasks}</div><div className="text-[9px] text-gray-400 font-black uppercase">Toplam Görev</div></div>
+                                </div>
+                            </div>
+
+                            <div className="space-y-4">
+                                <h4 className="font-black text-gray-800 uppercase tracking-widest text-xs">Son Görevler</h4>
+                                <div className="space-y-2">
+                                    {selectedMemberHistory.tasks.map(t => (
+                                        <div key={t.id} className="p-4 border border-gray-100 rounded-2xl flex items-center justify-between">
+                                            <div>
+                                                <div className="text-sm font-bold text-gray-800">{t.title}</div>
+                                                <div className="text-[10px] text-gray-400">{t.project?.name}</div>
+                                            </div>
+                                            <span className={`px-2 py-0.5 rounded-lg text-[9px] font-black uppercase ${t.status === 'completed' ? 'bg-emerald-50 text-emerald-600' : 'bg-amber-50 text-amber-600'}`}>
+                                                {t.status}
+                                            </span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {(activeTab === 'meetings' || activeTab === 'documents') && (
+                    <div className="text-center py-20 bg-gray-50/50 rounded-3xl border border-dashed border-gray-200">
+                        <div className="w-16 h-16 bg-white rounded-2xl mx-auto flex items-center justify-center text-gray-300 mb-4 shadow-sm">
+                            {activeTab === 'meetings' ? <FileText size={32} /> : <FolderClosed size={32} />}
+                        </div>
+                        <p className="text-gray-400 font-bold">Henüz eklenmiş {activeTab === 'meetings' ? 'toplantı raporu' : 'belge'} bulunmuyor.</p>
+                        <p className="text-[10px] text-gray-300 font-black uppercase tracking-widest mt-1">Ekip lideri tarafından eklenir</p>
+                    </div>
+                )}
               </div>
             </div>
           </div>

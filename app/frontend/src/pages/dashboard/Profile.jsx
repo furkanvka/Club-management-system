@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { useClub } from '../../store/ClubContext';
 import { useAuth } from '../../store/AuthContext';
 import api from '../../services/api';
-import { User, Phone, BookOpen, GraduationCap, Save, Camera, Clock, CheckCircle2 } from 'lucide-react';
+import { User, Phone, BookOpen, GraduationCap, Save, Camera, Clock, CheckCircle2, Shield, Star, Crown, UserCheck } from 'lucide-react';
 
 export const Profile = () => {
-  const { activeClub } = useClub();
+  const { activeClub, activeRole, activeMembershipStatus } = useClub();
   const { user } = useAuth();
   const [profile, setProfile] = useState({
     fullName: '',
@@ -44,7 +44,25 @@ export const Profile = () => {
     }
   };
 
+  const roleDisplay = (role) => {
+    const normalized = (role || '').toUpperCase().replace('-', '_');
+    switch (normalized) {
+      case 'KULUP_BASKANI':
+      case 'BASKAN':
+        return { label: 'Kulüp Başkanı', cls: 'bg-purple-50 text-purple-700 border-purple-100', icon: Crown };
+      case 'EKIP_LIDERI':
+        return { label: 'Ekip Lideri', cls: 'bg-amber-50 text-amber-700 border-amber-100', icon: Star };
+      case 'EKIP_UYESI':
+        return { label: 'Ekip Üyesi', cls: 'bg-indigo-50 text-indigo-700 border-indigo-100', icon: Shield };
+      default:
+        return { label: 'Kulüp Üyesi', cls: 'bg-blue-50 text-blue-700 border-blue-100', icon: UserCheck };
+    }
+  };
+
   if (loading) return <div className="flex justify-center p-20"><div className="w-10 h-10 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin" /></div>;
+
+  const rd = roleDisplay(activeRole);
+  const RoleIcon = rd.icon;
 
   return (
     <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in duration-500">
@@ -70,10 +88,19 @@ export const Profile = () => {
             <h2 className="text-xl font-black text-gray-900 leading-tight">{profile.fullName || 'İsimsiz Üye'}</h2>
             <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mt-1">{user?.email}</p>
             
-            <div className="mt-8 w-full space-y-2">
-               <div className="flex items-center justify-between p-3 bg-gray-50 rounded-2xl border border-gray-100">
+            <div className="mt-8 w-full space-y-3">
+               <div className="flex items-center justify-between p-3.5 bg-gray-50 rounded-2xl border border-gray-100">
+                  <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Yetki</span>
+                  <div className={`flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider ${rd.cls}`}>
+                    <RoleIcon size={12} />
+                    {rd.label}
+                  </div>
+               </div>
+               <div className="flex items-center justify-between p-3.5 bg-gray-50 rounded-2xl border border-gray-100">
                   <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Durum</span>
-                  <span className="px-2.5 py-0.5 bg-emerald-100 text-emerald-700 rounded-full text-[10px] font-black uppercase tracking-wider">Aktif</span>
+                  <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider ${activeMembershipStatus === 'active' ? 'bg-emerald-100 text-emerald-700 border border-emerald-200' : 'bg-gray-200 text-gray-600 border border-gray-300'}`}>
+                    {activeMembershipStatus === 'active' ? 'Aktif' : 'Pasif'}
+                  </span>
                </div>
             </div>
           </div>
@@ -86,11 +113,11 @@ export const Profile = () => {
                 <div className="border-l-2 border-indigo-100 pl-4 relative">
                    <div className="absolute w-2 h-2 rounded-full bg-indigo-500 -left-[5px] top-1"></div>
                    <p className="text-xs font-black text-gray-800">Topluluğa Katıldı</p>
-                   <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Ocak 2024</p>
+                   <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Nisan 2026</p>
                 </div>
                 <div className="border-l-2 border-indigo-100 pl-4 relative opacity-50">
                    <div className="absolute w-2 h-2 rounded-full bg-gray-300 -left-[5px] top-1"></div>
-                   <p className="text-xs font-bold text-gray-500">Etkinlik Katılımı (Yakında)</p>
+                   <p className="text-xs font-bold text-gray-500">Etkinlik Katılımı</p>
                 </div>
              </div>
           </div>

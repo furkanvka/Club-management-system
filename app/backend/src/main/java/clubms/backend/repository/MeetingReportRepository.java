@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface MeetingReportRepository extends JpaRepository<MeetingReport, Long> {
     List<MeetingReport> findByClubId(Long clubId);
+    List<MeetingReport> findByTeamId(Long teamId);
 }
