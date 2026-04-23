@@ -5,7 +5,8 @@ export const authService = {
     const response = await api.post('/auth/login', credentials);
     if (response.data.accessToken) {
       localStorage.setItem('token', response.data.accessToken);
-      const isAdmin = credentials.email === 'admin@admin.com';
+      const payload = JSON.parse(atob(response.data.accessToken.split('.')[1]));
+      const isAdmin = payload.role === 'ROLE_ADMIN';
       localStorage.setItem('loginType', isAdmin ? 'admin' : 'user');
     }
     return response.data;

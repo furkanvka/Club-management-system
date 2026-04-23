@@ -22,13 +22,12 @@ public class UserPrincipal implements UserDetails {
     }
 
     public static UserPrincipal create(User user) {
-        // Here you could map user roles if you have a global role system, 
-        // but for now we'll just give a default user role.
+        String role = user.getRole() != null ? user.getRole() : "ROLE_USER";
         return new UserPrincipal(
                 user.getId(),
                 user.getEmail(),
                 user.getPasswordHash(),
-                Collections.emptyList()
+                Collections.singletonList(new org.springframework.security.core.authority.SimpleGrantedAuthority(role))
         );
     }
 

@@ -49,9 +49,29 @@ public class DocumentController {
 
     @PostMapping
     public ResponseEntity<Document> saveDocument(@PathVariable Long clubId, @RequestBody Document document) {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String role = "uye";
+        if (principal instanceof UserPrincipal) {
+            UserPrincipal up = (UserPrincipal) principal;
+            if (up.getId() < 0) role = "baskan";
+            else {
+                role = memberService.getMembershipsByUserId(up.getId()).stream()
+                    .filter(m -> m.getClub().getId().equals(clubId))
+                    .map(m -> m.getRole().toLowerCase())
+                    .findFirst().orElse("uye");
+            }
+        }
+
+        final String userRole = role;
         return clubService.getClubById(clubId).map(club -> {
             document.setClub(club);
-            document.setApprovalStatus("PENDING");
+            // Baskan, Lider ve Ekip Uyesi yukleyebilir. Lider ve Uye yuklerse oto-onaylanabilir veya baskan onayına duser.
+            // Sizin isteginize gore yukleme hakları var.
+            if ("baskan".equals(userRole) || "ekip_lideri".equals(userRole) || "ekip_uyesi".equals(userRole)) {
+                document.setApprovalStatus("APPROVED"); // Ekip calısması icin oto-onay
+            } else {
+                document.setApprovalStatus("PENDING");
+            }
             return ResponseEntity.ok(documentService.saveDocumentInfo(document));
         }).orElse(ResponseEntity.notFound().build());
     }

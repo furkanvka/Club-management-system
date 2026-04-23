@@ -32,9 +32,14 @@ public class JwtTokenProvider {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + jwtExpirationInMs);
 
+        String role = userPrincipal.getAuthorities().stream()
+                .map(org.springframework.security.core.GrantedAuthority::getAuthority)
+                .findFirst().orElse("ROLE_USER");
+
         return Jwts.builder()
                 .subject(Long.toString(userPrincipal.getId()))
                 .claim("email", userPrincipal.getUsername())
+                .claim("role", role)
                 .issuedAt(now)
                 .expiration(expiryDate)
                 .signWith(getSigningKey())

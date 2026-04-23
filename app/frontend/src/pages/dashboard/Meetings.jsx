@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useClub } from '../../store/ClubContext';
 import { useAuth } from '../../store/AuthContext';
 import api from '../../services/api';
-import { Plus, BookOpen, Trash2, Calendar, Users, X, Save } from 'lucide-react';
+import { Plus, BookOpen, Trash2, Calendar, Users, X } from 'lucide-react';
 
 export const Meetings = () => {
   const { activeClub, activeRole } = useClub();
@@ -13,17 +13,19 @@ export const Meetings = () => {
   const [form, setForm] = useState({ title: '', content: '', meetingDate: '', attendees: '' });
   const [saving, setSaving] = useState(false);
 
-  const canManage = activeRole === 'baskan' || user?.loginType === 'club';
+  const isBaskan = activeRole === 'baskan' || user?.loginType === 'club';
+  const isLider = activeRole === 'ekip_lideri' || activeRole === 'lider' || activeRole === 'EKIP_LIDERI';
+  const canManage = isBaskan || isLider;
 
-  const fetchMeetings = () => {
+  const fetchMeetings = useCallback(() => {
     if (!activeClub?.id) return;
     setLoading(true);
     api.get(`/clubs/${activeClub.id}/meetings`)
       .then(r => { setMeetings(r.data); setLoading(false); })
       .catch(() => setLoading(false));
-  };
+  }, [activeClub?.id]);
 
-  useEffect(() => { fetchMeetings(); }, [activeClub]);
+  useEffect(() => { fetchMeetings(); }, [fetchMeetings]);
 
   const handleCreate = async (e) => {
     e.preventDefault();

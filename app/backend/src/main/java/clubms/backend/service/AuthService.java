@@ -23,7 +23,7 @@ public class AuthService {
         if (!userRepository.existsByEmail("admin@admin.com")) {
             User admin = new User();
             admin.setEmail("admin@admin.com");
-            admin.setPasswordHash(passwordEncoder.encode("admin123"));
+            admin.setPasswordHash(passwordEncoder.encode("admin123")); // Varsayılan şifre
             admin.setRole("ROLE_ADMIN");
             userRepository.save(admin);
         }

@@ -61,6 +61,7 @@ public class SecurityConfig {
                         auth -> auth.requestMatchers("/api/auth/**", "/error", "/actuator/health").permitAll()
                                 .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/clubs").permitAll()
                                 .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/clubs").permitAll()
+                                .requestMatchers("/api/admin/**").hasRole("ADMIN")
                                 .anyRequest().authenticated());
 
         http.authenticationProvider(authenticationProvider());

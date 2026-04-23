@@ -13,7 +13,9 @@ import {
   LogOut,
   ChevronRight,
   ShieldCheck,
-  User
+  User,
+  Star,
+  UserCheck
 } from 'lucide-react';
 import { useAuth } from '../../store/AuthContext';
 
@@ -65,8 +67,14 @@ export const ClubSelect = () => {
 
   const roleLabel = (clubId) => {
     const role = getRoleForClub(clubId);
-    if (role === 'baskan') return { text: 'Başkan', color: 'bg-indigo-100 text-indigo-700', icon: ShieldCheck };
-    return { text: 'Üye', color: 'bg-emerald-100 text-emerald-700', icon: User };
+    const normalized = (role || '').toUpperCase();
+    if (normalized === 'BASKAN' || normalized === 'KULUP_BASKANI') 
+      return { text: 'Başkan', color: 'bg-indigo-100 text-indigo-700', icon: ShieldCheck };
+    if (normalized === 'EKIP_LIDERI' || normalized === 'LIDER')
+      return { text: 'Lider', color: 'bg-amber-100 text-amber-700', icon: Star };
+    if (normalized === 'EKIP_UYESI')
+      return { text: 'Ekip Üyesi', color: 'bg-emerald-100 text-emerald-700', icon: UserCheck };
+    return { text: 'Üye', color: 'bg-indigo-100 text-indigo-700', icon: User };
   };
 
   return (

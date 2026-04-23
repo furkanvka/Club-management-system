@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useClub } from '../../store/ClubContext';
 import { useAuth } from '../../store/AuthContext';
 import api from '../../services/api';
 import { 
-  Users, Plus, Trash2, Shield, UserPlus, 
+  Users, Plus, UserPlus, 
   X, ChevronRight, LayoutGrid, Search, 
-  UserCircle2, Mail, Info, UserMinus, ArrowLeft,
-  CheckCircle2, AlertCircle, BarChart3, FileText, 
+  UserMinus, ArrowLeft, BarChart3, FileText, 
   FolderClosed, History, TrendingUp, Clock, Target
 } from 'lucide-react';
 
@@ -18,7 +17,6 @@ export const Teams = () => {
   const [showForm, setShowForm] = useState(false);
   const [selectedTeam, setSelectedTeam] = useState(null);
   const [teamMembers, setTeamMembers] = useState([]);
-  const [loadingMembers, setLoadingMembers] = useState(false);
   
   // Performance & History Stats
   const [teamStats, setTeamStats] = useState(null);
@@ -38,24 +36,22 @@ export const Teams = () => {
 
   const isAdmin = activeRole === 'baskan' || user?.loginType === 'club';
 
-  const fetchTeams = () => {
+  const fetchTeams = useCallback(() => {
     if (!activeClub?.id) return;
     setLoading(true);
     api.get(`/clubs/${activeClub.id}/teams`)
       .then(r => { setTeams(r.data); setLoading(false); })
       .catch(() => setLoading(false));
-  };
+  }, [activeClub?.id]);
 
   const fetchTeamDetails = (teamId) => {
-    setLoadingMembers(true);
     Promise.all([
         api.get(`/clubs/${activeClub.id}/teams/${teamId}/members`),
         api.get(`/clubs/${activeClub.id}/teams/${teamId}/performance`)
     ]).then(([membersRes, statsRes]) => {
         setTeamMembers(membersRes.data);
         setTeamStats(statsRes.data);
-        setLoadingMembers(false);
-    }).catch(() => setLoadingMembers(false));
+    }).catch(() => {});
   };
 
   const fetchMemberHistory = (membershipId) => {
@@ -64,16 +60,17 @@ export const Teams = () => {
         .catch(() => alert("Üye geçmişi getirilemedi."));
   };
 
-  const fetchAllClubMembers = () => {
+  const fetchAllClubMembers = useCallback(() => {
+    if (!activeClub?.id) return;
     api.get(`/clubs/${activeClub.id}/members`)
       .then(r => setAllMembers(r.data))
       .catch(err => console.error("Üyeler getirilemedi", err));
-  };
+  }, [activeClub?.id]);
 
   useEffect(() => { 
     fetchTeams(); 
     fetchAllClubMembers();
-  }, [activeClub]);
+  }, [fetchTeams, fetchAllClubMembers]);
 
   const handleCreateTeam = async (e) => {
     e.preventDefault();
@@ -90,6 +87,7 @@ export const Teams = () => {
       setSelectedLeaderId('');
       setShowForm(false);
       fetchTeams();
+      fetchAllClubMembers(); // Üye listesini yenile (Lider artık 'active' olduğu için filtrelenecek)
     } catch (e) {
       alert('Ekip oluşturulamadı.');
     } finally {
@@ -301,7 +299,7 @@ export const Teams = () => {
                         <div className="max-h-[200px] overflow-y-auto space-y-2 pr-2 custom-scrollbar">
                             {allMembers
                                 .filter(m => m.user?.email?.toLowerCase().includes(searchQuery.toLowerCase()))
-                                .filter(m => !teamMembers.find(tm => tm.membership.id === m.id))
+                                .filter(m => m.status !== 'active')
                                 .map(m => (
                                     <div key={m.id} className="flex items-center justify-between p-3 bg-white rounded-xl border border-gray-100 hover:border-indigo-300 transition-all group">
                                         <div className="flex items-center gap-3">

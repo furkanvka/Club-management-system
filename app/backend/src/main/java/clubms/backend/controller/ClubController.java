@@ -68,30 +68,6 @@ public class ClubController {
         return ResponseEntity.ok(visibleClubs);
     }
 
-    @GetMapping("/pending")
-    public ResponseEntity<List<Club>> getPendingClubs() {
-        List<Club> pendingClubs = clubService.getAllClubs().stream()
-            .filter(c -> "PENDING".equals(c.getStatus()))
-            .collect(Collectors.toList());
-        return ResponseEntity.ok(pendingClubs);
-    }
-
-    @PutMapping("/{id}/approve")
-    public ResponseEntity<Club> approveClub(@PathVariable Long id) {
-        return clubService.getClubById(id).map(club -> {
-            club.setStatus("APPROVED");
-            return ResponseEntity.ok(clubService.createClub(club)); // saves it
-        }).orElse(ResponseEntity.notFound().build());
-    }
-
-    @PutMapping("/{id}/reject")
-    public ResponseEntity<Club> rejectClub(@PathVariable Long id) {
-        return clubService.getClubById(id).map(club -> {
-            club.setStatus("REJECTED");
-            return ResponseEntity.ok(clubService.createClub(club)); // saves it
-        }).orElse(ResponseEntity.notFound().build());
-    }
-
     @GetMapping("/{id}")
     public ResponseEntity<Club> getClubById(@PathVariable Long id) {
         return clubService.getClubById(id)
@@ -131,7 +107,6 @@ public class ClubController {
             }
             return ResponseEntity.ok(savedClub);
         } catch (Exception e) {
-            e.printStackTrace();
             return ResponseEntity.internalServerError().body("Error creating club: " + e.getMessage());
         }
     }

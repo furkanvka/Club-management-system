@@ -9,6 +9,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import clubms.backend.service.MemberService;
+import clubms.backend.security.UserPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+
 @RestController
 @RequestMapping("/api/clubs/{clubId}/meetings")
 public class MeetingReportController {
@@ -19,6 +23,9 @@ public class MeetingReportController {
     @Autowired
     private ClubService clubService;
 
+    @Autowired
+    private MemberService memberService;
+
     @GetMapping
     public ResponseEntity<List<MeetingReport>> getMeetings(@PathVariable Long clubId) {
         return ResponseEntity.ok(meetingReportService.getReportsByClubId(clubId));
@@ -26,6 +33,22 @@ public class MeetingReportController {
 
     @PostMapping
     public ResponseEntity<MeetingReport> createMeeting(@PathVariable Long clubId, @RequestBody MeetingReport report) {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        boolean isAuthorized = false;
+        if (principal instanceof UserPrincipal) {
+            UserPrincipal up = (UserPrincipal) principal;
+            if (up.getId() < 0) isAuthorized = true;
+            else {
+                isAuthorized = memberService.getMembershipsByUserId(up.getId()).stream()
+                    .anyMatch(m -> m.getClub().getId().equals(clubId) && 
+                              ("baskan".equalsIgnoreCase(m.getRole()) || "ekip_lideri".equalsIgnoreCase(m.getRole())));
+            }
+        }
+
+        if (!isAuthorized) {
+            return ResponseEntity.status(403).build();
+        }
+
         return clubService.getClubById(clubId).map(club -> {
             report.setClub(club);
             return ResponseEntity.ok(meetingReportService.saveReport(report));

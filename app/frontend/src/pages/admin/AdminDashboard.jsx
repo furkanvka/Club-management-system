@@ -11,7 +11,7 @@ export const AdminDashboard = () => {
 
   const fetchPendingClubs = async () => {
     try {
-      const response = await api.get('/clubs/pending');
+      const response = await api.get('/admin/clubs/pending');
       setPendingClubs(response.data);
     } catch (err) {
       console.error(err);
@@ -19,8 +19,8 @@ export const AdminDashboard = () => {
   };
 
   useEffect(() => {
-    // If not admin, redirect. (Assuming admin has role ROLE_ADMIN or email admin@admin.com)
-    if (!user || user.email !== 'admin@admin.com') {
+    // If not admin, redirect.
+    if (!user || user.role !== 'ROLE_ADMIN') {
       navigate('/');
     } else {
       fetchPendingClubs();
@@ -29,7 +29,7 @@ export const AdminDashboard = () => {
 
   const handleApprove = async (id) => {
     try {
-      await api.put(`/clubs/${id}/approve`);
+      await api.put(`/admin/clubs/${id}/approve`);
       alert('Kulüp onaylandı!');
       fetchPendingClubs();
     } catch (err) {
@@ -40,7 +40,7 @@ export const AdminDashboard = () => {
   const handleReject = async (id) => {
     if (!window.confirm("Bu başvuruyu reddetmek istediğinize emin misiniz?")) return;
     try {
-      await api.put(`/clubs/${id}/reject`);
+      await api.put(`/admin/clubs/${id}/reject`);
       alert('Kulüp başvurusu reddedildi.');
       fetchPendingClubs();
     } catch (err) {

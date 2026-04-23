@@ -17,8 +17,11 @@ export const Documents = () => {
   const [form, setForm] = useState(EMPTY_FORM);
   const [saving, setSaving] = useState(false);
 
-  const canManage = activeRole === 'baskan' || user?.loginType === 'club';
-  const canApprove = activeRole === 'baskan' || user?.loginType === 'club' || (activeRole === 'ekip-lideri'); // Simplified
+  const isBaskan = activeRole === 'baskan' || user?.loginType === 'club';
+  const isLider = activeRole === 'ekip_lideri' || activeRole === 'lider' || activeRole === 'EKIP_LIDERI';
+  const isEkipUyesi = activeRole === 'ekip_uyesi' || activeRole === 'EKIP_UYESI';
+
+  const canUpload = isBaskan || isLider || isEkipUyesi;
 
   const fetchDocs = useCallback(() => {
     if (!activeClub?.id) return;
@@ -80,7 +83,7 @@ export const Documents = () => {
           <h1 className="text-2xl font-bold text-gray-900">Belgeler</h1>
           <p className="text-sm text-gray-500 mt-0.5">{activeClub?.name} — {docs.length} belge</p>
         </div>
-        {canManage && (
+        {canUpload && (
           <button onClick={() => setShowForm(true)}
             className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-xl text-sm font-semibold hover:bg-indigo-700 transition shadow-sm">
             <Plus size={16} /> Belge Ekle
@@ -151,7 +154,7 @@ export const Documents = () => {
         <div className="bg-white border border-gray-100 rounded-2xl p-16 text-center">
           <Folder size={40} className="text-gray-200 mx-auto mb-3" />
           <p className="text-gray-400 font-medium">{activeCategory === 'Tümü' ? 'Henüz belge eklenmemiş.' : `Bu kategoride belge yok.`}</p>
-          {canManage && activeCategory === 'Tümü' && (
+          {canUpload && activeCategory === 'Tümü' && (
             <button onClick={() => setShowForm(true)} className="mt-4 text-sm text-indigo-600 hover:underline">İlk belgeyi ekle →</button>
           )}
         </div>
@@ -179,7 +182,7 @@ export const Documents = () => {
               </div>
               {doc.description && <p className="text-xs text-gray-500 line-clamp-2 flex-1">{doc.description}</p>}
               
-              {canApprove && doc.approvalStatus === 'PENDING' && (
+              {isBaskan && doc.approvalStatus === 'PENDING' && (
                 <div className="mt-4 grid grid-cols-2 gap-2">
                   <button onClick={() => handleReject(doc.id)} className="flex items-center justify-center gap-1 py-1.5 border border-red-200 text-red-500 rounded-lg text-[10px] font-bold hover:bg-red-50 transition">
                     <XCircle size={12} /> Reddet
@@ -201,7 +204,7 @@ export const Documents = () => {
                       <ExternalLink size={15} />
                     </a>
                   )}
-                  {canManage && (
+                  {isBaskan && (
                     <button onClick={() => handleDelete(doc.id)}
                       className="text-red-400 hover:text-red-600 p-1.5 rounded-lg hover:bg-red-50 transition">
                       <Trash2 size={15} />

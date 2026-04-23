@@ -32,7 +32,8 @@ export const Events = () => {
   const [loadingApps, setLoadingApps] = useState(false);
   const [myApps, setMyApps] = useState({}); // eventId -> application status
 
-  const canManage = activeRole === 'baskan' || user?.loginType === 'club';
+  const isBaskan = activeRole === 'baskan' || user?.loginType === 'club';
+  const canManage = isBaskan;
 
   const fetchEvents = useCallback(async () => {
     if (!activeClub?.id) return;

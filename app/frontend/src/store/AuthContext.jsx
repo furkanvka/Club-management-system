@@ -8,12 +8,16 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (credentials) => {
     await authService.login(credentials);
-    setUser(authService.getCurrentUser());
+    const u = authService.getCurrentUser();
+    setUser(u);
+    return u;
   };
 
   const clubLogin = async (credentials) => {
     await authService.clubLogin(credentials);
-    setUser(authService.getCurrentUser());
+    const u = authService.getCurrentUser();
+    setUser(u);
+    return u;
   };
 
   const logout = () => {

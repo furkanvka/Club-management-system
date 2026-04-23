@@ -2,7 +2,7 @@ import React from 'react';
 import { useAuth } from '../../store/AuthContext';
 import { useClub } from '../../store/ClubContext';
 import { useNavigate } from 'react-router-dom';
-import { Crown, UserCheck, Shield, Building2, LogOut, ArrowLeftRight } from 'lucide-react';
+import { Crown, UserCheck, Shield, Building2, LogOut, ArrowLeftRight, Star } from 'lucide-react';
 
 export const TopBar = () => {
   const { user, logout } = useAuth();
@@ -17,12 +17,16 @@ export const TopBar = () => {
   const loginType = user?.loginType || 'user';
   const isAdmin = loginType === 'admin';
   const isClub = loginType === 'club';
-  const isBaskan = activeRole === 'baskan';
+  const isBaskan = activeRole === 'baskan' || activeRole === 'KULUP_BASKANI';
+  const isLider = activeRole === 'EKIP_LIDERI' || activeRole === 'lider' || activeRole === 'ekip_lideri';
+  const isEkipUyesi = activeRole === 'EKIP_UYESI' || activeRole === 'ekip_uyesi';
 
   const getBadge = () => {
     if (isAdmin) return { label: 'Sistem Admini', color: 'bg-red-100 text-red-700', icon: Shield };
     if (isClub) return { label: 'Kulüp Girişi', color: 'bg-purple-100 text-purple-700', icon: Building2 };
     if (isBaskan) return { label: 'Başkan', color: 'bg-yellow-100 text-yellow-700', icon: Crown };
+    if (isLider) return { label: 'Ekip Lideri', color: 'bg-amber-100 text-amber-700', icon: Star };
+    if (isEkipUyesi) return { label: 'Ekip Üyesi', color: 'bg-emerald-100 text-emerald-700', icon: UserCheck };
     return { label: 'Üye', color: 'bg-blue-100 text-blue-700', icon: UserCheck };
   };
 

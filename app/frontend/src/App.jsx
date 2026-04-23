@@ -14,6 +14,7 @@ import { ClubLogin } from './pages/auth/ClubLogin';
 import { ClubSelect } from './pages/club/ClubSelect';
 import { Landing } from './pages/Landing';
 import { AdminDashboard } from './pages/admin/AdminDashboard';
+import { AdminLogin } from './pages/admin/AdminLogin';
 
 import { Members } from './pages/dashboard/Members';
 import { Events } from './pages/dashboard/Events';
@@ -31,18 +32,27 @@ const ProtectedRoute = ({ children }) => {
   return children;
 };
 
+const AdminProtectedRoute = ({ children }) => {
+  const { user } = useAuth();
+  if (!user || user.role !== 'ROLE_ADMIN') {
+    return <Navigate to="/admin/login" replace />;
+  }
+  return children;
+};
+
 function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<Landing />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/admin/login" element={<AdminLogin />} />
       <Route path="/register" element={<Register />} />
       <Route path="/club-login" element={<ClubLogin />} />
       <Route path="/club-register" element={<ClubRegister />} />
       <Route path="/admin" element={
-        <ProtectedRoute>
+        <AdminProtectedRoute>
           <AdminDashboard />
-        </ProtectedRoute>
+        </AdminProtectedRoute>
       } />
       
       <Route path="/select-club" element={

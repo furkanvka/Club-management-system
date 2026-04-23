@@ -25,6 +25,13 @@ public class TeamService {
             Membership leaderMembership = membershipRepository.findById(team.getLeader().getId())
                     .orElseThrow(() -> new RuntimeException("Lider üyeliği bulunamadı"));
             
+            // Üyenin zaten bir ekipte olup olmadığını kontrol et
+            boolean alreadyInTeam = teamMemberRepository.findByMembershipId(leaderMembership.getId()).stream()
+                    .anyMatch(tm -> tm.getTeam().getClub().getId().equals(team.getClub().getId()));
+            if (alreadyInTeam) {
+                throw new RuntimeException("Bu üye zaten bu kulüpte başka bir ekibin parçasıdır.");
+            }
+
             leaderMembership.setRole("ekip_lideri");
             leaderMembership.setStatus("active");
             membershipRepository.save(leaderMembership);
@@ -49,6 +56,13 @@ public class TeamService {
     }
 
     public void deleteTeam(Long id) {
+        List<TeamMember> members = teamMemberRepository.findByTeamId(id);
+        for (TeamMember tm : members) {
+            Membership m = tm.getMembership();
+            m.setStatus("passive");
+            m.setRole("uye");
+            membershipRepository.save(m);
+        }
         teamRepository.deleteById(id);
     }
 
@@ -126,9 +140,12 @@ public class TeamService {
             throw new RuntimeException("Bu işlem için yetkiniz yok. Sadece ilgili ekibin lideri üye ekleyebilir.");
         }
 
-        // Üye zaten ekipte mi kontrolü
-        if (teamMemberRepository.findByTeamIdAndMembershipId(teamId, membershipId).isPresent()) {
-            throw new RuntimeException("Bu üye zaten ekipte kayıtlı.");
+        // Üye zaten bu kulüpte herhangi bir ekipte mi kontrolü
+        boolean alreadyInAnyTeam = teamMemberRepository.findByMembershipId(membershipId).stream()
+                .anyMatch(existingTm -> existingTm.getTeam().getClub().getId().equals(team.getClub().getId()));
+        
+        if (alreadyInAnyTeam) {
+            throw new RuntimeException("Bu üye zaten bu kulüpte bir ekibe dahil.");
         }
 
         Membership memberToUpdate = membershipRepository.findById(membershipId)
@@ -159,6 +176,12 @@ public class TeamService {
         if (!team.getLeader().getId().equals(requesterMembershipId)) {
             throw new RuntimeException("Bu işlem için yetkiniz yok. Sadece ilgili ekibin lideri üye çıkarabilir.");
         }
+
+        // Üyenin durumunu sıfırla
+        Membership m = tm.getMembership();
+        m.setStatus("passive");
+        m.setRole("uye");
+        membershipRepository.save(m);
 
         teamMemberRepository.deleteById(id);
     }
