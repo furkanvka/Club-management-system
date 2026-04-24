@@ -63,15 +63,30 @@ public class EventApplicationController {
     }
 
     @PutMapping("/{applicationId}/status")
-    public ResponseEntity<EventApplication> updateApplicationStatus(
+    public ResponseEntity<?> updateApplicationStatus(
             @PathVariable Long clubId,
             @PathVariable Long eventId,
             @PathVariable Long applicationId,
-            @RequestBody String status) {
-        // Simple status update, ideally check for admin/baskan role here
+            @RequestBody String status,
+            @RequestParam Long requesterId) {
+        
+        Event event = eventService.getEventsByClubId(clubId).stream()
+                .filter(e -> e.getId().equals(eventId))
+                .findFirst()
+                .orElse(null);
+
+        if (event == null) return ResponseEntity.notFound().build();
+
+        // SADECE Etkinlik Sorumlusu (Leader) onaylayabilir
+        boolean isResponsible = event.getResponsible() != null && event.getResponsible().getId().equals(requesterId);
+        
+        if (!isResponsible) {
+            return ResponseEntity.status(403).body("Sadece etkinlik sorumlusu başvuruları onaylayabilir.");
+        }
+
         return eventApplicationService.getById(applicationId)
                 .map(app -> {
-                    app.setStatus(status.replace("\"", "")); // remove quotes if sent as plain string
+                    app.setStatus(status.replace("\"", ""));
                     return ResponseEntity.ok(eventApplicationService.saveApplication(app));
                 })
                 .orElse(ResponseEntity.notFound().build());

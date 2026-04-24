@@ -13,8 +13,27 @@ public class EventService {
     @Autowired
     private EventRepository eventRepository;
 
+    @Autowired
+    private clubms.backend.repository.EventStaffRepository eventStaffRepository;
+
     public List<Event> getEventsByClubId(Long clubId) {
         return eventRepository.findByClubId(clubId);
+    }
+
+    public List<Event> getEventsByResponsibleId(Long membershipId) {
+        return eventRepository.findByResponsibleId(membershipId);
+    }
+
+    public List<clubms.backend.entity.EventStaff> getEventStaff(Long eventId) {
+        return eventStaffRepository.findByEventId(eventId);
+    }
+
+    public clubms.backend.entity.EventStaff addStaff(clubms.backend.entity.EventStaff staff) {
+        return eventStaffRepository.save(staff);
+    }
+
+    public void removeStaff(Long staffId) {
+        eventStaffRepository.deleteById(staffId);
     }
 
     public List<Event> getAllEvents() {
@@ -37,6 +56,9 @@ public class EventService {
     }
 
     public Event createEvent(Event event) {
+        if (event.getCapacity() != null && event.getCapacity() < 0) {
+            throw new RuntimeException("Kapasite negatif olamaz.");
+        }
         if (hasCollision(event)) {
             // We can throw an exception or handle it in the controller, but let's just save for now 
             // and maybe return a warning or have the controller check.

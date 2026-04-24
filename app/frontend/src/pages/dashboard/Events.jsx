@@ -6,7 +6,9 @@ import { QRCodeSVG } from 'qrcode.react';
 import {
   Plus, Calendar, MapPin, Users, Trash2,
   Clock, CheckCircle, XCircle, AlertCircle, X,
-  Send, QrCode, UserCheck, UserX, Loader2
+  Send, QrCode, UserCheck, UserX, Loader2,
+  Briefcase, UserPlus, UserMinus, ShieldCheck,
+  CheckSquare, Square, ClipboardList
 } from 'lucide-react';
 
 const STATUS = {
@@ -17,12 +19,13 @@ const STATUS = {
   draft: { label: 'Taslak', cls: 'bg-yellow-100 text-yellow-700', icon: AlertCircle },
 };
 
-const EMPTY_FORM = { name: '', description: '', eventDate: '', location: '', capacity: '', status: 'upcoming' };
+const EMPTY_FORM = { name: '', description: '', eventDate: '', location: '', capacity: '0', status: 'upcoming', responsible_id: '' };
 
 export const Events = () => {
-  const { activeClub, activeRole } = useClub();
+  const { activeClub, activeRole, activeMembershipId } = useClub();
   const { user } = useAuth();
   const [events, setEvents] = useState([]);
+  const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState(EMPTY_FORM);
@@ -30,10 +33,29 @@ export const Events = () => {
   const [showApps, setShowApps] = useState(null); // event object
   const [apps, setApps] = useState([]);
   const [loadingApps, setLoadingApps] = useState(false);
-  const [myApps, setMyApps] = useState({}); // eventId -> application status
+  const [myApps, setMyApps] = useState({});
+
+  // Staff & Task Management State
+  const [showStaffModal, setShowStaffModal] = useState(null); // event object
+  const [activeTab, setActiveTab] = useState('staff'); // staff | tasks
+  const [staffList, setStaffList] = useState([]);
+  const [loadingStaff, setLoadingStaff] = useState(false);
+  const [staffRole, setStaffRole] = useState('Görevli');
+  const [selectedMemberForStaff, setSelectedMemberForStaff] = useState('');
+  const [tasks, setTasks] = useState([]);
+  const [loadingTasks, setLoadingTasks] = useState(false);
+  const [taskForm, setTaskForm] = useState({ title: '', assignedToId: '', dueDate: '', priority: 'normal' });
+  const [myStaffEvents, setMyStaffEvents] = useState([]); // List of event IDs where I am staff
 
   const isBaskan = activeRole === 'baskan' || user?.loginType === 'club';
-  const canManage = isBaskan;
+  
+  const isResponsibleFor = useCallback((ev) => {
+    return Number(ev?.responsible?.id) === Number(activeMembershipId);
+  }, [activeMembershipId]);
+
+  const canManageEvent = useCallback((ev) => {
+    return isBaskan || isResponsibleFor(ev);
+  }, [isBaskan, isResponsibleFor]);
 
   const fetchEvents = useCallback(async () => {
     if (!activeClub?.id) return;
@@ -42,7 +64,24 @@ export const Events = () => {
       const res = await api.get(`/clubs/${activeClub.id}/events`);
       setEvents(res.data);
       
-      // Fetch my applications for these events
+      const isAnyResponsible = res.data.some(ev => isResponsibleFor(ev));
+      if (isBaskan || isAnyResponsible) {
+        const memRes = await api.get(`/clubs/${activeClub.id}/members`);
+        setMembers(memRes.data);
+      }
+
+      // Find events where I am staff
+      const staffEvents = [];
+      for (const ev of res.data) {
+        try {
+          const staffRes = await api.get(`/clubs/${activeClub.id}/events/${ev.id}/staff`);
+          if (staffRes.data.some(s => Number(s.membership?.id) === Number(activeMembershipId))) {
+            staffEvents.push(ev.id);
+          }
+        } catch (e) {}
+      }
+      setMyStaffEvents(staffEvents);
+
       const myAppsMap = {};
       for (const ev of res.data) {
         try {
@@ -54,18 +93,92 @@ export const Events = () => {
       setMyApps(myAppsMap);
     } catch (e) {}
     setLoading(false);
-  }, [activeClub?.id, user?.email]);
+  }, [activeClub?.id, user?.email, isBaskan, isResponsibleFor]);
 
   useEffect(() => { fetchEvents(); }, [fetchEvents]);
 
+  // --- STAFF LOGIC ---
+  const fetchStaff = async (eventId) => {
+    setLoadingStaff(true);
+    try {
+      const res = await api.get(`/clubs/${activeClub.id}/events/${eventId}/staff`);
+      setStaffList(res.data);
+    } catch (e) {}
+    setLoadingStaff(false);
+  };
+
+  const handleAddStaff = async (e) => {
+    e.preventDefault();
+    if (!selectedMemberForStaff || !showStaffModal) return;
+    try {
+      await api.post(`/clubs/${activeClub.id}/events/${showStaffModal.id}/staff`, {
+        membership: { id: selectedMemberForStaff },
+        role: staffRole
+      }, { params: { requesterId: activeMembershipId } });
+      setSelectedMemberForStaff('');
+      fetchStaff(showStaffModal.id);
+    } catch (e) { alert(e.response?.data || 'Hata oluştu.'); }
+  };
+
+  const handleRemoveStaff = async (staffId) => {
+    if (!window.confirm('Görevliyi çıkarmak istediğinize emin misiniz?')) return;
+    try {
+      await api.delete(`/clubs/${activeClub.id}/events/${showStaffModal.id}/staff/${staffId}`, {
+        params: { requesterId: activeMembershipId }
+      });
+      fetchStaff(showStaffModal.id);
+    } catch (e) { alert('Hata oluştu.'); }
+  };
+
+  // --- TASK LOGIC ---
+  const fetchTasks = async (eventId) => {
+    setLoadingTasks(true);
+    try {
+      const res = await api.get(`/clubs/${activeClub.id}/events/${eventId}/tasks`);
+      setTasks(res.data);
+    } catch (e) {}
+    setLoadingTasks(false);
+  };
+
+  const handleCreateTask = async (e) => {
+    e.preventDefault();
+    if (!showStaffModal) return;
+    try {
+      await api.post(`/clubs/${activeClub.id}/events/${showStaffModal.id}/tasks`, {
+        ...taskForm,
+        assignedTo: taskForm.assignedToId ? { id: taskForm.assignedToId } : null,
+      }, { params: { requesterId: activeMembershipId } });
+      setTaskForm({ title: '', assignedToId: '', dueDate: '', priority: 'normal' });
+      fetchTasks(showStaffModal.id);
+    } catch (e) { alert('Görev atanamadı.'); }
+  };
+
+  const handleUpdateTaskStatus = async (taskId, newStatus) => {
+    try {
+      await api.put(`/clubs/${activeClub.id}/events/${showStaffModal.id}/tasks/${taskId}/status`, null, {
+        params: { status: newStatus, requesterId: activeMembershipId }
+      });
+      fetchTasks(showStaffModal.id);
+    } catch (e) { alert('Güncellenemedi.'); }
+  };
+
+  const handleDeleteTask = async (taskId) => {
+    if (!window.confirm('Görevi silmek istediğinize emin misiniz?')) return;
+    try {
+      await api.delete(`/clubs/${activeClub.id}/events/${showStaffModal.id}/tasks/${taskId}`, {
+        params: { requesterId: activeMembershipId }
+      });
+      fetchTasks(showStaffModal.id);
+    } catch (e) { alert('Silinemedi.'); }
+  };
+
+  // --- OTHER LOGIC ---
   const handleApply = async (eventId) => {
     try {
       await api.post(`/clubs/${activeClub.id}/events/${eventId}/applications/apply`);
-      alert('Başvurunuz başarıyla alındı!');
+      alert('Başvuru alındı!');
       fetchEvents();
-    } catch (err) {
-      alert('Başvuru sırasında hata oluştu.');
-    }
+    } catch (e) { alert('Hata oluştu.'); }
   };
 
   const fetchApplications = async (eventId) => {
@@ -79,207 +192,157 @@ export const Events = () => {
 
   const handleUpdateAppStatus = async (appId, newStatus) => {
     try {
-      await api.put(`/clubs/${activeClub.id}/events/${showApps.id}/applications/${appId}/status`, JSON.stringify(newStatus));
+      await api.put(`/clubs/${activeClub.id}/events/${showApps.id}/applications/${appId}/status`, JSON.stringify(newStatus), {
+        params: { requesterId: activeMembershipId }
+      });
       fetchApplications(showApps.id);
-    } catch (e) {
-      alert('Durum güncellenemedi.');
-    }
+    } catch (e) { alert(e.response?.data || 'Hata oluştu.'); }
   };
 
   const handleCreate = async (e) => {
     e.preventDefault();
-    if (!form.name.trim()) return;
     setSaving(true);
     try {
       await api.post(`/clubs/${activeClub.id}/events`, {
         ...form,
+        responsible: form.responsible_id ? { id: form.responsible_id } : null,
         eventDate: form.eventDate ? new Date(form.eventDate).toISOString().slice(0, 19) : null,
-        capacity: form.capacity ? parseInt(form.capacity) : null,
+        capacity: parseInt(form.capacity) || 0,
       });
       setForm(EMPTY_FORM);
       setShowForm(false);
       fetchEvents();
-    } catch (e) {
-      alert('Etkinlik oluşturulamadı: ' + (e.response?.data || e.message));
-    } finally {
-      setSaving(false);
-    }
+    } catch (e) { alert(e.response?.data || 'Hata.'); }
+    setSaving(false);
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm('Bu etkinliği silmek istediğinize emin misiniz?')) return;
+    if (!window.confirm('Etkinliği sil?')) return;
     try {
       await api.delete(`/clubs/${activeClub.id}/events/${id}`);
       fetchEvents();
-    } catch (e) { alert('Silinemedi.'); }
+    } catch (e) {}
   };
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Etkinlikler</h1>
-          <p className="text-sm text-gray-500 mt-0.5">{activeClub?.name} — {events.length} etkinlik</p>
+          <h1 className="text-2xl font-black text-gray-900">Etkinlikler</h1>
+          <p className="text-sm text-gray-500">{activeClub?.name} yönetim paneli</p>
         </div>
-        {canManage && (
-          <button
-            onClick={() => setShowForm(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-xl text-sm font-semibold hover:bg-indigo-700 transition shadow-sm"
-          >
-            <Plus size={16} /> Etkinlik Oluştur
+        {isBaskan && (
+          <button onClick={() => setShowForm(true)} className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-xl text-sm font-bold hover:bg-indigo-700 transition shadow-lg shadow-indigo-200">
+            <Plus size={18} /> Etkinlik Oluştur
           </button>
         )}
       </div>
 
-      {/* Create Form Modal */}
       {showForm && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md">
-            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
-              <h2 className="font-bold text-gray-900">Yeni Etkinlik</h2>
-              <button onClick={() => setShowForm(false)} className="text-gray-400 hover:text-gray-600">
-                <X size={20} />
-              </button>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-[2rem] shadow-2xl w-full max-w-md overflow-hidden">
+            <div className="px-8 py-6 border-b border-gray-100 bg-indigo-50/50 flex items-center justify-between">
+              <h2 className="font-black text-gray-900">Yeni Etkinlik Taslağı</h2>
+              <button onClick={() => setShowForm(false)} className="text-gray-400 hover:text-gray-600"><X size={24} /></button>
             </div>
-            <form onSubmit={handleCreate} className="p-6 space-y-4">
+            <form onSubmit={handleCreate} className="p-8 space-y-4">
               <div>
-                <label className="text-xs font-semibold text-gray-500 uppercase">Etkinlik Adı *</label>
-                <input required value={form.name} onChange={e => setForm({ ...form, name: e.target.value })}
-                  className="mt-1 w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400" placeholder="Tanışma Toplantısı..." />
+                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">Etkinlik Adı</label>
+                <input required value={form.name} onChange={e => setForm({...form, name: e.target.value})} className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-indigo-400 focus:outline-none" />
               </div>
-              <div>
-                <label className="text-xs font-semibold text-gray-500 uppercase">Açıklama</label>
-                <textarea value={form.description} onChange={e => setForm({ ...form, description: e.target.value })}
-                  rows={3} className="mt-1 w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400" placeholder="Etkinlik hakkında kısa bilgi..." />
-              </div>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-xs font-semibold text-gray-500 uppercase">Tarih & Saat</label>
-                  <input type="datetime-local" value={form.eventDate} onChange={e => setForm({ ...form, eventDate: e.target.value })}
-                    className="mt-1 w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400" />
+                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">Tarih</label>
+                  <input type="datetime-local" value={form.eventDate} onChange={e => setForm({...form, eventDate: e.target.value})} className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-indigo-400 focus:outline-none" />
                 </div>
                 <div>
-                  <label className="text-xs font-semibold text-gray-500 uppercase">Kapasite</label>
-                  <input type="number" value={form.capacity} onChange={e => setForm({ ...form, capacity: e.target.value })}
-                    className="mt-1 w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400" placeholder="100" />
+                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">Kapasite</label>
+                  <input type="number" min="0" value={form.capacity} onChange={e => setForm({...form, capacity: e.target.value})} className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-indigo-400 focus:outline-none" />
                 </div>
               </div>
               <div>
-                <label className="text-xs font-semibold text-gray-500 uppercase">Konum</label>
-                <input value={form.location} onChange={e => setForm({ ...form, location: e.target.value })}
-                  className="mt-1 w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400" placeholder="Amfi Tiyatro, B101..." />
+                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">Konum / Mekan</label>
+                <input value={form.location} onChange={e => setForm({...form, location: e.target.value})} className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-indigo-400 focus:outline-none" placeholder="Amfi Tiyatro, B101..." />
               </div>
-              <div className="flex gap-3 pt-2">
-                <button type="button" onClick={() => setShowForm(false)}
-                  className="flex-1 py-2.5 border border-gray-200 rounded-xl text-sm font-medium text-gray-600 hover:bg-gray-50">
-                  İptal
-                </button>
-                <button type="submit" disabled={saving}
-                  className="flex-1 py-2.5 bg-indigo-600 text-white rounded-xl text-sm font-semibold hover:bg-indigo-700 disabled:opacity-50">
-                  {saving ? 'Kaydediliyor...' : 'Oluştur'}
-                </button>
+              <div>
+                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">Sorumlu Ekip Lideri</label>
+                <select required value={form.responsible_id} onChange={e => setForm({...form, responsible_id: e.target.value})} className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-indigo-400 focus:outline-none bg-white">
+                  <option value="">Seçiniz...</option>
+                  {members.filter(m => m.role?.toLowerCase().includes('lider')).map(m => (
+                    <option key={m.id} value={m.id}>{m.user?.email?.split('@')[0]}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex gap-3 pt-4">
+                <button type="button" onClick={() => setShowForm(false)} className="flex-1 py-3 border border-gray-200 rounded-xl text-sm font-black text-gray-500 hover:bg-gray-50 uppercase tracking-widest">İptal</button>
+                <button type="submit" disabled={saving} className="flex-1 py-3 bg-indigo-600 text-white rounded-xl text-sm font-black hover:bg-indigo-700 disabled:opacity-50 uppercase tracking-widest">Oluştur</button>
               </div>
             </form>
           </div>
         </div>
       )}
 
-      {/* Events List */}
       {loading ? (
-        <div className="flex justify-center items-center h-40">
-          <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
-        </div>
+        <div className="flex justify-center py-20"><Loader2 className="animate-spin text-indigo-600" size={40} /></div>
       ) : events.length === 0 ? (
-        <div className="bg-white border border-gray-100 rounded-2xl p-16 text-center">
-          <Calendar size={40} className="text-gray-200 mx-auto mb-3" />
-          <p className="text-gray-400 font-medium">Henüz etkinlik yok.</p>
-          {canManage && (
-            <button onClick={() => setShowForm(true)} className="mt-4 text-sm text-indigo-600 hover:underline">
-              İlk etkinliği oluştur →
-            </button>
-          )}
+        <div className="bg-white border border-gray-100 rounded-[2rem] p-20 text-center shadow-sm">
+           <Calendar size={60} className="text-gray-100 mx-auto mb-4" />
+           <p className="text-gray-400 font-bold">Henüz bir etkinlik planlanmamış.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {events.map(ev => {
             const s = STATUS[ev.status] || STATUS.upcoming;
             const SIcon = s.icon;
             const myApp = myApps[ev.id];
+            const canManage = canManageEvent(ev);
+            const isStaff = myStaffEvents.includes(ev.id) || isResponsibleFor(ev);
 
             return (
-              <div key={ev.id} className="bg-white border border-gray-100 rounded-2xl p-5 hover:shadow-md transition group flex flex-col">
-                <div className="flex items-start justify-between gap-2">
-                  <h3 className="font-bold text-gray-900 text-base leading-tight">{ev.name}</h3>
-                  <span className={`inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full shrink-0 ${s.cls}`}>
-                    <SIcon size={11} /> {s.label}
-                  </span>
+              <div key={ev.id} className="bg-white border border-gray-100 rounded-[2rem] p-6 hover:shadow-xl transition-all group relative overflow-hidden">
+                <div className="absolute top-0 right-0 p-6 flex flex-col items-end gap-2">
+                   <span className={`inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full ${s.cls}`}>
+                     <SIcon size={12} /> {s.label}
+                   </span>
+                   {isStaff && !isBaskan && (
+                     <span className="inline-flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest px-2 py-1 rounded-lg bg-amber-50 text-amber-600 border border-amber-100">
+                       <Briefcase size={10} /> Görevli
+                     </span>
+                   )}
                 </div>
-                {ev.description && <p className="text-sm text-gray-500 mt-2 line-clamp-2">{ev.description}</p>}
                 
-                <div className="mt-4 space-y-1.5 flex-1">
-                  {ev.eventDate && (
-                    <div className="flex items-center gap-2 text-xs text-gray-500">
-                      <Calendar size={13} className="text-indigo-400" />
-                      {new Date(ev.eventDate).toLocaleString('tr-TR', { dateStyle: 'medium', timeStyle: 'short' })}
-                    </div>
-                  )}
-                  {ev.location && (
-                    <div className="flex items-center gap-2 text-xs text-gray-500">
-                      <MapPin size={13} className="text-indigo-400" /> {ev.location}
-                    </div>
-                  )}
-                  {ev.capacity && (
-                    <div className="flex items-center gap-2 text-xs text-gray-500">
-                      <Users size={13} className="text-indigo-400" /> {ev.capacity} kişi kapasiteli
+                <h3 className="text-xl font-black text-gray-900 mb-2 pr-20">{ev.name}</h3>
+                
+                <div className="space-y-2 mt-4">
+                  <div className="flex items-center gap-2 text-sm text-gray-500 font-medium">
+                    <Calendar size={16} className="text-indigo-400" />
+                    {ev.eventDate ? new Date(ev.eventDate).toLocaleString('tr-TR') : 'Tarih belirtilmedi'}
+                  </div>
+                  <div className="flex items-center gap-2 text-sm text-gray-500 font-medium">
+                    <MapPin size={16} className="text-indigo-400" /> {ev.location || 'Konum belirtilmedi'}
+                  </div>
+                  {ev.responsible && (
+                    <div className="flex items-center gap-2 text-xs font-black text-indigo-600 bg-indigo-50 w-fit px-3 py-1.5 rounded-xl">
+                      <ShieldCheck size={14} /> Sorumlu: {ev.responsible.user?.email?.split('@')[0]}
                     </div>
                   )}
                 </div>
 
-                {/* My Application Status */}
-                {myApp && (
-                   <div className="mt-4 p-3 bg-gray-50 rounded-xl border border-gray-100 flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                         {myApp.status === 'approved' ? <QrCode size={24} className="text-indigo-600" /> : <Clock size={20} className="text-amber-500" />}
-                         <div>
-                            <p className="text-[10px] font-black uppercase text-gray-400">Başvuru Durumu</p>
-                            <p className={`text-xs font-bold ${myApp.status === 'approved' ? 'text-indigo-600' : 'text-amber-600'}`}>
-                               {myApp.status === 'approved' ? 'Onaylandı' : myApp.status === 'pending' ? 'Beklemede' : 'Reddedildi'}
-                            </p>
-                         </div>
-                      </div>
-                      {myApp.status === 'approved' && (
-                         <div className="bg-white p-1 rounded-lg border border-gray-200">
-                            <QRCodeSVG value={`https://clubms.app/checkin/${ev.id}/${myApp.id}`} size={32} />
-                         </div>
-                      )}
-                   </div>
-                )}
-
-                <div className="mt-4 pt-3 border-t border-gray-50 flex items-center justify-between">
+                <div className="mt-8 pt-6 border-t border-gray-50 flex items-center justify-between">
                   <div className="flex gap-2">
                     {canManage ? (
-                      <button 
-                        onClick={() => { setShowApps(ev); fetchApplications(ev.id); }}
-                        className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-50 text-indigo-600 rounded-lg text-xs font-bold hover:bg-indigo-100 transition"
-                      >
-                        <Users size={14} /> Başvurular
-                      </button>
-                    ) : !myApp && (
-                      <button 
-                        onClick={() => handleApply(ev.id)}
-                        className="flex items-center gap-1.5 px-4 py-1.5 bg-indigo-600 text-white rounded-lg text-xs font-bold hover:bg-indigo-700 transition"
-                      >
-                        <Send size={14} /> Katıl
-                      </button>
+                      <>
+                        <button onClick={() => { setShowApps(ev); fetchApplications(ev.id); }} className="px-4 py-2 bg-indigo-50 text-indigo-600 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-100 transition">Başvurular</button>
+                        <button onClick={() => { setShowStaffModal(ev); fetchStaff(ev.id); fetchTasks(ev.id); setActiveTab('staff'); }} className="px-4 py-2 bg-amber-50 text-amber-600 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-amber-100 transition">Masa</button>
+                      </>
+                    ) : (isStaff || myApp) ? (
+                       <button onClick={() => { setShowStaffModal(ev); fetchStaff(ev.id); fetchTasks(ev.id); setActiveTab('tasks'); }} className="px-4 py-2 bg-gray-50 text-gray-500 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-gray-100 transition">Görevlerimi Gör</button>
+                    ) : (
+                      <button onClick={() => handleApply(ev.id)} className="px-6 py-2 bg-indigo-600 text-white rounded-xl text-xs font-black uppercase tracking-widest hover:bg-indigo-700 transition">Katıl</button>
                     )}
                   </div>
-                  
-                  {canManage && (
-                    <button onClick={() => handleDelete(ev.id)}
-                      className="text-red-400 hover:text-red-600 p-1.5 rounded-lg hover:bg-red-50 transition">
-                      <Trash2 size={15} />
-                    </button>
+                  {isBaskan && (
+                    <button onClick={() => handleDelete(ev.id)} className="p-2 text-gray-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"><Trash2 size={20} /></button>
                   )}
                 </div>
               </div>
@@ -288,69 +351,164 @@ export const Events = () => {
         </div>
       )}
 
-      {/* Applications Modal */}
-      {showApps && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[80vh] flex flex-col">
-            <div className="flex items-center justify-between px-8 py-6 border-b border-gray-100">
+      {/* STAFF & TASK MODAL */}
+      {showStaffModal && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-2xl max-h-[85vh] flex flex-col overflow-hidden">
+            <div className="px-8 py-6 border-b border-gray-100 bg-amber-50/50 flex items-center justify-between">
               <div>
-                 <h2 className="text-xl font-black text-gray-900">{showApps.name}</h2>
-                 <p className="text-xs text-gray-400 font-bold uppercase tracking-widest mt-1">Katılımcı Başvuruları</p>
+                 <h2 className="text-xl font-black text-gray-900 tracking-tight">{showStaffModal.name}</h2>
+                 <p className="text-[10px] font-black text-amber-600 uppercase tracking-widest mt-1">Etkinlik Masası & Görev Dağılımı</p>
               </div>
-              <button onClick={() => setShowApps(null)} className="text-gray-400 hover:text-gray-600 bg-gray-50 p-2 rounded-xl transition-all">
-                <X size={24} />
-              </button>
+              <button onClick={() => setShowStaffModal(null)} className="p-2 bg-white rounded-xl shadow-sm text-gray-400 hover:text-gray-600 transition-all"><X size={24} /></button>
             </div>
-            
-            <div className="flex-1 overflow-y-auto p-6">
-               {loadingApps ? (
-                  <div className="flex flex-col items-center justify-center py-20 gap-3">
-                     <Loader2 className="w-10 h-10 text-indigo-600 animate-spin" />
-                     <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Başvurular Getiriliyor...</p>
-                  </div>
-               ) : apps.length === 0 ? (
-                  <div className="text-center py-20">
-                     <Users size={48} className="mx-auto text-gray-100 mb-4" />
-                     <p className="text-gray-400 font-bold">Henüz başvuru yapılmamış.</p>
-                  </div>
+
+            <div className="flex px-8 bg-gray-50/50 border-b border-gray-100">
+               <button onClick={() => { setActiveTab('staff'); fetchStaff(showStaffModal.id); }} className={`px-6 py-4 text-[10px] font-black uppercase tracking-widest transition-all border-b-2 ${activeTab === 'staff' ? 'border-amber-500 text-amber-600' : 'border-transparent text-gray-400'}`}>Personel</button>
+               <button onClick={() => { setActiveTab('tasks'); fetchTasks(showStaffModal.id); }} className={`px-6 py-4 text-[10px] font-black uppercase tracking-widest transition-all border-b-2 ${activeTab === 'tasks' ? 'border-amber-500 text-amber-600' : 'border-transparent text-gray-400'}`}>Görevler</button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto p-8 space-y-6">
+               {activeTab === 'staff' ? (
+                 <>
+                   {isResponsibleFor(showStaffModal) && (
+                     <form onSubmit={handleAddStaff} className="bg-white p-4 rounded-2xl border border-amber-100 shadow-sm flex flex-col sm:flex-row gap-3 items-end">
+                        <div className="flex-1 w-full">
+                          <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1 block">Üye Seç</label>
+                          <select required value={selectedMemberForStaff} onChange={e => setSelectedMemberForStaff(e.target.value)} className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-amber-400 focus:outline-none bg-white font-medium">
+                            <option value="">Seçiniz...</option>
+                            {members.map(m => (
+                              <option key={m.id} value={m.id}>{m.user?.email?.split('@')[0]}</option>
+                            ))}
+                          </select>
+                        </div>
+                        <div className="w-full sm:w-40">
+                          <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1 block">Görev</label>
+                          <input value={staffRole} onChange={e => setStaffRole(e.target.value)} className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-amber-400 focus:outline-none font-medium" />
+                        </div>
+                        <button type="submit" className="bg-amber-500 text-white p-2.5 rounded-xl hover:bg-amber-600 transition shadow-lg shrink-0"><UserPlus size={20} /></button>
+                     </form>
+                   )}
+                   <div className="space-y-3">
+                      {loadingStaff ? <Loader2 className="animate-spin mx-auto text-amber-500" /> : staffList.length === 0 ? <p className="text-center text-gray-400 py-10 font-bold italic">Henüz personel atanmamış.</p> : (
+                        <div className="grid grid-cols-1 gap-2">
+                          {staffList.map(s => (
+                            <div key={s.id} className="flex items-center justify-between p-4 bg-white border border-gray-100 rounded-2xl hover:border-amber-200 transition-all shadow-sm">
+                               <div className="flex items-center gap-4">
+                                  <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center text-amber-600 font-black text-sm">{s.membership?.user?.email?.[0].toUpperCase()}</div>
+                                  <div>
+                                     <p className="text-sm font-black text-gray-800">{s.membership?.user?.email?.split('@')[0]}</p>
+                                     <p className="text-[10px] text-amber-600 font-black uppercase tracking-tighter">{s.role}</p>
+                                  </div>
+                               </div>
+                               {isResponsibleFor(showStaffModal) && (
+                                 <button onClick={() => handleRemoveStaff(s.id)} className="p-2 text-gray-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"><UserMinus size={18} /></button>
+                               )}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                   </div>
+                 </>
                ) : (
-                  <div className="grid grid-cols-1 gap-3">
-                     {apps.map(app => (
-                        <div key={app.id} className="flex items-center justify-between p-4 bg-gray-50 border border-gray-100 rounded-2xl group hover:bg-white hover:border-indigo-100 hover:shadow-md transition-all">
-                           <div className="flex items-center gap-4">
-                              <div className="w-10 h-10 rounded-xl bg-white border border-gray-100 shadow-sm flex items-center justify-center font-black text-indigo-600">
-                                 {app.membership?.user?.email?.[0].toUpperCase() || '?'}
+                 <>
+                   {isResponsibleFor(showStaffModal) && (
+                     <form onSubmit={handleCreateTask} className="bg-white p-6 rounded-2xl border border-indigo-100 shadow-sm space-y-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                           <div className="sm:col-span-2">
+                              <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1 block">Görev Başlığı</label>
+                              <input required value={taskForm.title} onChange={e => setTaskForm({...taskForm, title: e.target.value})} className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-indigo-400 focus:outline-none font-medium" />
+                           </div>
+                           <div>
+                              <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1 block">Sorumlu Personel</label>
+                              <select required value={taskForm.assignedToId} onChange={e => setTaskForm({...taskForm, assignedToId: e.target.value})} className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-indigo-400 focus:outline-none bg-white font-medium">
+                                 <option value="">Seçiniz...</option>
+                                 {staffList.map(s => (
+                                    <option key={s.membership.id} value={s.membership.id}>{s.membership.user?.email?.split('@')[0]}</option>
+                                 ))}
+                              </select>
+                           </div>
+                           <div>
+                              <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1 block">Son Tarih</label>
+                              <input type="date" required value={taskForm.dueDate} onChange={e => setTaskForm({...taskForm, dueDate: e.target.value})} className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-indigo-400 focus:outline-none font-medium" />
+                           </div>
+                        </div>
+                        <button type="submit" className="w-full py-3 bg-indigo-600 text-white rounded-xl text-xs font-black uppercase tracking-widest hover:bg-indigo-700 transition shadow-lg shadow-indigo-100">Görev Ata</button>
+                     </form>
+                   )}
+                   <div className="space-y-3">
+                      {loadingTasks ? <Loader2 className="animate-spin mx-auto text-indigo-500" /> : tasks.length === 0 ? <p className="text-center text-gray-400 py-10 font-bold italic">Görev listesi boş.</p> : (
+                        <div className="space-y-3">
+                          {tasks.map(task => {
+                            const isMyTask = Number(task.assignedTo?.id) === Number(activeMembershipId);
+                            const canUpdate = isMyTask || isResponsibleFor(showStaffModal);
+                            return (
+                              <div key={task.id} className={`bg-white border rounded-2xl p-5 shadow-sm transition-all flex items-start justify-between ${task.status === 'completed' ? 'border-emerald-100 bg-emerald-50/10' : 'border-gray-100'}`}>
+                                 <div className="flex gap-4">
+                                    {canUpdate ? (
+                                      <button onClick={() => handleUpdateTaskStatus(task.id, task.status === 'completed' ? 'pending' : 'completed')} className={`mt-1 transition-colors ${task.status === 'completed' ? 'text-emerald-500' : 'text-gray-300 hover:text-indigo-400'}`}>
+                                         {task.status === 'completed' ? <CheckSquare size={24} /> : <Square size={24} />}
+                                      </button>
+                                    ) : (
+                                      <div className="mt-1 text-gray-200"><Square size={24} /></div>
+                                    )}
+                                    <div>
+                                       <h4 className={`font-bold ${task.status === 'completed' ? 'text-gray-400 line-through' : 'text-gray-800'}`}>{task.title}</h4>
+                                       <div className="flex items-center gap-3 mt-1.5">
+                                          <span className="text-[9px] font-black text-gray-400 uppercase bg-white border border-gray-100 px-2 py-0.5 rounded-lg">@{task.assignedTo?.user?.email?.split('@')[0]}</span>
+                                          {task.dueDate && <span className="text-[9px] font-black text-gray-400 uppercase flex items-center gap-1"><Clock size={10} /> {new Date(task.dueDate).toLocaleDateString('tr-TR')}</span>}
+                                       </div>
+                                    </div>
+                                 </div>
+                                 {isResponsibleFor(showStaffModal) && (
+                                   <button onClick={() => handleDeleteTask(task.id)} className="p-2 text-gray-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"><Trash2 size={18} /></button>
+                                 )}
                               </div>
+                            );
+                          })}
+                        </div>
+                      )}
+                   </div>
+                 </>
+               )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* APPLICATIONS MODAL (Simplified) */}
+      {showApps && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-lg max-h-[70vh] flex flex-col overflow-hidden">
+            <div className="px-8 py-6 border-b border-gray-100 flex items-center justify-between">
+              <h2 className="text-xl font-black text-gray-900 tracking-tight">Başvurular</h2>
+              <button onClick={() => setShowApps(null)} className="p-2 text-gray-400 hover:text-gray-600 transition-all"><X size={24} /></button>
+            </div>
+            <div className="flex-1 overflow-y-auto p-8">
+               {loadingApps ? <Loader2 className="animate-spin mx-auto text-indigo-500" /> : apps.length === 0 ? <p className="text-center text-gray-400 py-10">Başvuru bulunamadı.</p> : (
+                  <div className="space-y-3">
+                     {apps.map(app => (
+                        <div key={app.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl border border-gray-100">
+                           <div className="flex items-center gap-3">
+                              <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center font-black text-indigo-600 border border-gray-100">{app.membership?.user?.email?.[0].toUpperCase()}</div>
                               <div>
-                                 <p className="text-sm font-bold text-gray-800 leading-tight">{app.membership?.user?.email?.split('@')[0]}</p>
-                                 <p className="text-[10px] text-gray-400 font-black uppercase mt-0.5">{app.membership?.user?.email}</p>
+                                 <p className="text-sm font-bold text-gray-800">{app.membership?.user?.email?.split('@')[0]}</p>
+                                 <p className="text-[10px] text-gray-400 font-black uppercase">{app.status}</p>
                               </div>
                            </div>
-                           
-                           <div className="flex items-center gap-2">
-                              {app.status === 'pending' ? (
+                           <div className="flex gap-2">
+                              {app.status === 'pending' && isResponsibleFor(showApps) ? (
                                  <>
-                                    <button 
-                                       onClick={() => handleUpdateAppStatus(app.id, 'rejected')}
-                                       className="w-10 h-10 flex items-center justify-center bg-white border border-gray-200 text-red-500 rounded-xl hover:bg-red-50 hover:border-red-100 transition-all shadow-sm"
-                                       title="Reddet"
-                                    >
-                                       <UserX size={18} />
-                                    </button>
-                                    <button 
-                                       onClick={() => handleUpdateAppStatus(app.id, 'approved')}
-                                       className="w-10 h-10 flex items-center justify-center bg-white border border-indigo-200 text-indigo-600 rounded-xl hover:bg-indigo-50 hover:border-indigo-300 transition-all shadow-sm"
-                                       title="Onayla"
-                                    >
-                                       <UserCheck size={18} />
-                                    </button>
+                                    <button onClick={() => handleUpdateAppStatus(app.id, 'rejected')} className="p-2 bg-white text-red-500 rounded-xl border border-gray-100 hover:bg-red-50 transition-all"><UserX size={18} /></button>
+                                    <button onClick={() => handleUpdateAppStatus(app.id, 'approved')} className="p-2 bg-white text-indigo-600 rounded-xl border border-gray-100 hover:bg-indigo-50 transition-all"><UserCheck size={18} /></button>
                                  </>
                               ) : (
-                                 <div className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest border ${
-                                    app.status === 'approved' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-red-50 text-red-600 border-red-100'
-                                 }`}>
-                                    {app.status === 'approved' ? 'Kabul Edildi' : 'Reddedildi'}
-                                 </div>
+                                <span className={`text-[10px] font-black uppercase px-3 py-1 rounded-lg ${
+                                  app.status === 'approved' ? 'bg-emerald-50 text-emerald-600' : 
+                                  app.status === 'rejected' ? 'bg-red-50 text-red-600' : 'bg-gray-100 text-gray-400'
+                                }`}>
+                                  {app.status === 'approved' ? 'Onaylandı' : app.status === 'rejected' ? 'Reddedildi' : 'Beklemede'}
+                                </span>
                               )}
                            </div>
                         </div>

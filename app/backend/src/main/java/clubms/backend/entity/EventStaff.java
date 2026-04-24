@@ -5,10 +5,10 @@ import java.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
-@Table(name = "event_applications", uniqueConstraints = {
+@Table(name = "event_staff", uniqueConstraints = {
     @UniqueConstraint(columnNames = {"event_id", "membership_id"})
 })
-public class EventApplication {
+public class EventStaff {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,7 +16,7 @@ public class EventApplication {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "event_id")
-    @JsonIgnoreProperties({"club", "responsible", "hibernateLazyInitializer", "handler"})
+    @JsonIgnoreProperties({"staff", "club", "hibernateLazyInitializer", "handler"})
     private Event event;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -24,14 +24,14 @@ public class EventApplication {
     @JsonIgnoreProperties({"club", "hibernateLazyInitializer", "handler"})
     private Membership membership;
 
-    private String status = "pending"; // pending, approved, rejected
+    private String role; // örn: "organizatör", "teknik", "tanıtım", "kayıt"
 
-    @Column(name = "applied_at")
-    private LocalDateTime appliedAt;
+    @Column(name = "assigned_at")
+    private LocalDateTime assignedAt;
 
     @PrePersist
     protected void onCreate() {
-        appliedAt = LocalDateTime.now();
+        assignedAt = LocalDateTime.now();
     }
 
     // Getters and Setters
@@ -41,8 +41,8 @@ public class EventApplication {
     public void setEvent(Event event) { this.event = event; }
     public Membership getMembership() { return membership; }
     public void setMembership(Membership membership) { this.membership = membership; }
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
-    public LocalDateTime getAppliedAt() { return appliedAt; }
-    public void setAppliedAt(LocalDateTime appliedAt) { this.appliedAt = appliedAt; }
+    public String getRole() { return role; }
+    public void setRole(String role) { this.role = role; }
+    public LocalDateTime getAssignedAt() { return assignedAt; }
+    public void setAssignedAt(LocalDateTime assignedAt) { this.assignedAt = assignedAt; }
 }

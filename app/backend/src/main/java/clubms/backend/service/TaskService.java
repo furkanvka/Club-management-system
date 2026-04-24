@@ -21,21 +21,35 @@ public class TaskService {
         return taskRepository.findByProjectId(projectId); 
     }
 
+    public List<Task> getTasksByEventId(Long eventId) {
+        return taskRepository.findByEventId(eventId);
+    }
+
+    public List<Task> getTasksByAssignedToId(Long membershipId) {
+        return taskRepository.findByAssignedToId(membershipId);
+    }
+
     public Task createTask(Task task, Long requesterMembershipId) {
-        Project project = projectRepository.findById(task.getProject().getId())
-                .orElseThrow(() -> new RuntimeException("Proje bulunamadı"));
+        if (task.getProject() != null) {
+            Project project = projectRepository.findById(task.getProject().getId())
+                    .orElseThrow(() -> new RuntimeException("Proje bulunamadı"));
 
-        Team team = project.getTeam();
+            Team team = project.getTeam();
 
-        // 1. Sadece ekip lideri görev atayabilir
-        if (!team.getLeader().getId().equals(requesterMembershipId)) {
-            throw new RuntimeException("Sadece ekip lideri görev atayabilir.");
-        }
+            // 1. Sadece ekip lideri görev atayabilir
+            if (!team.getLeader().getId().equals(requesterMembershipId)) {
+                throw new RuntimeException("Sadece ekip lideri görev atayabilir.");
+            }
 
-        // 2. Görev atanan kişi bu ekipte mi?
-        if (task.getAssignedTo() != null) {
-            teamMemberRepository.findByTeamIdAndMembershipId(team.getId(), task.getAssignedTo().getId())
-                    .orElseThrow(() -> new RuntimeException("Görev sadece ekip üyelerine atanabilir."));
+            // 2. Görev atanan kişi bu ekipte mi?
+            if (task.getAssignedTo() != null) {
+                teamMemberRepository.findByTeamIdAndMembershipId(team.getId(), task.getAssignedTo().getId())
+                        .orElseThrow(() -> new RuntimeException("Görev sadece ekip üyelerine atanabilir."));
+            }
+        } else if (task.getEvent() != null) {
+            // Controller will set the event, and it already checks if the requester is the responsible person.
+        } else {
+            throw new RuntimeException("Görev bir proje veya etkinliğe ait olmalıdır.");
         }
 
         // 3. Son tarih (deadline) kontrolü
@@ -56,9 +70,14 @@ public class TaskService {
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new RuntimeException("Görev bulunamadı"));
 
-        // Görevi yapan kişi veya lider durumu güncelleyebilir
+        // Görevi yapan kişi veya (Proje lideri / Etkinlik sorumlusu) durumu güncelleyebilir
         boolean isAssigned = task.getAssignedTo() != null && task.getAssignedTo().getId().equals(requesterMembershipId);
-        boolean isLeader = task.getProject().getTeam().getLeader().getId().equals(requesterMembershipId);
+        boolean isLeader = false;
+        if (task.getProject() != null) {
+            isLeader = task.getProject().getTeam().getLeader().getId().equals(requesterMembershipId);
+        } else if (task.getEvent() != null) {
+            isLeader = task.getEvent().getResponsible() != null && task.getEvent().getResponsible().getId().equals(requesterMembershipId);
+        }
 
         if (!isAssigned && !isLeader) {
             throw new RuntimeException("Bu işlem için yetkiniz yok.");
@@ -79,7 +98,14 @@ public class TaskService {
                 .orElseThrow(() -> new RuntimeException("Görev bulunamadı"));
 
         // Sadece lider silebilir
-        if (!task.getProject().getTeam().getLeader().getId().equals(requesterMembershipId)) {
+        boolean canDelete = false;
+        if (task.getProject() != null) {
+            canDelete = task.getProject().getTeam().getLeader().getId().equals(requesterMembershipId);
+        } else if (task.getEvent() != null) {
+            canDelete = task.getEvent().getResponsible() != null && task.getEvent().getResponsible().getId().equals(requesterMembershipId);
+        }
+
+        if (!canDelete) {
             throw new RuntimeException("Sadece ekip lideri görev silebilir.");
         }
 

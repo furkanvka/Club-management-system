@@ -15,10 +15,15 @@ public class Task {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id")
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @JsonIgnoreProperties({"tasks", "hibernateLazyInitializer", "handler"})
     private Project project;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "event_id")
+    @JsonIgnoreProperties({"staff", "hibernateLazyInitializer", "handler"})
+    private Event event;
+
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "assigned_to")
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Membership assignedTo;
@@ -51,6 +56,8 @@ public class Task {
     public void setId(Long id) { this.id = id; }
     public Project getProject() { return project; }
     public void setProject(Project project) { this.project = project; }
+    public Event getEvent() { return event; }
+    public void setEvent(Event event) { this.event = event; }
     public Membership getAssignedTo() { return assignedTo; }
     public void setAssignedTo(Membership assignedTo) { this.assignedTo = assignedTo; }
     public String getTitle() { return title; }

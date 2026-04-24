@@ -28,9 +28,15 @@ public class Event {
 
     private String location;
 
-    private Integer capacity;
+    @Column(columnDefinition = "integer default 0")
+    private Integer capacity = 0;
 
     private String status = "upcoming"; // draft, upcoming, ongoing, completed, cancelled
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "responsible_id")
+    @JsonIgnoreProperties({"club", "hibernateLazyInitializer", "handler"})
+    private Membership responsible;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -57,6 +63,8 @@ public class Event {
     public void setCapacity(Integer capacity) { this.capacity = capacity; }
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+    public Membership getResponsible() { return responsible; }
+    public void setResponsible(Membership responsible) { this.responsible = responsible; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 }

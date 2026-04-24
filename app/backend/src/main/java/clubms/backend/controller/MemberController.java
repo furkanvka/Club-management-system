@@ -26,6 +26,14 @@ public class MemberController {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private clubms.backend.service.TaskService taskService;
+
+    @GetMapping("/{membershipId}/tasks")
+    public ResponseEntity<List<clubms.backend.entity.Task>> getMemberTasks(@PathVariable Long clubId, @PathVariable Long membershipId) {
+        return ResponseEntity.ok(taskService.getTasksByAssignedToId(membershipId));
+    }
+
     @GetMapping
     public ResponseEntity<List<Membership>> getMembers(@PathVariable Long clubId) {
         return ResponseEntity.ok(memberService.getMembersByClubId(clubId));
