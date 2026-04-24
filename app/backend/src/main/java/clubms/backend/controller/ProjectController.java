@@ -15,7 +15,10 @@ public class ProjectController {
     @Autowired private ClubService clubService;
 
     @GetMapping
-    public ResponseEntity<List<Project>> getProjects(@PathVariable Long clubId) {
+    public ResponseEntity<List<Project>> getProjects(@PathVariable Long clubId, @RequestParam(required = false) Long requesterId) {
+        if (requesterId != null) {
+            return ResponseEntity.ok(projectService.getProjectsByMembershipId(clubId, requesterId));
+        }
         return ResponseEntity.ok(projectService.getProjectsByClubId(clubId));
     }
 

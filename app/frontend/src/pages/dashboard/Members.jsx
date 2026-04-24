@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useClub } from '../../store/ClubContext';
 import { useAuth } from '../../store/AuthContext';
 import api from '../../services/api';
@@ -11,29 +11,55 @@ import {
   Shield, 
   Star, 
   UserCircle2,
-  MoreHorizontal,
+  Plus,
+  X,
+  CheckCircle2,
   DollarSign,
   Folder
 } from 'lucide-react';
 
 export const Members = () => {
-  const { activeClub, activeRole } = useClub();
+  const { activeClub, activeRole, activeMembershipId } = useClub();
   const { user } = useAuth();
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
 
-  const isBaskan = activeRole === 'baskan' || user?.loginType === 'club';
+  // Team Assignment State
+  const [myTeams, setMyTeams] = useState([]);
+  const [showTeamModal, setShowTeamModal] = useState(false);
+  const [selectedMember, setSelectedMember] = useState(null);
+  const [assigning, setAssigning] = useState(false);
 
-  const fetchMembers = () => {
+  const isBaskan = activeRole === 'baskan' || user?.loginType === 'club';
+  const isLider = activeRole === 'ekip_lideri' || activeRole === 'EKIP_LIDERI' || activeRole === 'lider';
+  const canManageTeams = isLider; // SADECE Ekip Lideri üye ekleyebilir, Başkan ekleyemez.
+
+  const fetchMembers = useCallback(() => {
     if (!activeClub?.id) return;
     setLoading(true);
     api.get(`/clubs/${activeClub.id}/members`)
       .then(r => { setMembers(r.data); setLoading(false); })
       .catch(() => setLoading(false));
-  };
+  }, [activeClub?.id]);
 
-  useEffect(() => { fetchMembers(); }, [activeClub]);
+  const fetchMyTeams = useCallback(() => {
+    if (!activeClub?.id || !canManageTeams) return;
+    api.get(`/clubs/${activeClub.id}/teams`)
+      .then(r => {
+        let data = r.data;
+        if (!isBaskan) {
+          data = data.filter(t => Number(t.leader?.id) === Number(activeMembershipId));
+        }
+        setMyTeams(data);
+      })
+      .catch(() => {});
+  }, [activeClub?.id, isBaskan, activeMembershipId, canManageTeams]);
+
+  useEffect(() => { 
+    fetchMembers(); 
+    fetchMyTeams();
+  }, [fetchMembers, fetchMyTeams]);
 
   const handleRemove = async (memberId) => {
     if (!window.confirm('Bu üyeyi topluluktan çıkarmak istediğinize emin misiniz?')) return;
@@ -57,6 +83,24 @@ export const Members = () => {
       fetchMembers();
     } catch (err) {
       alert('Yetki güncellenemedi.');
+    }
+  };
+
+  const handleAddToTeam = async (teamId) => {
+    if (!selectedMember || !teamId) return;
+    setAssigning(true);
+    try {
+      await api.post(`/clubs/${activeClub.id}/teams/${teamId}/members`, {
+        membership: { id: selectedMember.id }
+      }, { params: { requesterId: activeMembershipId } });
+      
+      alert('Üye başarıyla ekibe eklendi.');
+      setShowTeamModal(false);
+      setSelectedMember(null);
+    } catch (e) {
+      alert(e.response?.data?.message || 'Üye eklenemedi. Zaten ekipte olabilir.');
+    } finally {
+      setAssigning(false);
     }
   };
 
@@ -125,13 +169,6 @@ export const Members = () => {
               className="w-full pl-12 pr-4 py-3.5 bg-white border border-gray-100 rounded-2xl text-sm focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-200 font-medium transition-all"
             />
           </div>
-          
-          <div className="flex items-center gap-3">
-             <div className="flex items-center gap-2 text-[10px] font-black text-gray-400 uppercase tracking-widest bg-white px-4 py-2 rounded-xl border border-gray-50 shadow-sm">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                Sistem Çevrimiçi
-             </div>
-          </div>
         </div>
 
         {loading ? (
@@ -145,7 +182,6 @@ export const Members = () => {
               <UserCircle2 size={56} />
             </div>
             <p className="text-gray-500 font-black text-xl">{search ? 'Kayıt bulunamadı.' : 'Üye listesi boş.'}</p>
-            <p className="text-sm text-gray-400 mt-2 font-medium">Topluluğa yeni üyeler katıldığında burada görünecektir.</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -155,7 +191,7 @@ export const Members = () => {
                   <th className="text-left px-8 py-6 text-[10px] font-black text-gray-400 uppercase tracking-widest">Üye Bilgileri</th>
                   <th className="text-left px-8 py-6 text-[10px] font-black text-gray-400 uppercase tracking-widest">Yetki Grubu</th>
                   <th className="text-left px-8 py-6 text-[10px] font-black text-gray-400 uppercase tracking-widest">Sistem Durumu</th>
-                  {isBaskan && <th className="text-right px-8 py-6 text-[10px] font-black text-gray-400 uppercase tracking-widest">İşlemler</th>}
+                  <th className="text-right px-8 py-6 text-[10px] font-black text-gray-400 uppercase tracking-widest">İşlemler</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-50">
@@ -218,26 +254,36 @@ export const Members = () => {
                           {m.status === 'active' ? 'Aktif Üye' : 'Pasif'}
                         </div>
                       </td>
-                      {isBaskan && (
-                        <td className="px-8 py-6 text-right">
-                          {!isUserBaskan ? (
-                            <div className="flex justify-end gap-2">
-                               <button
-                                onClick={() => handleRemove(m.id)}
-                                className="w-10 h-10 flex items-center justify-center text-gray-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all duration-300"
-                                title="Üyeyi Çıkar"
-                              >
-                                <Trash2 size={18} />
-                              </button>
-                            </div>
-                          ) : (
-                            <div className="inline-flex items-center gap-2 px-3 py-2 bg-purple-50 text-purple-400 rounded-xl" title="Kurucu Yetkisi">
-                               <Shield size={16} />
-                               <span className="text-[9px] font-black uppercase tracking-tighter">Korumalı</span>
-                            </div>
-                          )}
-                        </td>
-                      )}
+                      <td className="px-8 py-6 text-right">
+                        <div className="flex justify-end gap-2">
+                           {canManageTeams && !isUserBaskan && (
+                             <button
+                               onClick={() => { setSelectedMember(m); setShowTeamModal(true); }}
+                               className="px-3 py-1.5 bg-indigo-50 text-indigo-600 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-600 hover:text-white transition-all shadow-sm"
+                               title="Ekibe Ekle"
+                             >
+                               <Plus size={14} className="inline mr-1" /> Ekibe Ekle
+                             </button>
+                           )}
+                           
+                           {isBaskan && !isUserBaskan && (
+                              <button
+                               onClick={() => handleRemove(m.id)}
+                               className="w-10 h-10 flex items-center justify-center text-gray-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all duration-300"
+                               title="Üyeyi Çıkar"
+                             >
+                               <Trash2 size={18} />
+                             </button>
+                           )}
+                           
+                           {isUserBaskan && (
+                              <div className="inline-flex items-center gap-2 px-3 py-2 bg-purple-50 text-purple-400 rounded-xl" title="Kurucu Yetkisi">
+                                 <Shield size={16} />
+                                 <span className="text-[9px] font-black uppercase tracking-tighter">Korumalı</span>
+                              </div>
+                           )}
+                        </div>
+                      </td>
                     </tr>
                   );
                 })}
@@ -246,6 +292,64 @@ export const Members = () => {
           </div>
         )}
       </div>
+
+      {/* Team Assignment Modal */}
+      {showTeamModal && (
+        <div className="fixed inset-0 bg-gray-900/60 backdrop-blur-md z-50 flex items-center justify-center p-4 animate-in fade-in duration-300">
+           <div className="bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl border border-gray-100 overflow-hidden animate-in zoom-in-95 duration-300">
+              <div className="p-8 border-b border-gray-50 bg-gradient-to-br from-indigo-50/50 to-white flex items-center justify-between">
+                 <div>
+                    <h3 className="text-xl font-black text-gray-900 tracking-tight">Ekibe Atama Yap</h3>
+                    <p className="text-xs text-gray-500 font-bold uppercase tracking-widest mt-1">{selectedMember?.user?.email}</p>
+                 </div>
+                 <button onClick={() => setShowTeamModal(false)} className="w-10 h-10 flex items-center justify-center bg-white rounded-xl text-gray-400 hover:text-gray-600 shadow-sm border border-gray-100 transition-all"><X size={20} /></button>
+              </div>
+              
+              <div className="p-8 space-y-4">
+                 <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 flex items-center gap-2">
+                    <CheckCircle2 size={12} className="text-indigo-500" /> Atanacak Ekibi Seçin
+                 </div>
+                 
+                 <div className="max-h-[300px] overflow-y-auto pr-2 space-y-2 custom-scrollbar">
+                    {myTeams.length === 0 ? (
+                       <div className="py-10 text-center bg-gray-50 rounded-3xl border border-dashed border-gray-200">
+                          <p className="text-sm text-gray-400 font-bold italic">Yönettiğiniz bir ekip bulunamadı.</p>
+                       </div>
+                    ) : (
+                       myTeams.map(t => (
+                          <button
+                            key={t.id}
+                            disabled={assigning}
+                            onClick={() => handleAddToTeam(t.id)}
+                            className="w-full flex items-center justify-between p-4 bg-gray-50 hover:bg-indigo-50 border border-gray-100 hover:border-indigo-200 rounded-2xl transition-all group"
+                          >
+                             <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 bg-white rounded-xl shadow-sm border border-gray-100 flex items-center justify-center text-indigo-600 font-black group-hover:scale-110 transition-transform">
+                                   {t.name[0].toUpperCase()}
+                                </div>
+                                <div className="text-left">
+                                   <div className="text-sm font-black text-gray-800">{t.name}</div>
+                                   <div className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Lider: {t.leader?.user?.email?.split('@')[0]}</div>
+                                </div>
+                             </div>
+                             <Plus size={18} className="text-gray-300 group-hover:text-indigo-500" />
+                          </button>
+                       ))
+                    )}
+                 </div>
+              </div>
+              
+              <div className="p-8 bg-gray-50/50 border-t border-gray-50 flex justify-end">
+                 <button 
+                   onClick={() => setShowTeamModal(false)}
+                   className="px-6 py-2.5 bg-white border border-gray-200 text-gray-500 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-gray-50 transition-all"
+                 >
+                    İptal
+                 </button>
+              </div>
+           </div>
+        </div>
+      )}
     </div>
   );
 };

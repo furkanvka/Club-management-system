@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useClub } from '../../store/ClubContext';
 import { useAuth } from '../../store/AuthContext';
 import api from '../../services/api';
 import { 
-  Folder, Plus, Trash2, CheckCircle2, Circle, 
-  Clock, AlertCircle, ChevronRight, X, Layout, 
-  ListTodo, Calendar, Filter, User2, ArrowLeft,
-  Flag, Tag, ChevronDown
+  Folder, Plus, CheckCircle2, 
+  ChevronRight, Layout, 
+  ListTodo, Calendar, User2, ArrowLeft,
+  Flag
 } from 'lucide-react';
 
 const PRIORITY = {
@@ -20,7 +20,7 @@ export const Projects = () => {
   const { activeClub, activeRole, activeMembershipId } = useClub();
   const { user } = useAuth();
   const [projects, setProjects] = useState([]);
-  const [teams, setTeams] = useState([]);
+  const [teams, setTeams] = useState([]); // Tüm ekipler burada tutulacak
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
@@ -39,19 +39,31 @@ export const Projects = () => {
   const [taskAssignedToId, setTaskAssignedToId] = useState('');
   const [teamMembers, setTeamMembers] = useState([]);
 
+  const isAdmin = activeRole === 'baskan' || user?.loginType === 'club';
   const isLider = activeRole === 'ekip_lideri' || activeRole === 'ekip-lideri';
 
-  const fetchProjects = () => {
+  // 1. Ekipleri çekme (Teams.jsx ile aynı)
+  const fetchTeams = useCallback(() => {
+    if (!activeClub?.id) return;
+    api.get(`/clubs/${activeClub.id}/teams`)
+      .then(r => setTeams(r.data))
+      .catch(() => setTeams([]));
+  }, [activeClub?.id]);
+
+  // 2. Projeleri çekme (Backend artık requesterId'ye göre filtreliyor)
+  const fetchProjects = useCallback(() => {
     if (!activeClub?.id) return;
     setLoading(true);
-    api.get(`/clubs/${activeClub.id}/projects`)
-      .then(r => { setProjects(r.data); setLoading(false); })
+    
+    api.get(`/clubs/${activeClub.id}/projects`, {
+      params: { requesterId: activeMembershipId }
+    })
+      .then(r => { 
+        setProjects(r.data); 
+        setLoading(false); 
+      })
       .catch(() => setLoading(false));
-  };
-
-  const fetchTeams = () => {
-    api.get(`/clubs/${activeClub.id}/teams`).then(r => setTeams(r.data));
-  };
+  }, [activeClub?.id, activeMembershipId]);
 
   const fetchTasks = (projectId) => {
     setLoadingTasks(true);
@@ -64,12 +76,17 @@ export const Projects = () => {
     api.get(`/clubs/${activeClub.id}/teams/${teamId}/members`).then(r => setTeamMembers(r.data));
   };
 
-  useEffect(() => { 
-    fetchProjects(); 
+  // İlk yükleme
+  useEffect(() => {
     fetchTeams();
-    setSelectedProject(null);
-    setTasks([]);
-  }, [activeClub]);
+  }, [fetchTeams]);
+
+  // Ekipler yüklendiğinde projeleri getir
+  useEffect(() => {
+    if (teams.length >= 0) {
+      fetchProjects();
+    }
+  }, [teams, fetchProjects]);
 
   const handleCreateProject = async (e) => {
     e.preventDefault();
@@ -90,7 +107,7 @@ export const Projects = () => {
       setShowForm(false);
       fetchProjects();
     } catch (e) {
-      alert(e.response?.data?.message || 'Proje oluşturulamadı. Sadece ekip liderleri kendi ekipleri için proje oluşturabilir.');
+      alert(e.response?.data?.message || 'Proje oluşturulamadı.');
     }
   };
 
@@ -114,7 +131,7 @@ export const Projects = () => {
       setTaskAssignedToId('');
       fetchTasks(selectedProject.id);
     } catch (e) {
-      alert(e.response?.data?.message || 'Görev eklenemedi. Yetkinizi kontrol edin.');
+      alert(e.response?.data?.message || 'Görev eklenemedi.');
     }
   };
 
@@ -133,7 +150,12 @@ export const Projects = () => {
     }
   };
 
-  const isLeaderOfSelectedProject = selectedProject?.team?.leader?.id === activeMembershipId;
+  const isLeaderOfSelectedProject = Number(selectedProject?.team?.leader?.id) === Number(activeMembershipId);
+
+  // DROPDOWN FİLTRESİ: Teams.jsx ile birebir aynı kontrol
+  const selectableTeams = isAdmin 
+    ? teams 
+    : teams.filter(t => Number(t.leader?.id) === Number(activeMembershipId));
 
   return (
     <div className="space-y-6">
@@ -194,11 +216,13 @@ export const Projects = () => {
                     className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500/20"
                   >
                     <option value="">Ekip Seçiniz...</option>
-                    {teams
-                        .filter(t => t.leader?.id === activeMembershipId)
-                        .map(t => (
-                      <option key={t.id} value={t.id}>{t.name} (Kendi Ekibiniz)</option>
-                    ))}
+                    {selectableTeams.length === 0 ? (
+                      <option disabled>Yönettiğiniz ekip bulunamadı</option>
+                    ) : (
+                      selectableTeams.map(t => (
+                        <option key={t.id} value={t.id}>{t.name} {isAdmin && `(Lider: ${t.leader?.user?.email?.split('@')[0]})`}</option>
+                      ))
+                    )}
                   </select>
                 </div>
               </div>
@@ -206,7 +230,8 @@ export const Projects = () => {
                 <button onClick={() => setShowForm(false)} className="flex-1 py-3 bg-gray-100 text-gray-600 rounded-xl text-sm font-bold hover:bg-gray-200 transition">İptal</button>
                 <button 
                   onClick={handleCreateProject} 
-                  className="flex-[2] py-3 bg-indigo-600 text-white rounded-xl text-sm font-bold hover:bg-indigo-700 shadow-md shadow-indigo-100"
+                  disabled={selectableTeams.length === 0}
+                  className="flex-[2] py-3 bg-indigo-600 text-white rounded-xl text-sm font-bold hover:bg-indigo-700 shadow-md shadow-indigo-100 disabled:opacity-50"
                 >
                   Projeyi Başlat
                 </button>
@@ -218,31 +243,38 @@ export const Projects = () => {
             <div className="flex justify-center py-20"><div className="w-8 h-8 border-3 border-indigo-100 border-t-indigo-600 rounded-full animate-spin" /></div>
           ) : (
             <div className={`grid grid-cols-1 ${selectedProject ? 'gap-3' : 'md:grid-cols-2 lg:grid-cols-3 gap-6'}`}>
-              {projects.map(p => (
-                <div 
-                  key={p.id} 
-                  onClick={() => { setSelectedProject(p); fetchTasks(p.id); fetchTeamMembers(p.team.id); }}
-                  className={`group cursor-pointer bg-white border rounded-[2rem] p-6 transition-all duration-300 ${
-                    selectedProject?.id === p.id ? 'border-indigo-500 ring-4 ring-indigo-50' : 'border-gray-100 hover:border-indigo-200'
-                  }`}
-                >
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="p-2.5 bg-indigo-50 rounded-xl text-indigo-600"><Folder size={20} /></div>
-                    <div className="px-2 py-1 bg-gray-50 text-gray-400 rounded-lg text-[10px] font-black uppercase tracking-widest">{p.team?.name}</div>
-                  </div>
-                  <h3 className="font-black text-gray-900 mb-1">{p.name}</h3>
-                  <p className="text-xs text-gray-500 line-clamp-2 h-8">{p.description}</p>
-                  <div className="mt-4 pt-4 border-t border-gray-50 flex items-center justify-between">
-                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Görevleri Gör</span>
-                    <ChevronRight size={16} className="text-gray-300" />
-                  </div>
+              {projects.length === 0 ? (
+                <div className="col-span-full py-12 text-center bg-gray-50 rounded-[2rem] border border-dashed border-gray-200">
+                   <Folder className="mx-auto text-gray-300 mb-2" size={48} />
+                   <p className="text-gray-500 font-bold italic">Görüntülenecek proje bulunmuyor.</p>
                 </div>
-              ))}
+              ) : (
+                projects.map(p => (
+                  <div 
+                    key={p.id} 
+                    onClick={() => { setSelectedProject(p); fetchTasks(p.id); fetchTeamMembers(p.team.id); }}
+                    className={`group cursor-pointer bg-white border rounded-[2rem] p-6 transition-all duration-300 ${
+                      selectedProject?.id === p.id ? 'border-indigo-500 ring-4 ring-indigo-50' : 'border-gray-100 hover:border-indigo-200'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="p-2.5 bg-indigo-50 rounded-xl text-indigo-600"><Folder size={20} /></div>
+                      <div className="px-2 py-1 bg-gray-50 text-gray-400 rounded-lg text-[10px] font-black uppercase tracking-widest">{p.team?.name}</div>
+                    </div>
+                    <h3 className="font-black text-gray-900 mb-1">{p.name}</h3>
+                    <p className="text-xs text-gray-500 line-clamp-2 h-8">{p.description}</p>
+                    <div className="mt-4 pt-4 border-t border-gray-50 flex items-center justify-between">
+                      <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Görevleri Gör</span>
+                      <ChevronRight size={16} className="text-gray-300" />
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
           )}
         </div>
 
-        {/* Görev Yönetimi (Sağ Panel) */}
+        {/* Görev Paneli */}
         {selectedProject && (
           <div className="lg:col-span-8 space-y-6 animate-in fade-in slide-in-from-right-4 duration-500">
             <div className="bg-white border border-gray-100 rounded-[2.5rem] shadow-xl shadow-gray-200/40 overflow-hidden">
@@ -259,7 +291,7 @@ export const Projects = () => {
               </div>
 
               <div className="p-8 space-y-8">
-                {/* Görev Ekleme Formu (Sadece Lider Görebilir) */}
+                {/* Görev Ekleme */}
                 {isLeaderOfSelectedProject && (
                   <div className="bg-gray-50/50 border border-gray-100 rounded-3xl p-6 space-y-4">
                     <h4 className="text-sm font-black text-gray-800 uppercase tracking-wider flex items-center gap-2">

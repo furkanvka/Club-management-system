@@ -3,14 +3,14 @@ import { useClub } from '../../store/ClubContext';
 import { useAuth } from '../../store/AuthContext';
 import api from '../../services/api';
 import { 
-  Users, Plus, UserPlus, 
-  X, ChevronRight, LayoutGrid, Search, 
+  Users, Plus, 
+  X, ChevronRight, LayoutGrid, 
   UserMinus, ArrowLeft, BarChart3, FileText, 
   FolderClosed, History, TrendingUp, Clock, Target
 } from 'lucide-react';
 
 export const Teams = () => {
-  const { activeClub, activeRole, activeMembershipId, refreshClubs } = useClub();
+  const { activeClub, activeRole, activeMembershipId } = useClub();
   const { user } = useAuth();
   const [teams, setTeams] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -23,10 +23,8 @@ export const Teams = () => {
   const [selectedMemberHistory, setSelectedMemberHistory] = useState(null);
   const [activeTab, setActiveTab] = useState('members'); // members, meetings, documents
 
-  // Member Selection State
+  // Member Selection State (Used only for Lider selection in team creation)
   const [allMembers, setAllMembers] = useState([]);
-  const [showMemberPicker, setShowMemberPicker] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
 
   // Form States
   const [name, setName] = useState('');
@@ -39,10 +37,15 @@ export const Teams = () => {
   const fetchTeams = useCallback(() => {
     if (!activeClub?.id) return;
     setLoading(true);
-    api.get(`/clubs/${activeClub.id}/teams`)
-      .then(r => { setTeams(r.data); setLoading(false); })
+    api.get(`/clubs/${activeClub.id}/teams`, {
+      params: { requesterId: activeMembershipId }
+    })
+      .then(r => { 
+        setTeams(r.data); 
+        setLoading(false); 
+      })
       .catch(() => setLoading(false));
-  }, [activeClub?.id]);
+  }, [activeClub?.id, activeMembershipId]);
 
   const fetchTeamDetails = (teamId) => {
     Promise.all([
@@ -69,8 +72,8 @@ export const Teams = () => {
 
   useEffect(() => { 
     fetchTeams(); 
-    fetchAllClubMembers();
-  }, [fetchTeams, fetchAllClubMembers]);
+    if (isAdmin) fetchAllClubMembers();
+  }, [fetchTeams, fetchAllClubMembers, isAdmin]);
 
   const handleCreateTeam = async (e) => {
     e.preventDefault();
@@ -87,29 +90,11 @@ export const Teams = () => {
       setSelectedLeaderId('');
       setShowForm(false);
       fetchTeams();
-      fetchAllClubMembers(); // Üye listesini yenile (Lider artık 'active' olduğu için filtrelenecek)
+      fetchAllClubMembers();
     } catch (e) {
       alert('Ekip oluşturulamadı.');
     } finally {
       setSaving(false);
-    }
-  };
-
-  const handleAddMemberToTeam = async (membershipId) => {
-    try {
-      await api.post(`/clubs/${activeClub.id}/teams/${selectedTeam.id}/members`, {
-        membership: { id: membershipId }
-      }, { params: { requesterId: activeMembershipId } });
-      
-      await Promise.all([
-        fetchTeamDetails(selectedTeam.id),
-        fetchAllClubMembers(),
-        refreshClubs()
-      ]);
-      
-      setShowMemberPicker(false);
-    } catch (e) {
-      alert(e.response?.data?.message || 'Üye eklenemedi.');
     }
   };
 
@@ -181,19 +166,26 @@ export const Teams = () => {
             <div className="flex justify-center py-20"><div className="w-10 h-10 border-4 border-indigo-100 border-t-indigo-600 rounded-full animate-spin" /></div>
           ) : (
             <div className={`grid grid-cols-1 ${selectedTeam ? 'gap-3' : 'md:grid-cols-2 lg:grid-cols-3 gap-6'}`}>
-              {teams.map(t => (
-                <div key={t.id} onClick={() => { setSelectedTeam(t); fetchTeamDetails(t.id); }} className={`group cursor-pointer bg-white border rounded-[2rem] p-6 transition-all duration-300 ${selectedTeam?.id === t.id ? 'border-indigo-500 ring-4 ring-indigo-50' : 'border-gray-100 hover:border-indigo-300'}`}>
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="p-3 bg-indigo-50 text-indigo-600 rounded-2xl"><Users size={20} /></div>
-                    <div className="px-2 py-1 bg-amber-50 text-amber-600 rounded-lg text-[9px] font-black uppercase">Lider: {t.leader?.user?.email?.split('@')[0]}</div>
-                  </div>
-                  <h3 className="font-black text-gray-900 group-hover:text-indigo-700 transition-colors mb-2">{t.name}</h3>
-                  <div className="flex items-center justify-between pt-4 border-t border-gray-50 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-                    <span>Performansı Gör</span>
-                    <ChevronRight size={16} />
-                  </div>
+              {teams.length === 0 ? (
+                <div className="col-span-full py-10 text-center bg-gray-50 rounded-3xl border border-dashed border-gray-200">
+                   <Users className="mx-auto text-gray-300 mb-2" size={48} />
+                   <p className="text-gray-500 font-bold italic">Görüntülenecek ekip bulunmuyor.</p>
                 </div>
-              ))}
+              ) : (
+                teams.map(t => (
+                  <div key={t.id} onClick={() => { setSelectedTeam(t); fetchTeamDetails(t.id); }} className={`group cursor-pointer bg-white border rounded-[2rem] p-6 transition-all duration-300 ${selectedTeam?.id === t.id ? 'border-indigo-500 ring-4 ring-indigo-50' : 'border-gray-100 hover:border-indigo-300'}`}>
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="p-3 bg-indigo-50 text-indigo-600 rounded-2xl"><Users size={20} /></div>
+                      <div className="px-2 py-1 bg-amber-50 text-amber-600 rounded-lg text-[9px] font-black uppercase">Lider: {t.leader?.user?.email?.split('@')[0]}</div>
+                    </div>
+                    <h3 className="font-black text-gray-900 group-hover:text-indigo-700 transition-colors mb-2">{t.name}</h3>
+                    <div className="flex items-center justify-between pt-4 border-t border-gray-50 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                      <span>Performansı Gör</span>
+                      <ChevronRight size={16} />
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
           )}
         </div>
@@ -232,11 +224,6 @@ export const Teams = () => {
                     <h2 className="text-3xl font-black text-gray-900 mb-1">{selectedTeam.name}</h2>
                     <p className="text-sm text-gray-500 font-medium">{selectedTeam.description}</p>
                 </div>
-                {isLeaderOfSelectedTeam && (
-                    <button onClick={() => setShowMemberPicker(true)} className="px-4 py-2 bg-indigo-600 text-white rounded-xl text-xs font-bold hover:bg-indigo-700 transition flex items-center gap-2">
-                        <UserPlus size={16} /> Üye Ekle
-                    </button>
-                )}
               </div>
 
               {/* Tabs */}
@@ -275,49 +262,6 @@ export const Teams = () => {
                                 </div>
                             </div>
                         ))}
-                    </div>
-                )}
-                
-                {/* Picker, Performance Tab etc (Remaining parts are already in the file) */}
-                {/* (Keeping the logic same as before but ensuring isLeaderOfSelectedTeam is used strictly) */}
-                
-                {showMemberPicker && (
-                    <div className="bg-indigo-50/50 border border-indigo-100 rounded-3xl p-6 mt-4 space-y-4 animate-in zoom-in-95 duration-200">
-                        <div className="flex items-center justify-between">
-                            <h4 className="font-black text-gray-800 text-sm uppercase tracking-wider">Ekibe Üye Seç</h4>
-                            <button onClick={() => setShowMemberPicker(false)} className="text-gray-400 hover:text-gray-600"><X size={18} /></button>
-                        </div>
-                        <div className="relative">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
-                            <input 
-                                placeholder="İsim veya e-posta ile ara..." 
-                                value={searchQuery}
-                                onChange={e => setSearchQuery(e.target.value)}
-                                className="w-full pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500/20 outline-none"
-                            />
-                        </div>
-                        <div className="max-h-[200px] overflow-y-auto space-y-2 pr-2 custom-scrollbar">
-                            {allMembers
-                                .filter(m => m.user?.email?.toLowerCase().includes(searchQuery.toLowerCase()))
-                                .filter(m => m.status !== 'active')
-                                .map(m => (
-                                    <div key={m.id} className="flex items-center justify-between p-3 bg-white rounded-xl border border-gray-100 hover:border-indigo-300 transition-all group">
-                                        <div className="flex items-center gap-3">
-                                            <div className="w-8 h-8 bg-gray-50 rounded-lg flex items-center justify-center text-xs font-bold text-gray-500">
-                                                {m.user?.email?.[0].toUpperCase()}
-                                            </div>
-                                            <span className="text-sm font-medium text-gray-700">{m.user?.email}</span>
-                                        </div>
-                                        <button 
-                                            onClick={() => handleAddMemberToTeam(m.id)}
-                                            className="p-1.5 text-indigo-500 hover:bg-indigo-50 rounded-lg transition-colors"
-                                        >
-                                            <Plus size={18} />
-                                        </button>
-                                    </div>
-                                ))
-                            }
-                        </div>
                     </div>
                 )}
 

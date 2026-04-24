@@ -23,7 +23,10 @@ public class TeamController {
     @Autowired private TeamRepository teamRepository;
 
     @GetMapping
-    public ResponseEntity<List<Team>> getTeams(@PathVariable Long clubId) {
+    public ResponseEntity<List<Team>> getTeams(@PathVariable Long clubId, @RequestParam(required = false) Long requesterId) {
+        if (requesterId != null) {
+            return ResponseEntity.ok(teamService.getTeamsByMembershipId(clubId, requesterId));
+        }
         return ResponseEntity.ok(teamService.getTeamsByClubId(clubId));
     }
 

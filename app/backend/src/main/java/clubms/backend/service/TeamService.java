@@ -19,6 +19,19 @@ public class TeamService {
         return teamRepository.findByClubId(clubId);
     }
 
+    public List<Team> getTeamsByMembershipId(Long clubId, Long membershipId) {
+        Membership m = membershipRepository.findById(membershipId)
+                .orElseThrow(() -> new RuntimeException("Üyelik bulunamadı"));
+        
+        if ("baskan".equalsIgnoreCase(m.getRole())) {
+            return teamRepository.findByClubId(clubId);
+        }
+
+        return teamMemberRepository.findByMembershipId(membershipId).stream()
+                .map(TeamMember::getTeam)
+                .collect(Collectors.toList());
+    }
+
     public Team createTeam(Team team) {
         // Ekip oluşturulduğunda liderin rolünü 'ekip-lideri' olarak güncelle
         if (team.getLeader() != null && team.getLeader().getId() != null) {
@@ -126,9 +139,17 @@ public class TeamService {
     }
 
     public List<Team> getMyTeams(Long membershipId) {
-        return teamMemberRepository.findByMembershipId(membershipId).stream()
+        List<Team> teams = teamMemberRepository.findByMembershipId(membershipId).stream()
                 .map(TeamMember::getTeam)
                 .collect(Collectors.toList());
+        
+        // Lider bilgisini zorla yükle (Lazy loading sorununu önlemek için)
+        for (Team t : teams) {
+            if (t.getLeader() != null) {
+                t.getLeader().getId(); 
+            }
+        }
+        return teams;
     }
 
     public TeamMember addTeamMember(Long teamId, Long membershipId, Long requesterMembershipId) {
