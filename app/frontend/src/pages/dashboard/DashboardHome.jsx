@@ -117,9 +117,9 @@ const PresidentDashboard = ({ activeClub, loginType, activeRole, activeMembershi
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 space-y-8">
+        <div className="lg:col-span-3 space-y-8">
           <h2 className="text-sm font-black text-gray-400 uppercase tracking-widest ml-4">Hızlı Erişim</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {cards.map(card => (
               <button key={card.label} onClick={() => navigate(card.path)} className="bg-white border border-gray-100 rounded-[2.5rem] p-6 text-left hover:shadow-xl transition-all group">
                 <div className={`w-12 h-12 bg-gradient-to-br ${card.gradient} rounded-2xl flex items-center justify-center text-white mb-4 shadow-lg group-hover:scale-110 transition-transform`}>
@@ -130,10 +130,6 @@ const PresidentDashboard = ({ activeClub, loginType, activeRole, activeMembershi
               </button>
             ))}
           </div>
-        </div>
-        <div className="space-y-6">
-           <h2 className="text-sm font-black text-gray-400 uppercase tracking-widest ml-4">Görev Takibi</h2>
-           <TaskList tasks={myTasks} loading={loadingTasks} onUpdateStatus={handleUpdateStatus} />
         </div>
       </div>
     </div>
@@ -170,6 +166,9 @@ const MemberDashboard = ({ activeClub, user, activeMembershipId }) => {
     } catch (e) { alert('Hata oluştu.'); }
   };
 
+  const role = activeRole?.toLowerCase() || '';
+  const isBaskan = role === 'baskan' || role === 'kulup_baskani' || user?.loginType === 'club';
+
   return (
     <div className="space-y-8">
       <div className="bg-gradient-to-br from-indigo-600 to-blue-800 rounded-[3rem] p-8 md:p-12 text-white relative overflow-hidden shadow-2xl">
@@ -184,12 +183,13 @@ const MemberDashboard = ({ activeClub, user, activeMembershipId }) => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
            {[
              { label: 'Etkinlikler', icon: Calendar, path: '/dashboard/events', gradient: 'from-blue-500 to-indigo-600' },
+             { label: 'Görevlerim', icon: CheckCircle2, path: '/dashboard/tasks', gradient: 'from-rose-500 to-pink-600', hideIfBaskan: true },
              { label: 'Projeler', icon: Briefcase, path: '/dashboard/projects', gradient: 'from-purple-500 to-indigo-600' },
              { label: 'Belgeler', icon: Folder, path: '/dashboard/documents', gradient: 'from-emerald-500 to-teal-600' }
-           ].map(card => (
+           ].filter(card => !card.hideIfBaskan || !isBaskan).map(card => (
              <button key={card.label} onClick={() => navigate(card.path)} className="bg-white border border-gray-100 rounded-[2.5rem] p-8 text-left hover:shadow-xl transition-all group">
                 <div className={`w-14 h-14 bg-gradient-to-br ${card.gradient} rounded-2xl flex items-center justify-center text-white mb-6 shadow-lg group-hover:scale-110 transition-transform`}>
                     <card.icon size={28} />
@@ -198,10 +198,12 @@ const MemberDashboard = ({ activeClub, user, activeMembershipId }) => {
              </button>
            ))}
         </div>
-        <div className="space-y-6">
-           <h2 className="text-sm font-black text-gray-400 uppercase tracking-widest ml-4">Görevlerim</h2>
-           <TaskList tasks={myTasks} loading={loadingTasks} onUpdateStatus={handleUpdateStatus} />
-        </div>
+        {!isBaskan && (
+          <div className="space-y-6">
+             <h2 className="text-sm font-black text-gray-400 uppercase tracking-widest ml-4">Görevlerim</h2>
+             <TaskList tasks={myTasks} loading={loadingTasks} onUpdateStatus={handleUpdateStatus} />
+          </div>
+        )}
       </div>
     </div>
   );

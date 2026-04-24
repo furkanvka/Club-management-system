@@ -333,10 +333,20 @@ export const Events = () => {
                     {canManage ? (
                       <>
                         <button onClick={() => { setShowApps(ev); fetchApplications(ev.id); }} className="px-4 py-2 bg-indigo-50 text-indigo-600 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-100 transition">Başvurular</button>
-                        <button onClick={() => { setShowStaffModal(ev); fetchStaff(ev.id); fetchTasks(ev.id); setActiveTab('staff'); }} className="px-4 py-2 bg-amber-50 text-amber-600 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-amber-100 transition">Masa</button>
+                        <button onClick={() => { setShowStaffModal(ev); fetchStaff(ev.id); fetchTasks(ev.id); setActiveTab('staff'); }} className="px-4 py-2 bg-amber-50 text-amber-600 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-amber-100 transition">Ekip</button>
                       </>
-                    ) : (isStaff || myApp) ? (
+                    ) : isStaff ? (
                        <button onClick={() => { setShowStaffModal(ev); fetchStaff(ev.id); fetchTasks(ev.id); setActiveTab('tasks'); }} className="px-4 py-2 bg-gray-50 text-gray-500 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-gray-100 transition">Görevlerimi Gör</button>
+                    ) : myApp ? (
+                       <div className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest border shadow-sm ${
+                         myApp.status === 'approved' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :
+                         myApp.status === 'rejected' ? 'bg-red-50 text-red-600 border-red-100' :
+                         'bg-amber-50 text-amber-600 border-amber-100'
+                       }`}>
+                         {myApp.status === 'approved' ? 'Başvuru Onaylandı' : 
+                          myApp.status === 'rejected' ? 'Başvuru Reddedildi' : 
+                          'Başvuru Beklemede'}
+                       </div>
                     ) : (
                       <button onClick={() => handleApply(ev.id)} className="px-6 py-2 bg-indigo-600 text-white rounded-xl text-xs font-black uppercase tracking-widest hover:bg-indigo-700 transition">Katıl</button>
                     )}
@@ -358,7 +368,7 @@ export const Events = () => {
             <div className="px-8 py-6 border-b border-gray-100 bg-amber-50/50 flex items-center justify-between">
               <div>
                  <h2 className="text-xl font-black text-gray-900 tracking-tight">{showStaffModal.name}</h2>
-                 <p className="text-[10px] font-black text-amber-600 uppercase tracking-widest mt-1">Etkinlik Masası & Görev Dağılımı</p>
+                 <p className="text-[10px] font-black text-amber-600 uppercase tracking-widest mt-1">Etkinlik Ekibi & Görev Dağılımı</p>
               </div>
               <button onClick={() => setShowStaffModal(null)} className="p-2 bg-white rounded-xl shadow-sm text-gray-400 hover:text-gray-600 transition-all"><X size={24} /></button>
             </div>
@@ -423,7 +433,12 @@ export const Events = () => {
                               <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1 block">Sorumlu Personel</label>
                               <select required value={taskForm.assignedToId} onChange={e => setTaskForm({...taskForm, assignedToId: e.target.value})} className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-indigo-400 focus:outline-none bg-white font-medium">
                                  <option value="">Seçiniz...</option>
-                                 {staffList.map(s => (
+                                 {showStaffModal.responsible && (
+                                    <option value={showStaffModal.responsible.id}>
+                                       (Lider) {showStaffModal.responsible.user?.email?.split('@')[0]}
+                                    </option>
+                                 )}
+                                 {staffList.filter(s => s.membership.id !== showStaffModal.responsible?.id).map(s => (
                                     <option key={s.membership.id} value={s.membership.id}>{s.membership.user?.email?.split('@')[0]}</option>
                                  ))}
                               </select>

@@ -18,7 +18,8 @@ import {
   ChevronRight,
   Settings,
   ShieldCheck,
-  Megaphone
+  Megaphone,
+  CheckSquare
 } from 'lucide-react';
 
 export const Sidebar = () => {
@@ -28,14 +29,16 @@ export const Sidebar = () => {
   const [myTeams, setMyTeams] = useState([]);
 
   // Role identification
-  const isBaskan = activeRole === 'baskan' || activeRole === 'KULUP_BASKANI';
-  const isLider = activeRole === 'EKIP_LIDERI' || activeRole === 'lider' || activeRole === 'ekip_lideri';
-  const isEkipUyesi = activeRole === 'EKIP_UYESI' || activeRole === 'ekip_uyesi';
+  const role = activeRole?.toLowerCase() || '';
+  const isBaskan = role === 'baskan' || role === 'kulup_baskani' || user?.loginType === 'club';
+  const isLider = role === 'ekip_lideri' || role === 'ekip-lideri' || role === 'lider';
+  const isEkipUyesi = role === 'ekip_uyesi';
   const isAtLeastEkip = isBaskan || isLider || isEkipUyesi;
 
   const [openSections, setOpenSections] = useState({
     'GENEL': true,
     'PROFİL': true,
+    'GÖREVLERİM': true,
     'YÖNETİM': true,
     'PROJE & EKİP': true,
     'ETKİNLİK': true,
@@ -72,6 +75,13 @@ export const Sidebar = () => {
       color: 'text-indigo-500',
       items: [
         { name: 'Profilim', path: '/dashboard/profile', icon: User, access: 'all', iconColor: 'text-indigo-500' },
+      ]
+    },
+    {
+      label: 'GÖREVLERİM',
+      color: 'text-rose-500',
+      items: [
+        { name: 'Tüm Görevlerim', path: '/dashboard/tasks', icon: CheckSquare, access: 'all', iconColor: 'text-rose-500' },
       ]
     },
     {
@@ -122,6 +132,7 @@ export const Sidebar = () => {
 
   const hasAccess = (access) => {
     if (access === 'all') return true;
+    if (access === 'not_baskan') return !isBaskan;
     if (isBaskan) return true;
     if (access === 'management' && (isBaskan || isLider)) return true;
     if (access === 'admin' && isBaskan) return true;

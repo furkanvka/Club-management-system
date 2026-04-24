@@ -25,6 +25,7 @@ import { Projects } from './pages/dashboard/Projects';
 import { DashboardHome } from './pages/dashboard/DashboardHome';
 import { Profile } from './pages/dashboard/Profile';
 import { Meetings } from './pages/dashboard/Meetings';
+import { Tasks } from './pages/dashboard/Tasks';
 
 const ProtectedRoute = ({ children }) => {
   const { user } = useAuth();
@@ -73,6 +74,7 @@ function AppRoutes() {
         <Route path="finance" element={<Finance />} />
         <Route path="teams" element={<Teams />} />
         <Route path="projects" element={<Projects />} />
+        <Route path="tasks" element={<Tasks />} />
         <Route path="profile" element={<Profile />} />
         <Route path="meetings/announcements" element={<Meetings view="announcements" />} />
         <Route path="meetings/reports" element={<Meetings view="reports" />} />
