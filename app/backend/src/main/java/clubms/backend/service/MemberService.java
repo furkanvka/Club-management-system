@@ -66,6 +66,10 @@ public class MemberService {
         return membershipRepository.findById(id);
     }
 
+    public Optional<Membership> findByUserIdAndClubId(Long userId, Long clubId) {
+        return membershipRepository.findByUserIdAndClubId(userId, clubId);
+    }
+
     public Membership updateMembershipFlags(Long membershipId, String flags) {
         return membershipRepository.findById(membershipId).map(membership -> {
             membership.setFlags(flags);

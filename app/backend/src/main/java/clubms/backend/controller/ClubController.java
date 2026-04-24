@@ -63,9 +63,37 @@ public class ClubController {
     @GetMapping
     public ResponseEntity<List<Club>> getAllClubs() {
         List<Club> visibleClubs = clubService.getAllClubs().stream()
-            .filter(c -> "APPROVED".equals(c.getStatus()))
+            .filter(c -> "APPROVED".equalsIgnoreCase(c.getStatus()))
             .collect(Collectors.toList());
         return ResponseEntity.ok(visibleClubs);
+    }
+
+    @PostMapping("/{id}/join")
+    public ResponseEntity<?> joinClub(@PathVariable Long id) {
+        return clubService.getClubById(id).map(club -> {
+            Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            if (!(principal instanceof UserPrincipal)) {
+                return ResponseEntity.status(401).body("Unauthorized");
+            }
+            UserPrincipal userPrincipal = (UserPrincipal) principal;
+            if (userPrincipal.getId() == null || userPrincipal.getId() < 0) {
+                return ResponseEntity.status(403).body("Only students can join clubs");
+            }
+            
+            clubms.backend.entity.User user = userRepository.findById(userPrincipal.getId()).orElse(null);
+            if (user == null) return ResponseEntity.status(404).body("User not found");
+
+            if (memberService.findByUserIdAndClubId(user.getId(), id).isPresent()) {
+                return ResponseEntity.status(409).body("Already a member");
+            }
+
+            clubms.backend.entity.Membership membership = new clubms.backend.entity.Membership();
+            membership.setRole("uye");
+            membership.setStatus("passive");
+            membership.setUser(user);
+            membership.setClub(club);
+            return ResponseEntity.ok(memberService.createMembership(membership));
+        }).orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/{id}")

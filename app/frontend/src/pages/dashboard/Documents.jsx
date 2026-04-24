@@ -2,10 +2,10 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useClub } from '../../store/ClubContext';
 import { useAuth } from '../../store/AuthContext';
 import api from '../../services/api';
-import { Plus, FileText, Trash2, ExternalLink, X, Folder, Check, XCircle, AlertCircle } from 'lucide-react';
+import { Plus, FileText, Trash2, Download, X, Folder, Check, XCircle, AlertCircle, Upload } from 'lucide-react';
 
 const CATEGORIES = ['Resmi', 'Finans', 'Etkinlik', 'Şablon', 'Diğer'];
-const EMPTY_FORM = { title: '', fileUrl: '', category: 'Resmi', description: '' };
+const EMPTY_FORM = { title: '', category: 'Resmi', description: '', fileData: null };
 
 export const Documents = () => {
   const { activeClub, activeRole } = useClub();
@@ -22,6 +22,21 @@ export const Documents = () => {
   const isEkipUyesi = activeRole === 'ekip_uyesi' || activeRole === 'EKIP_UYESI';
 
   const canUpload = isBaskan || isLider || isEkipUyesi;
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.type !== 'application/pdf') {
+        alert('Şimdilik sadece PDF dosyaları desteklenmektedir.');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setForm({ ...form, fileData: reader.result, title: form.title || file.name });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const fetchDocs = useCallback(() => {
     if (!activeClub?.id) return;
@@ -49,6 +64,10 @@ export const Documents = () => {
 
   const handleCreate = async (e) => {
     e.preventDefault();
+    if (!form.fileData) {
+      alert('Lütfen bir dosya seçin.');
+      return;
+    }
     setSaving(true);
     try {
       await api.post(`/clubs/${activeClub.id}/documents`, form);
@@ -58,6 +77,23 @@ export const Documents = () => {
     } catch (err) {
       alert('Belge eklenemedi: ' + (err.response?.data || err.message));
     } finally { setSaving(false); }
+  };
+
+  const handleDownload = async (docId, title) => {
+    try {
+      const response = await api.get(`/clubs/${activeClub.id}/documents/${docId}/download`, {
+        responseType: 'blob'
+      });
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `${title}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (err) {
+      alert('Dosya indirilemedi.');
+    }
   };
 
   const handleDelete = async (id) => {
@@ -111,14 +147,20 @@ export const Documents = () => {
             </div>
             <form onSubmit={handleCreate} className="p-6 space-y-4">
               <div>
-                <label className="text-xs font-semibold text-gray-500 uppercase">Belge Adı *</label>
+                <label className="text-xs font-semibold text-gray-500 uppercase">Belge Başlığı *</label>
                 <input required value={form.title} onChange={e => setForm({...form, title: e.target.value})}
-                  className="mt-1 w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400" placeholder="2025_Tüzük.pdf" />
+                  className="mt-1 w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400" placeholder="Örn: 2025 Etkinlik Planı" />
               </div>
               <div>
-                <label className="text-xs font-semibold text-gray-500 uppercase">Dosya URL / Bağlantı</label>
-                <input value={form.fileUrl} onChange={e => setForm({...form, fileUrl: e.target.value})}
-                  className="mt-1 w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400" placeholder="https://drive.google.com/..." />
+                <label className="text-xs font-semibold text-gray-500 uppercase">PDF Dosyası *</label>
+                <div className="mt-1 relative border-2 border-dashed border-gray-200 rounded-xl p-4 hover:bg-gray-50 transition-all text-center">
+                   <input type="file" accept="application/pdf" onChange={handleFileChange} className="absolute inset-0 opacity-0 cursor-pointer" />
+                   <div className="space-y-1">
+                      <Upload className={`mx-auto h-8 w-8 ${form.fileData ? 'text-emerald-500' : 'text-gray-400'}`} />
+                      <p className="text-xs font-bold text-gray-600">{form.fileData ? 'Dosya seçildi' : 'Dosya Seçmek İçin Tıklayın'}</p>
+                      <p className="text-[10px] text-gray-400">Yalnızca PDF formatı desteklenir</p>
+                   </div>
+                </div>
               </div>
               <div>
                 <label className="text-xs font-semibold text-gray-500 uppercase">Kategori</label>
@@ -137,7 +179,7 @@ export const Documents = () => {
                   className="flex-1 py-2.5 border border-gray-200 rounded-xl text-sm font-medium text-gray-600 hover:bg-gray-50">İptal</button>
                 <button type="submit" disabled={saving}
                   className="flex-1 py-2.5 bg-indigo-600 text-white rounded-xl text-sm font-semibold hover:bg-indigo-700 disabled:opacity-50">
-                  {saving ? 'Kaydediliyor...' : 'Ekle'}
+                  {saving ? 'Kaydediliyor...' : 'Yükle'}
                 </button>
               </div>
             </form>
@@ -198,15 +240,17 @@ export const Documents = () => {
                   {doc.createdAt ? new Date(doc.createdAt).toLocaleDateString('tr-TR') : ''}
                 </span>
                 <div className="flex items-center gap-1">
-                  {doc.fileUrl && (
-                    <a href={doc.fileUrl} target="_blank" rel="noreferrer"
-                      className="text-indigo-500 hover:text-indigo-700 p-1.5 rounded-lg hover:bg-indigo-50 transition">
-                      <ExternalLink size={15} />
-                    </a>
-                  )}
+                  <button onClick={() => handleDownload(doc.id, doc.title)}
+                    className="text-indigo-500 hover:text-indigo-700 p-1.5 rounded-lg hover:bg-indigo-50 transition"
+                    title="İndir"
+                  >
+                    <Download size={15} />
+                  </button>
                   {isBaskan && (
                     <button onClick={() => handleDelete(doc.id)}
-                      className="text-red-400 hover:text-red-600 p-1.5 rounded-lg hover:bg-red-50 transition">
+                      className="text-red-400 hover:text-red-600 p-1.5 rounded-lg hover:bg-red-50 transition"
+                      title="Sil"
+                    >
                       <Trash2 size={15} />
                     </button>
                   )}

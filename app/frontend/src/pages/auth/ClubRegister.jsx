@@ -25,12 +25,32 @@ export const ClubRegister = () => {
   const [university, setUniversity] = useState('');
   const [contactEmail, setContactEmail] = useState('');
   const [clubPassword, setClubPassword] = useState('');
+  const [statuteFile, setStatuteFile] = useState(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.type !== 'application/pdf') {
+        alert('Lütfen sadece PDF dosyası yükleyin.');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setStatuteFile(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!statuteFile) {
+      setError('Lütfen kulüp tüzüğünü PDF olarak yükleyin.');
+      return;
+    }
     setLoading(true);
     setError('');
     try {
@@ -41,6 +61,7 @@ export const ClubRegister = () => {
         description: `Üniversite: ${university}, İletişim: ${contactEmail}`,
         contactEmail: contactEmail,
         password: clubPassword,
+        statuteFileData: statuteFile,
         isOpen: true
       });
       
@@ -159,15 +180,21 @@ export const ClubRegister = () => {
             </div>
             
             <div className="space-y-2">
-              <label className="text-sm font-bold text-gray-700 ml-1">Kulüp Tüzüğü (Opsiyonel)</label>
-              <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-100 border-dashed rounded-[2rem] hover:border-indigo-500 hover:bg-indigo-50/30 transition-all cursor-pointer group">
+              <label className="text-sm font-bold text-gray-700 ml-1">Kulüp Tüzüğü (Zorunlu PDF)</label>
+              <div className="relative mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-100 border-dashed rounded-[2rem] hover:border-indigo-500 hover:bg-indigo-50/30 transition-all cursor-pointer group">
+                <input 
+                  type="file" 
+                  accept="application/pdf"
+                  onChange={handleFileChange}
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                  required
+                />
                 <div className="space-y-2 text-center">
-                  <UploadCloud className="mx-auto h-10 w-10 text-gray-300 group-hover:text-indigo-500 transition-colors" />
+                  <UploadCloud className={`mx-auto h-10 w-10 ${statuteFile ? 'text-emerald-500' : 'text-gray-300'} group-hover:text-indigo-500 transition-colors`} />
                   <div className="flex text-sm text-gray-600 justify-center font-bold">
-                    <span className="text-indigo-600 hover:text-indigo-500">Dosya Yükle</span>
-                    <p className="pl-1 text-gray-400 font-medium">veya sürükle bırak</p>
+                    <span className="text-indigo-600 hover:text-indigo-500">{statuteFile ? 'Dosya Seçildi' : 'Dosya Yükle'}</span>
                   </div>
-                  <p className="text-xs text-gray-400">PDF, DOCX (Maks. 10MB)</p>
+                  <p className="text-xs text-gray-400">{statuteFile ? 'Tüzük başarıyla eklendi' : 'Sadece PDF (Maks. 10MB)'}</p>
                 </div>
               </div>
             </div>

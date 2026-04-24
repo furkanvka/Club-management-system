@@ -103,4 +103,27 @@ public class DocumentController {
         documentService.deleteDocument(documentId);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/{documentId}/download")
+    public ResponseEntity<byte[]> downloadDocument(@PathVariable Long clubId, @PathVariable Long documentId) {
+        return documentService.getDocumentsByClubId(clubId).stream()
+            .filter(d -> d.getId().equals(documentId))
+            .findFirst()
+            .map(doc -> {
+                if (doc.getFileData() == null) return ResponseEntity.notFound().<byte[]>build();
+                try {
+                    String base64Data = doc.getFileData();
+                    if (base64Data.contains(",")) {
+                        base64Data = base64Data.split(",")[1];
+                    }
+                    byte[] data = java.util.Base64.getDecoder().decode(base64Data);
+                    return ResponseEntity.ok()
+                        .header(org.springframework.http.HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + doc.getTitle() + ".pdf\"")
+                        .contentType(org.springframework.http.MediaType.APPLICATION_PDF)
+                        .body(data);
+                } catch (Exception e) {
+                    return ResponseEntity.internalServerError().<byte[]>build();
+                }
+            }).orElse(ResponseEntity.notFound().build());
+    }
 }

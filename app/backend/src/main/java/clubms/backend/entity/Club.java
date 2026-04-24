@@ -29,6 +29,9 @@ public class Club {
 
     private String password;
 
+    @Column(name = "statute_file_data", columnDefinition = "TEXT")
+    private String statuteFileData;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
@@ -58,4 +61,6 @@ public class Club {
     public void setStatus(String status) { this.status = status; }
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
+    public String getStatuteFileData() { return statuteFileData; }
+    public void setStatuteFileData(String statuteFileData) { this.statuteFileData = statuteFileData; }
 }

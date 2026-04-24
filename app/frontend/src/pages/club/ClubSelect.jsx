@@ -20,20 +20,14 @@ import {
 import { useAuth } from '../../store/AuthContext';
 
 export const ClubSelect = () => {
-  const { myClubs, allClubs, selectClub, refreshClubs } = useClub();
+  const { myClubs, allClubs, myMemberships, selectClub, refreshClubs } = useClub();
   const { logout } = useAuth();
   const navigate = useNavigate();
-  const [memberships, setMemberships] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    setLoading(true);
-    api.get('/clubs/my-memberships')
-      .then(r => setMemberships(r.data))
-      .catch(() => {})
-      .finally(() => setLoading(false));
-  }, [myClubs]);
+  // Local effect removed, we use myMemberships from context directly
+  const memberships = myMemberships || [];
 
   const getRoleForClub = (clubId) => {
     const m = memberships.find(m => m.club?.id === clubId);
@@ -48,21 +42,24 @@ export const ClubSelect = () => {
 
   const handleJoin = async (club) => {
     if (!window.confirm(`"${club.name}" kulübüne katılmak istediğinize emin misiniz?`)) return;
+    setLoading(true);
     try {
       await clubService.joinClub(club.id);
       alert('Kulübe başarıyla katıldınız!');
-      refreshClubs();
+      await refreshClubs();
     } catch (err) {
       const status = err.response?.status;
       if (status === 409) alert('Zaten bu kulübün üyesisiniz.');
       else alert('Katılırken hata oluştu: ' + (err.response?.data || err.message));
+    } finally {
+      setLoading(false);
     }
   };
 
-  const otherClubs = allClubs.filter(c => 
-    !myClubs.find(mc => mc.id === c.id) &&
-    (c.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-     c.category?.toLowerCase().includes(searchTerm.toLowerCase()))
+  const otherClubs = (allClubs || []).filter(c => 
+    !(myClubs || []).find(mc => mc.id === c.id) &&
+    ((c.name || "").toLowerCase().includes(searchTerm.toLowerCase()) || 
+     (c.category || "").toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
   const roleLabel = (clubId) => {

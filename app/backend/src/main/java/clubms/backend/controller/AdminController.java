@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import clubms.backend.entity.Document;
+import clubms.backend.repository.DocumentRepository;
+
 @RestController
 @RequestMapping("/api/admin")
 @PreAuthorize("hasRole('ADMIN')")
@@ -17,6 +20,9 @@ public class AdminController {
 
     @Autowired
     private ClubService clubService;
+
+    @Autowired
+    private DocumentRepository documentRepository;
 
     @GetMapping("/clubs/pending")
     public ResponseEntity<List<Club>> getPendingClubs() {
@@ -30,7 +36,21 @@ public class AdminController {
     public ResponseEntity<Club> approveClub(@PathVariable Long id) {
         return clubService.getClubById(id).map(club -> {
             club.setStatus("APPROVED");
-            return ResponseEntity.ok(clubService.createClub(club));
+            Club savedClub = clubService.createClub(club);
+
+            // Create Statute Document if data exists
+            if (club.getStatuteFileData() != null) {
+                Document doc = new Document();
+                doc.setClub(savedClub);
+                doc.setTitle("Kulüp Tüzüğü");
+                doc.setCategory("Resmi");
+                doc.setFileData(club.getStatuteFileData());
+                doc.setApprovalStatus("APPROVED");
+                doc.setDescription("Kulüp kuruluş tüzüğü.");
+                documentRepository.save(doc);
+            }
+
+            return ResponseEntity.ok(savedClub);
         }).orElse(ResponseEntity.notFound().build());
     }
 

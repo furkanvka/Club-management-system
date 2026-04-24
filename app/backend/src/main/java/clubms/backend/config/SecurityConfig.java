@@ -58,11 +58,11 @@ public class SecurityConfig {
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(
-                        auth -> auth.requestMatchers("/api/auth/**", "/error", "/actuator/health").permitAll()
+                        auth -> auth.requestMatchers("/api/auth/**", "/api/public/**", "/error", "/actuator/health").permitAll()
                                 .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/clubs").permitAll()
                                 .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/clubs").permitAll()
                                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                                .anyRequest().authenticated());
+                                .anyRequest().hasAnyRole("USER", "ADMIN", "CLUB"));
 
         http.authenticationProvider(authenticationProvider());
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);

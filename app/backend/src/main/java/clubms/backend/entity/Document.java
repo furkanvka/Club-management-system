@@ -38,6 +38,9 @@ public class Document {
     @Column(columnDefinition = "TEXT")
     private String description;
 
+    @Column(name = "file_data", columnDefinition = "TEXT")
+    private String fileData;
+
     private String status = "active";
 
     @Column(name = "approval_status")
@@ -71,6 +74,8 @@ public class Document {
     public void setFilePath(String filePath) { this.filePath = filePath; }
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
+    public String getFileData() { return fileData; }
+    public void setFileData(String fileData) { this.fileData = fileData; }
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
     public LocalDateTime getCreatedAt() { return createdAt; }

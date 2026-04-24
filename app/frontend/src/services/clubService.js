@@ -22,7 +22,7 @@ export const clubService = {
   },
 
   joinClub: async (clubId) => {
-    const response = await api.post(`/clubs/${clubId}/members`);
+    const response = await api.post(`/clubs/${clubId}/join`);
     return response.data;
   }
 };
