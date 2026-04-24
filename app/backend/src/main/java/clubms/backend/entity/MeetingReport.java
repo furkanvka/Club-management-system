@@ -31,6 +31,15 @@ public class MeetingReport {
     @Column(name = "meeting_date")
     private LocalDateTime meetingDate;
 
+    @Column
+    private String location;
+
+    @Column
+    private String type; // GENEL, EKIP
+
+    @Column
+    private String status = "DUYURU"; // DUYURU, RAPORLANDI
+
     @Column(columnDefinition = "TEXT")
     private String attendees; // comma separated or simplified JSON
 
@@ -47,12 +56,20 @@ public class MeetingReport {
     public void setId(Long id) { this.id = id; }
     public Club getClub() { return club; }
     public void setClub(Club club) { this.club = club; }
+    public Team getTeam() { return team; }
+    public void setTeam(Team team) { this.team = team; }
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
     public String getContent() { return content; }
     public void setContent(String content) { this.content = content; }
     public LocalDateTime getMeetingDate() { return meetingDate; }
     public void setMeetingDate(LocalDateTime meetingDate) { this.meetingDate = meetingDate; }
+    public String getLocation() { return location; }
+    public void setLocation(String location) { this.location = location; }
+    public String getType() { return type; }
+    public void setType(String type) { this.type = type; }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
     public String getAttendees() { return attendees; }
     public void setAttendees(String attendees) { this.attendees = attendees; }
     public LocalDateTime getCreatedAt() { return createdAt; }

@@ -74,7 +74,8 @@ function AppRoutes() {
         <Route path="teams" element={<Teams />} />
         <Route path="projects" element={<Projects />} />
         <Route path="profile" element={<Profile />} />
-        <Route path="meetings" element={<Meetings />} />
+        <Route path="meetings/announcements" element={<Meetings view="announcements" />} />
+        <Route path="meetings/reports" element={<Meetings view="reports" />} />
       </Route>
     </Routes>
   );

@@ -5,8 +5,7 @@ import api from '../../services/api';
 import { 
   Users, Plus, 
   X, ChevronRight, LayoutGrid, 
-  UserMinus, ArrowLeft, BarChart3, FileText, 
-  FolderClosed, History, TrendingUp, Clock, Target
+  UserMinus, ArrowLeft, BarChart3, TrendingUp, Target, Clock, History
 } from 'lucide-react';
 
 export const Teams = () => {
@@ -18,15 +17,11 @@ export const Teams = () => {
   const [selectedTeam, setSelectedTeam] = useState(null);
   const [teamMembers, setTeamMembers] = useState([]);
   
-  // Performance & History Stats
   const [teamStats, setTeamStats] = useState(null);
   const [selectedMemberHistory, setSelectedMemberHistory] = useState(null);
-  const [activeTab, setActiveTab] = useState('members'); // members, meetings, documents
+  const [activeTab, setActiveTab] = useState('members'); // members, performance
 
-  // Member Selection State (Used only for Lider selection in team creation)
   const [allMembers, setAllMembers] = useState([]);
-
-  // Form States
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [selectedLeaderId, setSelectedLeaderId] = useState('');
@@ -38,7 +33,6 @@ export const Teams = () => {
   const fetchTeams = useCallback(() => {
     if (!activeClub?.id) return;
     setLoading(true);
-    // Projects.jsx'teki gibi requesterId olmadan tüm ekipleri çekiyoruz
     api.get(`/clubs/${activeClub.id}/teams`)
       .then(r => { 
         setTeams(r.data); 
@@ -47,8 +41,6 @@ export const Teams = () => {
       .catch(() => setLoading(false));
   }, [activeClub?.id]);
 
-  // Projects.jsx'teki selectableTeams mantığının aynısı:
-  // Admin ise hepsini, lider ise sadece kendi ekiplerini görür
   const displayTeams = isAdmin 
     ? teams 
     : teams.filter(t => Number(t.leader?.id) === Number(activeMembershipId));
@@ -252,12 +244,10 @@ export const Teams = () => {
 
               {/* Tabs */}
               <div className="flex border-b border-gray-50 px-8">
-                {['members', 'performance', 'meetings', 'documents'].map(tab => (
+                {['members', 'performance'].map(tab => (
                     <button key={tab} onClick={() => setActiveTab(tab)} className={`py-4 px-6 text-xs font-black uppercase tracking-widest transition-all border-b-2 ${activeTab === tab ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-400 hover:text-gray-600'}`}>
                         {tab === 'members' && 'Üyeler'}
                         {tab === 'performance' && 'Performans Analizi'}
-                        {tab === 'meetings' && 'Toplantılar'}
-                        {tab === 'documents' && 'Belgeler'}
                     </button>
                 ))}
               </div>
@@ -370,16 +360,6 @@ export const Teams = () => {
                                 </div>
                             </div>
                         </div>
-                    </div>
-                )}
-
-                {(activeTab === 'meetings' || activeTab === 'documents') && (
-                    <div className="text-center py-20 bg-gray-50/50 rounded-3xl border border-dashed border-gray-200">
-                        <div className="w-16 h-16 bg-white rounded-2xl mx-auto flex items-center justify-center text-gray-300 mb-4 shadow-sm">
-                            {activeTab === 'meetings' ? <FileText size={32} /> : <FolderClosed size={32} />}
-                        </div>
-                        <p className="text-gray-400 font-bold">Henüz eklenmiş {activeTab === 'meetings' ? 'toplantı raporu' : 'belge'} bulunmuyor.</p>
-                        <p className="text-[10px] text-gray-300 font-black uppercase tracking-widest mt-1">Ekip lideri tarafından eklenir</p>
                     </div>
                 )}
               </div>

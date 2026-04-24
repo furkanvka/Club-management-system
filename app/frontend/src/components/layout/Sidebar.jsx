@@ -17,7 +17,8 @@ import {
   ChevronDown, 
   ChevronRight,
   Settings,
-  ShieldCheck
+  ShieldCheck,
+  Megaphone
 } from 'lucide-react';
 
 export const Sidebar = () => {
@@ -86,7 +87,14 @@ export const Sidebar = () => {
       color: 'text-emerald-500',
       items: [
         { name: 'Projeler', path: '/dashboard/projects', icon: Briefcase, access: 'ekip', iconColor: 'text-emerald-500' },
-        { name: 'Toplantı Raporları', path: '/dashboard/meetings', icon: BookOpen, access: 'ekip', iconColor: 'text-teal-500' },
+      ]
+    },
+    {
+      label: 'TOPLANTILAR',
+      color: 'text-teal-500',
+      items: [
+        { name: 'Toplantı Duyuruları', path: '/dashboard/meetings/announcements', icon: Megaphone, access: 'ekip', iconColor: 'text-amber-500' },
+        { name: 'Toplantı Raporları', path: '/dashboard/meetings/reports', icon: BookOpen, access: 'ekip', iconColor: 'text-teal-500' },
       ]
     },
     {
