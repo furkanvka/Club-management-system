@@ -11,5 +11,6 @@ import java.util.Optional;
 @Repository
 public interface TeamRepository extends JpaRepository<Team, Long> {
     List<Team> findByClubId(Long clubId);
+    List<Team> findByLeaderId(Long leaderId);
     Optional<Team> findByIdAndClubId(Long id, Long clubId);
 }

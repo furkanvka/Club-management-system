@@ -27,8 +27,17 @@ public class TeamService {
             return teamRepository.findByClubId(clubId);
         }
 
-        return teamMemberRepository.findByMembershipId(membershipId).stream()
+        // 1. Üyesi olduğu ekipler
+        Set<Team> teams = teamMemberRepository.findByMembershipId(membershipId).stream()
                 .map(TeamMember::getTeam)
+                .collect(Collectors.toSet());
+
+        // 2. Lideri olduğu ekipler
+        teams.addAll(teamRepository.findByLeaderId(membershipId));
+
+        // ClubId'ye göre filtrele (Controller'dan gelen clubId)
+        return teams.stream()
+                .filter(t -> t.getClub().getId().equals(clubId))
                 .collect(Collectors.toList());
     }
 
@@ -139,17 +148,21 @@ public class TeamService {
     }
 
     public List<Team> getMyTeams(Long membershipId) {
-        List<Team> teams = teamMemberRepository.findByMembershipId(membershipId).stream()
+        // 1. Üyesi olduğu ekipler
+        Set<Team> teams = teamMemberRepository.findByMembershipId(membershipId).stream()
                 .map(TeamMember::getTeam)
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
         
+        // 2. Lideri olduğu ekipler
+        teams.addAll(teamRepository.findByLeaderId(membershipId));
+
         // Lider bilgisini zorla yükle (Lazy loading sorununu önlemek için)
         for (Team t : teams) {
             if (t.getLeader() != null) {
                 t.getLeader().getId(); 
             }
         }
-        return teams;
+        return new ArrayList<>(teams);
     }
 
     public TeamMember addTeamMember(Long teamId, Long membershipId, Long requesterMembershipId) {

@@ -33,19 +33,25 @@ export const Teams = () => {
   const [saving, setSaving] = useState(false);
 
   const isAdmin = activeRole === 'baskan' || user?.loginType === 'club';
+  const isLider = activeRole === 'ekip_lideri' || activeRole === 'ekip-lideri';
 
   const fetchTeams = useCallback(() => {
     if (!activeClub?.id) return;
     setLoading(true);
-    api.get(`/clubs/${activeClub.id}/teams`, {
-      params: { requesterId: activeMembershipId }
-    })
+    // Projects.jsx'teki gibi requesterId olmadan tüm ekipleri çekiyoruz
+    api.get(`/clubs/${activeClub.id}/teams`)
       .then(r => { 
         setTeams(r.data); 
         setLoading(false); 
       })
       .catch(() => setLoading(false));
-  }, [activeClub?.id, activeMembershipId]);
+  }, [activeClub?.id]);
+
+  // Projects.jsx'teki selectableTeams mantığının aynısı:
+  // Admin ise hepsini, lider ise sadece kendi ekiplerini görür
+  const displayTeams = isAdmin 
+    ? teams 
+    : teams.filter(t => Number(t.leader?.id) === Number(activeMembershipId));
 
   const fetchTeamDetails = (teamId) => {
     Promise.all([
@@ -72,8 +78,8 @@ export const Teams = () => {
 
   useEffect(() => { 
     fetchTeams(); 
-    if (isAdmin) fetchAllClubMembers();
-  }, [fetchTeams, fetchAllClubMembers, isAdmin]);
+    if (isAdmin || isLider) fetchAllClubMembers();
+  }, [fetchTeams, fetchAllClubMembers, isAdmin, isLider]);
 
   const handleCreateTeam = async (e) => {
     e.preventDefault();
@@ -95,6 +101,24 @@ export const Teams = () => {
       alert('Ekip oluşturulamadı.');
     } finally {
       setSaving(false);
+    }
+  };
+
+  const [selectedNewMemberId, setSelectedNewMemberId] = useState('');
+
+  const handleAddMember = async (e) => {
+    e.preventDefault();
+    if (!selectedNewMemberId || !selectedTeam) return;
+    try {
+      await api.post(`/clubs/${activeClub.id}/teams/${selectedTeam.id}/members`, {
+        membership: { id: selectedNewMemberId }
+      }, {
+        params: { requesterId: activeMembershipId }
+      });
+      setSelectedNewMemberId('');
+      fetchTeamDetails(selectedTeam.id);
+    } catch (e) {
+      alert(e.response?.data?.message || 'Üye eklenemedi.');
     }
   };
 
@@ -166,13 +190,13 @@ export const Teams = () => {
             <div className="flex justify-center py-20"><div className="w-10 h-10 border-4 border-indigo-100 border-t-indigo-600 rounded-full animate-spin" /></div>
           ) : (
             <div className={`grid grid-cols-1 ${selectedTeam ? 'gap-3' : 'md:grid-cols-2 lg:grid-cols-3 gap-6'}`}>
-              {teams.length === 0 ? (
+              {displayTeams.length === 0 ? (
                 <div className="col-span-full py-10 text-center bg-gray-50 rounded-3xl border border-dashed border-gray-200">
                    <Users className="mx-auto text-gray-300 mb-2" size={48} />
                    <p className="text-gray-500 font-bold italic">Görüntülenecek ekip bulunmuyor.</p>
                 </div>
               ) : (
-                teams.map(t => (
+                displayTeams.map(t => (
                   <div key={t.id} onClick={() => { setSelectedTeam(t); fetchTeamDetails(t.id); }} className={`group cursor-pointer bg-white border rounded-[2rem] p-6 transition-all duration-300 ${selectedTeam?.id === t.id ? 'border-indigo-500 ring-4 ring-indigo-50' : 'border-gray-100 hover:border-indigo-300'}`}>
                     <div className="flex items-start justify-between mb-4">
                       <div className="p-3 bg-indigo-50 text-indigo-600 rounded-2xl"><Users size={20} /></div>
@@ -240,6 +264,38 @@ export const Teams = () => {
 
               <div className="p-8">
                 {activeTab === 'members' && (
+                  <div className="space-y-6">
+                    {/* Üye Ekleme Formu (Sadece Liderler için) */}
+                    {isLeaderOfSelectedTeam && (
+                        <div className="bg-indigo-50/30 border border-indigo-100 p-6 rounded-3xl space-y-4">
+                            <h4 className="text-xs font-black text-indigo-900 uppercase tracking-widest flex items-center gap-2">
+                                <Plus size={16} /> Yeni Ekip Üyesi Ekle
+                            </h4>
+                            <div className="flex flex-col md:flex-row gap-3">
+                                <select 
+                                    value={selectedNewMemberId} 
+                                    onChange={e => setSelectedNewMemberId(e.target.value)}
+                                    className="flex-1 px-4 py-2.5 bg-white border border-indigo-100 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500/20"
+                                >
+                                    <option value="">Üye Seçiniz...</option>
+                                    {allMembers
+                                        .filter(m => !teamMembers.some(tm => tm.membership.id === m.id))
+                                        .map(m => (
+                                            <option key={m.id} value={m.id}>{m.user?.email} ({m.role})</option>
+                                        ))
+                                    }
+                                </select>
+                                <button 
+                                    onClick={handleAddMember}
+                                    disabled={!selectedNewMemberId}
+                                    className="px-6 py-2.5 bg-indigo-600 text-white rounded-xl text-sm font-bold hover:bg-indigo-700 disabled:opacity-50 transition-all shadow-lg shadow-indigo-100"
+                                >
+                                    Ekle
+                                </button>
+                            </div>
+                        </div>
+                    )}
+
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {teamMembers.map(tm => (
                             <div key={tm.id} className={`flex items-center justify-between p-4 bg-gray-50/50 border rounded-2xl group transition-all ${isLeaderOfSelectedTeam ? 'cursor-pointer hover:border-indigo-300 hover:bg-white' : 'border-gray-100'}`} onClick={() => isLeaderOfSelectedTeam && fetchMemberHistory(tm.membership.id)}>
@@ -263,6 +319,7 @@ export const Teams = () => {
                             </div>
                         ))}
                     </div>
+                  </div>
                 )}
 
                 {activeTab === 'performance' && (
