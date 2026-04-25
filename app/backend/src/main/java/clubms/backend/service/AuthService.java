@@ -76,12 +76,15 @@ public class AuthService {
 
     public User registerUser(RegisterRequest signUpRequest) {
         if (userRepository.existsByEmail(signUpRequest.getEmail())) {
-            throw new RuntimeException("Email is already taken!");
+            throw new RuntimeException("Bu e-posta adresi zaten kullanımda!");
         }
 
         User user = new User();
         user.setEmail(signUpRequest.getEmail());
         user.setPasswordHash(passwordEncoder.encode(signUpRequest.getPassword()));
+        user.setFirstName(signUpRequest.getFirstName());
+        user.setLastName(signUpRequest.getLastName());
+        user.setStudentNumber(signUpRequest.getStudentNumber());
 
         return userRepository.save(user);
     }

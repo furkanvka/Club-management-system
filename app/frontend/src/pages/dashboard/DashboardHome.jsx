@@ -174,9 +174,13 @@ const MemberDashboard = ({ activeClub, user, activeMembershipId, activeRole }) =
       <div className="bg-gradient-to-br from-indigo-600 to-blue-800 rounded-[3rem] p-8 md:p-12 text-white relative overflow-hidden shadow-2xl">
         <h1 className="text-4xl md:text-5xl font-black tracking-tighter leading-tight mb-4">{activeClub?.name}</h1>
         <div className="flex items-center gap-4 bg-white/10 backdrop-blur-md rounded-[2rem] p-5 border border-white/10 w-fit">
-            <div className="w-12 h-12 rounded-xl bg-indigo-500 flex items-center justify-center text-xl font-black">{user?.email?.[0].toUpperCase()}</div>
+            <div className="w-12 h-12 rounded-xl bg-indigo-500 flex items-center justify-center text-xl font-black">
+                {user?.firstName?.[0].toUpperCase() || user?.email?.[0].toUpperCase()}
+            </div>
             <div>
-                <p className="text-xl font-black leading-none">{user?.email?.split('@')[0]}</p>
+                <p className="text-xl font-black leading-none">
+                    {user?.firstName ? `${user.firstName} ${user.lastName}` : user?.email?.split('@')[0]}
+                </p>
                 <p className="text-[10px] font-bold opacity-60 uppercase mt-1">{user?.email}</p>
             </div>
         </div>

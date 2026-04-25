@@ -15,6 +15,7 @@ public class MemberProfile {
     private Membership membership;
 
     private String fullName;
+    private String studentNumber;
     private String phone;
     private String department;
     private Integer classYear;
@@ -27,6 +28,8 @@ public class MemberProfile {
     public void setMembership(Membership membership) { this.membership = membership; }
     public String getFullName() { return fullName; }
     public void setFullName(String fullName) { this.fullName = fullName; }
+    public String getStudentNumber() { return studentNumber; }
+    public void setStudentNumber(String studentNumber) { this.studentNumber = studentNumber; }
     public String getPhone() { return phone; }
     public void setPhone(String phone) { this.phone = phone; }
     public String getDepartment() { return department; }

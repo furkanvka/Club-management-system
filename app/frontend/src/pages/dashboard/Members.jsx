@@ -122,7 +122,10 @@ export const Members = () => {
   };
 
   const filtered = members.filter(m =>
-    (m.user?.email || '').toLowerCase().includes(search.toLowerCase())
+    (m.user?.email || '').toLowerCase().includes(search.toLowerCase()) ||
+    (m.user?.firstName || '').toLowerCase().includes(search.toLowerCase()) ||
+    (m.user?.lastName || '').toLowerCase().includes(search.toLowerCase()) ||
+    (m.user?.studentNumber || '').toLowerCase().includes(search.toLowerCase())
   );
 
   return (
@@ -165,7 +168,7 @@ export const Members = () => {
               type="text"
               value={search}
               onChange={e => setSearch(e.target.value)}
-              placeholder="Üye e-postası ile hızlı ara..."
+              placeholder="Ad, Soyad veya Öğrenci No ile ara..."
               className="w-full pl-12 pr-4 py-3.5 bg-white border border-gray-100 rounded-2xl text-sm focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-200 font-medium transition-all"
             />
           </div>
@@ -189,6 +192,7 @@ export const Members = () => {
               <thead>
                 <tr className="border-b border-gray-50">
                   <th className="text-left px-8 py-6 text-[10px] font-black text-gray-400 uppercase tracking-widest">Üye Bilgileri</th>
+                  <th className="text-left px-8 py-6 text-[10px] font-black text-gray-400 uppercase tracking-widest">Öğrenci No</th>
                   <th className="text-left px-8 py-6 text-[10px] font-black text-gray-400 uppercase tracking-widest">Yetki Grubu</th>
                   <th className="text-left px-8 py-6 text-[10px] font-black text-gray-400 uppercase tracking-widest">Sistem Durumu</th>
                   <th className="text-right px-8 py-6 text-[10px] font-black text-gray-400 uppercase tracking-widest">İşlemler</th>
@@ -200,19 +204,24 @@ export const Members = () => {
                   const RIcon = rd.icon;
                   const normalizedRole = (m.role || '').toUpperCase();
                   const isUserBaskan = normalizedRole === 'KULUP_BASKANI' || normalizedRole === 'BASKAN';
+                  const displayName = m.user?.firstName ? `${m.user.firstName} ${m.user.lastName}` : (m.user?.email?.split('@')[0] || 'Bilinmiyor');
+                  const initial = m.user?.firstName ? m.user.firstName[0] : (m.user?.email?.[0] || '?');
                   
                   return (
                     <tr key={m.id} className="group hover:bg-indigo-50/30 transition-all duration-300">
                       <td className="px-8 py-6">
                         <div className="flex items-center gap-4">
                           <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-gray-50 to-white border border-gray-100 shadow-sm flex items-center justify-center font-black text-indigo-600 text-lg group-hover:scale-110 transition-transform duration-300">
-                            {(m.user?.email?.[0] || '?').toUpperCase()}
+                            {initial.toUpperCase()}
                           </div>
                           <div>
-                            <div className="font-black text-gray-800 text-base leading-tight">{m.user?.email?.split('@')[0] || 'Bilinmiyor'}</div>
+                            <div className="font-black text-gray-800 text-base leading-tight">{displayName}</div>
                             <div className="text-xs text-gray-400 font-bold mt-0.5">{m.user?.email || '—'}</div>
                           </div>
                         </div>
+                      </td>
+                      <td className="px-8 py-6 font-bold text-gray-600">
+                         {m.user?.studentNumber || '—'}
                       </td>
                       <td className="px-8 py-6">
                         <div className="flex flex-col gap-2">

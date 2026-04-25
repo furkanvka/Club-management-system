@@ -30,6 +30,9 @@ public class CustomUserDetailsService implements UserDetailsService {
                     -c.getId(),
                     c.getContactEmail(),
                     c.getPassword(),
+                    c.getName(),
+                    null,
+                    null,
                     java.util.Collections.singletonList(new org.springframework.security.core.authority.SimpleGrantedAuthority("ROLE_CLUB"))
             );
         }
@@ -44,7 +47,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         if (id < 0) {
             clubms.backend.entity.Club club = clubRepository.findById(-id)
                     .orElseThrow(() -> new UsernameNotFoundException("Club not found with id: " + -id));
-            return new UserPrincipal(id, club.getContactEmail(), club.getPassword(), 
+            return new UserPrincipal(id, club.getContactEmail(), club.getPassword(), club.getName(), null, null,
                 java.util.Collections.singletonList(new org.springframework.security.core.authority.SimpleGrantedAuthority("ROLE_CLUB")));
         }
 

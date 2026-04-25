@@ -42,6 +42,7 @@ public class MemberProfileController {
                             .orElse(new MemberProfile());
                     profile.setMembership(membership);
                     profile.setFullName(profileRequest.getFullName());
+                    profile.setStudentNumber(profileRequest.getStudentNumber());
                     profile.setPhone(profileRequest.getPhone());
                     profile.setDepartment(profileRequest.getDepartment());
                     profile.setClassYear(profileRequest.getClassYear());

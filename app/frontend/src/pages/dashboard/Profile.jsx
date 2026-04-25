@@ -2,13 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { useClub } from '../../store/ClubContext';
 import { useAuth } from '../../store/AuthContext';
 import api from '../../services/api';
-import { User, Phone, BookOpen, GraduationCap, Save, Camera, Clock, CheckCircle2, Shield, Star, Crown, UserCheck } from 'lucide-react';
+import { User, Phone, BookOpen, GraduationCap, Save, Camera, Clock, CheckCircle2, Shield, Star, Crown, UserCheck, Hash, Mail } from 'lucide-react';
 
 export const Profile = () => {
   const { activeClub, activeRole, activeMembershipStatus } = useClub();
   const { user } = useAuth();
   const [profile, setProfile] = useState({
     fullName: '',
+    studentNumber: '',
     phone: '',
     department: '',
     classYear: '',
@@ -23,11 +24,20 @@ export const Profile = () => {
     setLoading(true);
     api.get(`/clubs/${activeClub.id}/members/me/profile`)
       .then(r => {
-        if (r.data) setProfile(r.data);
+        if (r.data) {
+          setProfile(r.data);
+        } else {
+          // If no profile, pre-fill with data from user object
+          setProfile(prev => ({
+            ...prev,
+            fullName: user?.firstName ? `${user.firstName} ${user.lastName}` : '',
+            studentNumber: user?.studentNumber || ''
+          }));
+        }
         setLoading(false);
       })
       .catch(() => setLoading(false));
-  }, [activeClub]);
+  }, [activeClub, user]);
 
   const handleSave = async (e) => {
     e.preventDefault();
@@ -63,9 +73,12 @@ export const Profile = () => {
 
   const rd = roleDisplay(activeRole);
   const RoleIcon = rd.icon;
+  const initial = user?.firstName?.[0] || profile.fullName?.[0] || user?.email?.[0].toUpperCase();
+  const displayName = profile.fullName || (user?.firstName ? `${user.firstName} ${user.lastName}` : 'İsimsiz Üye');
+  const displayStudentNumber = profile.studentNumber || user?.studentNumber || '—';
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in duration-500">
+    <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in duration-500 pb-12">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-black text-gray-900 tracking-tight">Profil Bilgilerim</h1>
@@ -79,14 +92,21 @@ export const Profile = () => {
           <div className="bg-white rounded-[2.5rem] p-8 border border-gray-100 shadow-xl shadow-gray-200/50 flex flex-col items-center text-center">
             <div className="relative group mb-6">
               <div className="w-32 h-32 rounded-[2.5rem] bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-4xl font-black shadow-lg shadow-indigo-200 overflow-hidden">
-                {profile.avatarUrl ? <img src={profile.avatarUrl} alt="Avatar" className="w-full h-full object-cover" /> : profile.fullName?.[0] || user?.email?.[0].toUpperCase()}
+                {profile.avatarUrl ? <img src={profile.avatarUrl} alt="Avatar" className="w-full h-full object-cover" /> : initial}
               </div>
               <button className="absolute bottom-0 right-0 p-2.5 bg-white border border-gray-100 rounded-2xl shadow-lg text-indigo-600 hover:scale-110 transition-transform">
                 <Camera size={18} />
               </button>
             </div>
-            <h2 className="text-xl font-black text-gray-900 leading-tight">{profile.fullName || 'İsimsiz Üye'}</h2>
-            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mt-1">{user?.email}</p>
+            <h2 className="text-xl font-black text-gray-900 leading-tight">{displayName}</h2>
+            <div className="flex flex-col gap-1 mt-2">
+                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest flex items-center justify-center gap-1">
+                   <Mail size={10} /> {user?.email}
+                </p>
+                <p className="text-[10px] font-black text-indigo-500 uppercase tracking-widest flex items-center justify-center gap-1">
+                   <Hash size={10} /> No: {displayStudentNumber}
+                </p>
+            </div>
             
             <div className="mt-8 w-full space-y-3">
                <div className="flex items-center justify-between p-3.5 bg-gray-50 rounded-2xl border border-gray-100">
@@ -107,17 +127,18 @@ export const Profile = () => {
 
           <div className="bg-white rounded-[2rem] p-6 border border-gray-100 shadow-lg shadow-gray-200/40">
              <h3 className="text-sm font-black text-gray-800 flex items-center gap-2 mb-4">
-                <Clock size={16} className="text-indigo-500" /> Üyelik Geçmişi
+                <Clock size={16} className="text-indigo-500" /> Hesap Özeti
              </h3>
              <div className="space-y-4">
                 <div className="border-l-2 border-indigo-100 pl-4 relative">
                    <div className="absolute w-2 h-2 rounded-full bg-indigo-500 -left-[5px] top-1"></div>
-                   <p className="text-xs font-black text-gray-800">Topluluğa Katıldı</p>
-                   <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Nisan 2026</p>
+                   <p className="text-xs font-black text-gray-800">Üyelik Kaydı</p>
+                   <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Doğrulandı</p>
                 </div>
-                <div className="border-l-2 border-indigo-100 pl-4 relative opacity-50">
+                <div className="border-l-2 border-indigo-100 pl-4 relative">
                    <div className="absolute w-2 h-2 rounded-full bg-gray-300 -left-[5px] top-1"></div>
-                   <p className="text-xs font-bold text-gray-500">Etkinlik Katılımı</p>
+                   <p className="text-xs font-bold text-gray-500">Hesap Tipi</p>
+                   <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Öğrenci</p>
                 </div>
              </div>
           </div>
@@ -140,6 +161,20 @@ export const Profile = () => {
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-black text-gray-700 ml-1 flex items-center gap-2">
+                  <Hash size={14} className="text-indigo-500" /> Öğrenci Numarası
+                </label>
+                <input 
+                  value={profile.studentNumber}
+                  onChange={e => setProfile({...profile, studentNumber: e.target.value})}
+                  placeholder="202101001" 
+                  className="w-full px-5 py-3.5 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:bg-white outline-none transition-all font-semibold"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <label className="text-sm font-black text-gray-700 ml-1 flex items-center gap-2">
                   <Phone size={14} className="text-indigo-500" /> Telefon
                 </label>
                 <input 
@@ -149,9 +184,6 @@ export const Profile = () => {
                   className="w-full px-5 py-3.5 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:bg-white outline-none transition-all font-semibold"
                 />
               </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <label className="text-sm font-black text-gray-700 ml-1 flex items-center gap-2">
                   <BookOpen size={14} className="text-indigo-500" /> Bölüm
@@ -163,6 +195,9 @@ export const Profile = () => {
                   className="w-full px-5 py-3.5 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:bg-white outline-none transition-all font-semibold"
                 />
               </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <label className="text-sm font-black text-gray-700 ml-1 flex items-center gap-2">
                   <GraduationCap size={14} className="text-indigo-500" /> Sınıf
@@ -179,6 +214,18 @@ export const Profile = () => {
               </div>
             </div>
 
+            <div className="p-6 bg-indigo-50/50 rounded-[2rem] border border-indigo-100 space-y-4">
+               <h3 className="text-xs font-black text-indigo-600 uppercase tracking-widest px-1">Hesap Bilgileri (Sistem)</h3>
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                     <p className="text-[10px] font-black text-gray-400 uppercase ml-1">Kayıtlı E-posta</p>
+                     <div className="px-5 py-3 bg-white border border-gray-100 rounded-xl text-sm font-bold text-gray-500 flex items-center gap-2">
+                        <Mail size={14} /> {user?.email}
+                     </div>
+                  </div>
+               </div>
+            </div>
+
             <div className="pt-4 flex items-center gap-4">
               <button 
                 type="submit" 
@@ -187,7 +234,7 @@ export const Profile = () => {
               >
                 {saving ? 'Kaydediliyor...' : (
                   <>
-                    <Save size={18} /> Değişiklikleri Kaydet
+                    <Save size={18} /> Profilimi Güncelle
                   </>
                 )}
               </button>
