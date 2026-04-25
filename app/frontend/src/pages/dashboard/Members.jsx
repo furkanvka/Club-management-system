@@ -10,13 +10,14 @@ import {
   Users, 
   Shield, 
   Star, 
-  UserCircle2,
   Plus,
   X,
-  CheckCircle2,
   DollarSign,
   Folder
 } from 'lucide-react';
+import { Card } from '../../components/common/Card';
+import { Table, TableCell } from '../../components/common/Table';
+import { Button } from '../../components/common/Button';
 
 export const Members = () => {
   const { activeClub, activeRole, activeMembershipId } = useClub();
@@ -33,7 +34,7 @@ export const Members = () => {
 
   const isBaskan = activeRole === 'baskan' || user?.loginType === 'club';
   const isLider = activeRole === 'ekip_lideri' || activeRole === 'EKIP_LIDERI' || activeRole === 'lider';
-  const canManageTeams = isLider; // SADECE Ekip Lideri üye ekleyebilir, Başkan ekleyemez.
+  const canManageTeams = isLider;
 
   const fetchMembers = useCallback(() => {
     if (!activeClub?.id) return;
@@ -104,20 +105,18 @@ export const Members = () => {
     }
   };
 
-  const roleDisplay = (role) => {
+  const getRoleBadge = (role) => {
     const normalized = (role || '').toUpperCase().replace('-', '_');
     switch (normalized) {
       case 'KULUP_BASKANI':
       case 'BASKAN':
-        return { label: 'Kulüp Başkanı', cls: 'bg-purple-50 text-purple-700 border-purple-100', icon: Crown };
+        return { label: 'Başkan', color: 'bg-purple-50 text-purple-700 border-purple-100', icon: Crown };
       case 'EKIP_LIDERI':
-        return { label: 'Ekip Lideri', cls: 'bg-amber-50 text-amber-700 border-amber-100', icon: Star };
+        return { label: 'Ekip Lideri', color: 'bg-amber-50 text-amber-700 border-amber-100', icon: Star };
       case 'EKIP_UYESI':
-        return { label: 'Ekip Üyesi', cls: 'bg-indigo-50 text-indigo-700 border-indigo-100', icon: Shield };
-      case 'KULUP_UYESI':
-      case 'UYE':
+        return { label: 'Ekip Üyesi', color: 'bg-indigo-50 text-indigo-700 border-indigo-100', icon: Shield };
       default:
-        return { label: 'Kulüp Üyesi', cls: 'bg-blue-50 text-blue-700 border-blue-100', icon: UserCheck };
+        return { label: 'Üye', color: 'bg-blue-50 text-blue-700 border-blue-100', icon: UserCheck };
     }
   };
 
@@ -128,201 +127,181 @@ export const Members = () => {
     (m.user?.studentNumber || '').toLowerCase().includes(search.toLowerCase())
   );
 
+  const headers = ['Üye Bilgileri', 'Öğrenci No', 'Yetki Grubu', 'Sistem Durumu', ''];
+
   return (
-    <div className="space-y-6 animate-in fade-in duration-700">
+    <div className="space-y-8 max-w-7xl mx-auto">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-gray-100">
         <div>
-          <h1 className="text-2xl font-black text-gray-900 tracking-tight flex items-center gap-2">
-            <Users className="text-indigo-600" size={24} />
+          <h1 className="text-3xl font-bold text-gray-900 tracking-tight mb-2 flex items-center gap-2">
             Üye Yönetimi
           </h1>
-          <p className="text-sm text-gray-500 font-medium mt-1">
+          <p className="text-gray-500 font-medium">
             {activeClub?.name} topluluk üyeleri ve yetki dağılımı
           </p>
         </div>
       </div>
 
       {/* Stats Row */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: 'Toplam Üye', value: members.length, color: 'text-indigo-600' },
-          { label: 'Başkanlar', value: members.filter(m => ['KULUP_BASKANI', 'BASKAN'].includes(m.role?.toUpperCase())).length, color: 'text-purple-600' },
-          { label: 'Ekip Liderleri', value: members.filter(m => m.role?.toUpperCase() === 'EKIP_LIDERI').length, color: 'text-amber-600' },
-          { label: 'Aktif Üyeler', value: members.filter(m => m.status === 'active').length, color: 'text-emerald-600' },
+          { label: 'Toplam Üye', value: members.length, color: 'bg-indigo-50 text-indigo-600', icon: Users },
+          { label: 'Başkanlar', value: members.filter(m => ['KULUP_BASKANI', 'BASKAN'].includes(m.role?.toUpperCase())).length, color: 'bg-purple-50 text-purple-600', icon: Crown },
+          { label: 'Ekip Liderleri', value: members.filter(m => m.role?.toUpperCase() === 'EKIP_LIDERI').length, color: 'bg-amber-50 text-amber-600', icon: Star },
+          { label: 'Aktif Üyeler', value: members.filter(m => m.status === 'active').length, color: 'bg-emerald-50 text-emerald-600', icon: UserCheck },
         ].map(s => (
-          <div key={s.label} className="bg-white rounded-[2rem] border border-gray-100 p-6 shadow-xl shadow-gray-200/40 transition-transform hover:scale-[1.02]">
-            <p className={`text-3xl font-black ${s.color}`}>{s.value}</p>
-            <p className="text-[10px] font-black uppercase tracking-widest mt-1 text-gray-400">{s.label}</p>
-          </div>
+          <Card key={s.label}>
+            <div className="flex items-center gap-4">
+              <div className={`w-12 h-12 rounded-xl ${s.color} flex items-center justify-center`}>
+                <s.icon size={24} />
+              </div>
+              <div>
+                <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-0.5">{s.label}</p>
+                <p className="text-2xl font-bold text-gray-900">{s.value}</p>
+              </div>
+            </div>
+          </Card>
         ))}
       </div>
 
-      {/* Table Card */}
-      <div className="bg-white rounded-[2.5rem] shadow-xl shadow-gray-200/50 border border-gray-100 overflow-hidden">
-        {/* Table Toolbar */}
-        <div className="p-6 border-b border-gray-50 flex flex-col md:flex-row md:items-center justify-between gap-4 bg-gradient-to-r from-gray-50/50 to-white">
-          <div className="relative group max-w-sm w-full">
-            <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-indigo-500 transition-colors" />
+      {/* Main Content */}
+      <Card noPadding>
+        <div className="p-6 border-b border-gray-100 bg-gray-50/30">
+          <div className="relative max-w-sm">
+            <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
             <input
               type="text"
               value={search}
               onChange={e => setSearch(e.target.value)}
-              placeholder="Ad, Soyad veya Öğrenci No ile ara..."
-              className="w-full pl-12 pr-4 py-3.5 bg-white border border-gray-100 rounded-2xl text-sm focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-200 font-medium transition-all"
+              placeholder="Üye ara..."
+              className="w-full pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all"
             />
           </div>
         </div>
 
-        {loading ? (
-          <div className="p-24 text-center flex flex-col items-center">
-            <div className="w-14 h-14 border-4 border-indigo-100 border-t-indigo-600 rounded-full animate-spin mb-4" />
-            <p className="text-xs font-black text-gray-400 uppercase tracking-widest">Veri tabanı taranıyor...</p>
-          </div>
-        ) : filtered.length === 0 ? (
-          <div className="p-24 text-center">
-            <div className="w-24 h-24 bg-gray-50 rounded-[2rem] mx-auto flex items-center justify-center text-gray-200 mb-6">
-              <UserCircle2 size={56} />
-            </div>
-            <p className="text-gray-500 font-black text-xl">{search ? 'Kayıt bulunamadı.' : 'Üye listesi boş.'}</p>
-          </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-gray-50">
-                  <th className="text-left px-8 py-6 text-[10px] font-black text-gray-400 uppercase tracking-widest">Üye Bilgileri</th>
-                  <th className="text-left px-8 py-6 text-[10px] font-black text-gray-400 uppercase tracking-widest">Öğrenci No</th>
-                  <th className="text-left px-8 py-6 text-[10px] font-black text-gray-400 uppercase tracking-widest">Yetki Grubu</th>
-                  <th className="text-left px-8 py-6 text-[10px] font-black text-gray-400 uppercase tracking-widest">Sistem Durumu</th>
-                  <th className="text-right px-8 py-6 text-[10px] font-black text-gray-400 uppercase tracking-widest">İşlemler</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-50">
-                {filtered.map(m => {
-                  const rd = roleDisplay(m.role);
-                  const RIcon = rd.icon;
-                  const normalizedRole = (m.role || '').toUpperCase();
-                  const isUserBaskan = normalizedRole === 'KULUP_BASKANI' || normalizedRole === 'BASKAN';
-                  const displayName = m.user?.firstName ? `${m.user.firstName} ${m.user.lastName}` : (m.user?.email?.split('@')[0] || 'Bilinmiyor');
-                  const initial = m.user?.firstName ? m.user.firstName[0] : (m.user?.email?.[0] || '?');
-                  
-                  return (
-                    <tr key={m.id} className="group hover:bg-indigo-50/30 transition-all duration-300">
-                      <td className="px-8 py-6">
-                        <div className="flex items-center gap-4">
-                          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-gray-50 to-white border border-gray-100 shadow-sm flex items-center justify-center font-black text-indigo-600 text-lg group-hover:scale-110 transition-transform duration-300">
-                            {initial.toUpperCase()}
-                          </div>
-                          <div>
-                            <div className="font-black text-gray-800 text-base leading-tight">{displayName}</div>
-                            <div className="text-xs text-gray-400 font-bold mt-0.5">{m.user?.email || '—'}</div>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-8 py-6 font-bold text-gray-600">
-                         {m.user?.studentNumber || '—'}
-                      </td>
-                      <td className="px-8 py-6">
-                        <div className="flex flex-col gap-2">
-                          <div className={`inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-2xl border ${rd.cls} shadow-sm w-fit`}>
-                            <RIcon size={14} />
-                            {rd.label}
-                          </div>
-                          {isBaskan && !isUserBaskan && (
-                            <div className="flex gap-1">
-                              {[
-                                { key: 'yonetici', label: 'Ynt', icon: Shield, color: 'text-red-500' },
-                                { key: 'finans', label: 'Fin', icon: DollarSign, color: 'text-green-500' },
-                                { key: 'docs', label: 'Bel', icon: Folder, color: 'text-blue-500' },
-                              ].map(f => {
-                                const Icon = f.icon;
-                                const active = m.flags && m.flags.includes(`"${f.key}":true`);
-                                return (
-                                  <button
-                                    key={f.key}
-                                    onClick={() => handleUpdateFlags(m.id, m.flags, f.key)}
-                                    className={`px-2 py-1 rounded-lg text-[9px] font-black uppercase flex items-center gap-1 border transition-all ${
-                                      active 
-                                      ? `bg-white ${f.color} border-current shadow-sm` 
-                                      : 'bg-gray-50 text-gray-300 border-gray-100 hover:border-gray-200'
-                                    }`}
-                                    title={`${f.label} Yetkisi`}
-                                  >
-                                    <Icon size={10} /> {f.label}
-                                  </button>
-                                );
-                              })}
-                            </div>
-                          )}
-                        </div>
-                      </td>
-                      <td className="px-8 py-6">
-                        <div className={`inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-2xl ${m.status === 'active' ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-gray-50 text-gray-400 border border-gray-100'}`}>
-                          <span className={`w-1.5 h-1.5 rounded-full ${m.status === 'active' ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)]' : 'bg-gray-300'}`}></span>
-                          {m.status === 'active' ? 'Aktif Üye' : 'Pasif'}
-                        </div>
-                      </td>
-                      <td className="px-8 py-6 text-right">
-                        <div className="flex justify-end gap-2">
-                           {canManageTeams && !isUserBaskan && (
-                             <button
-                               onClick={() => { setSelectedMember(m); setShowTeamModal(true); }}
-                               className="px-3 py-1.5 bg-indigo-50 text-indigo-600 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-600 hover:text-white transition-all shadow-sm"
-                               title="Ekibe Ekle"
-                             >
-                               <Plus size={14} className="inline mr-1" /> Ekibe Ekle
-                             </button>
-                           )}
-                           
-                           {isBaskan && !isUserBaskan && (
-                              <button
-                               onClick={() => handleRemove(m.id)}
-                               className="w-10 h-10 flex items-center justify-center text-gray-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all duration-300"
-                               title="Üyeyi Çıkar"
-                             >
-                               <Trash2 size={18} />
-                             </button>
-                           )}
-                           
-                           {isUserBaskan && (
-                              <div className="inline-flex items-center gap-2 px-3 py-2 bg-purple-50 text-purple-400 rounded-xl" title="Kurucu Yetkisi">
-                                 <Shield size={16} />
-                                 <span className="text-[9px] font-black uppercase tracking-tighter">Korumalı</span>
-                              </div>
-                           )}
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
+        <Table
+          headers={headers}
+          data={filtered}
+          loading={loading}
+          emptyMessage={search ? 'Arama kriterlerine uygun üye bulunamadı.' : 'Henüz üye bulunmuyor.'}
+          renderRow={(m) => {
+            const rb = getRoleBadge(m.role);
+            const RoleIcon = rb.icon;
+            const normalizedRole = (m.role || '').toUpperCase();
+            const isUserBaskan = normalizedRole === 'KULUP_BASKANI' || normalizedRole === 'BASKAN';
+            const displayName = m.user?.firstName ? `${m.user.firstName} ${m.user.lastName}` : (m.user?.email?.split('@')[0] || 'Bilinmiyor');
+            
+            return (
+              <>
+                <TableCell>
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center font-bold text-indigo-600">
+                      {displayName[0].toUpperCase()}
+                    </div>
+                    <div>
+                      <div className="font-bold text-gray-900">{displayName}</div>
+                      <div className="text-xs text-gray-500 font-medium">{m.user?.email}</div>
+                    </div>
+                  </div>
+                </TableCell>
+                <TableCell className="font-medium text-gray-600">
+                   {m.user?.studentNumber || '—'}
+                </TableCell>
+                <TableCell>
+                  <div className="flex flex-col gap-2">
+                    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold border ${rb.color}`}>
+                      <RoleIcon size={12} />
+                      {rb.label.toUpperCase()}
+                    </span>
+                    {isBaskan && !isUserBaskan && (
+                      <div className="flex gap-1">
+                        {[
+                          { key: 'yonetici', label: 'Ynt', color: 'text-red-600', bg: 'bg-red-50' },
+                          { key: 'finans', label: 'Fin', icon: DollarSign, color: 'text-green-600', bg: 'bg-green-50' },
+                          { key: 'docs', label: 'Bel', icon: Folder, color: 'text-blue-600', bg: 'bg-blue-50' },
+                        ].map(f => {
+                          const active = m.flags && m.flags.includes(`"${f.key}":true`);
+                          return (
+                            <button
+                              key={f.key}
+                              onClick={() => handleUpdateFlags(m.id, m.flags, f.key)}
+                              className={`px-2 py-0.5 rounded text-[9px] font-bold uppercase transition-all border ${
+                                active 
+                                ? `${f.bg} ${f.color} border-current` 
+                                : 'bg-gray-50 text-gray-400 border-gray-100 hover:border-gray-200'
+                              }`}
+                              title={`${f.label} Yetkisi`}
+                            >
+                              {f.label}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold ${
+                    m.status === 'active' 
+                    ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' 
+                    : 'bg-gray-50 text-gray-500 border border-gray-100'
+                  }`}>
+                    <div className={`w-1.5 h-1.5 rounded-full ${m.status === 'active' ? 'bg-emerald-500' : 'bg-gray-300'}`} />
+                    {m.status === 'active' ? 'AKTİF' : 'PASİF'}
+                  </div>
+                </TableCell>
+                <TableCell className="text-right">
+                  <div className="flex justify-end gap-2">
+                     {canManageTeams && !isUserBaskan && (
+                       <Button
+                         variant="secondary"
+                         size="sm"
+                         onClick={() => { setSelectedMember(m); setShowTeamModal(true); }}
+                         icon={Plus}
+                       >
+                         EKİBE EKLE
+                       </Button>
+                     )}
+                     
+                     {isBaskan && !isUserBaskan && (
+                        <button
+                         onClick={() => handleRemove(m.id)}
+                         className="p-2 text-gray-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-all"
+                         title="Üyeyi Çıkar"
+                       >
+                         <Trash2 size={18} />
+                       </button>
+                     )}
+                  </div>
+                </TableCell>
+              </>
+            );
+          }}
+        />
+      </Card>
 
       {/* Team Assignment Modal */}
       {showTeamModal && (
-        <div className="fixed inset-0 bg-gray-900/60 backdrop-blur-md z-50 flex items-center justify-center p-4 animate-in fade-in duration-300">
-           <div className="bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl border border-gray-100 overflow-hidden animate-in zoom-in-95 duration-300">
-              <div className="p-8 border-b border-gray-50 bg-gradient-to-br from-indigo-50/50 to-white flex items-center justify-between">
+        <div className="fixed inset-0 bg-gray-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+           <div className="bg-white w-full max-w-md rounded-2xl shadow-2xl border border-gray-100 overflow-hidden animate-in zoom-in-95 duration-200">
+              <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
                  <div>
-                    <h3 className="text-xl font-black text-gray-900 tracking-tight">Ekibe Atama Yap</h3>
-                    <p className="text-xs text-gray-500 font-bold uppercase tracking-widest mt-1">{selectedMember?.user?.email}</p>
+                    <h3 className="text-lg font-bold text-gray-900">Ekibe Ata</h3>
+                    <p className="text-xs text-gray-500 font-medium">{selectedMember?.user?.email}</p>
                  </div>
-                 <button onClick={() => setShowTeamModal(false)} className="w-10 h-10 flex items-center justify-center bg-white rounded-xl text-gray-400 hover:text-gray-600 shadow-sm border border-gray-100 transition-all"><X size={20} /></button>
+                 <button onClick={() => setShowTeamModal(false)} className="p-2 text-gray-400 hover:text-gray-600 transition-all">
+                    <X size={20} />
+                 </button>
               </div>
               
-              <div className="p-8 space-y-4">
-                 <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 flex items-center gap-2">
-                    <CheckCircle2 size={12} className="text-indigo-500" /> Atanacak Ekibi Seçin
-                 </div>
+              <div className="p-6 space-y-4">
+                 <p className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Hedef Ekibi Seçin</p>
                  
-                 <div className="max-h-[300px] overflow-y-auto pr-2 space-y-2 custom-scrollbar">
+                 <div className="max-h-[300px] overflow-y-auto space-y-2 pr-1">
                     {myTeams.length === 0 ? (
-                       <div className="py-10 text-center bg-gray-50 rounded-3xl border border-dashed border-gray-200">
-                          <p className="text-sm text-gray-400 font-bold italic">Yönettiğiniz bir ekip bulunamadı.</p>
+                       <div className="py-12 text-center bg-gray-50 rounded-xl border border-dashed border-gray-200">
+                          <p className="text-sm text-gray-400 font-medium">Yönettiğiniz bir ekip bulunamadı.</p>
                        </div>
                     ) : (
                        myTeams.map(t => (
@@ -330,15 +309,15 @@ export const Members = () => {
                             key={t.id}
                             disabled={assigning}
                             onClick={() => handleAddToTeam(t.id)}
-                            className="w-full flex items-center justify-between p-4 bg-gray-50 hover:bg-indigo-50 border border-gray-100 hover:border-indigo-200 rounded-2xl transition-all group"
+                            className="w-full flex items-center justify-between p-4 bg-white border border-gray-200 hover:border-indigo-300 hover:bg-indigo-50/30 rounded-xl transition-all group"
                           >
                              <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 bg-white rounded-xl shadow-sm border border-gray-100 flex items-center justify-center text-indigo-600 font-black group-hover:scale-110 transition-transform">
+                                <div className="w-10 h-10 bg-indigo-50 rounded-lg flex items-center justify-center text-indigo-600 font-bold group-hover:bg-white transition-colors">
                                    {t.name[0].toUpperCase()}
                                 </div>
                                 <div className="text-left">
-                                   <div className="text-sm font-black text-gray-800">{t.name}</div>
-                                   <div className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Lider: {t.leader?.user?.email?.split('@')[0]}</div>
+                                   <div className="text-sm font-bold text-gray-900">{t.name}</div>
+                                   <div className="text-[10px] text-gray-500 font-medium uppercase tracking-tight">Lider: {t.leader?.user?.email?.split('@')[0]}</div>
                                 </div>
                              </div>
                              <Plus size={18} className="text-gray-300 group-hover:text-indigo-500" />
@@ -348,13 +327,14 @@ export const Members = () => {
                  </div>
               </div>
               
-              <div className="p-8 bg-gray-50/50 border-t border-gray-50 flex justify-end">
-                 <button 
+              <div className="px-6 py-4 bg-gray-50 border-t border-gray-100 flex justify-end">
+                 <Button 
+                   variant="secondary"
+                   size="sm"
                    onClick={() => setShowTeamModal(false)}
-                   className="px-6 py-2.5 bg-white border border-gray-200 text-gray-500 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-gray-50 transition-all"
                  >
-                    İptal
-                 </button>
+                    İPTAL
+                 </Button>
               </div>
            </div>
         </div>

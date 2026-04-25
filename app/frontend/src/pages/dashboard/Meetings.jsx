@@ -2,7 +2,25 @@ import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { useClub } from '../../store/ClubContext';
 import { useAuth } from '../../store/AuthContext';
 import api from '../../services/api';
-import { Plus, BookOpen, Trash2, Calendar, Users, X, MapPin, Tag, FileText, CheckCircle, Megaphone, Download, Upload } from 'lucide-react';
+import { 
+  Plus, 
+  BookOpen, 
+  Trash2, 
+  Calendar, 
+  X, 
+  FileText, 
+  CheckCircle, 
+  Megaphone, 
+  Download, 
+  Upload,
+  Loader2,
+  Clock,
+  MapPin,
+  Users
+} from 'lucide-react';
+import { Card } from '../../components/common/Card';
+import { Button } from '../../components/common/Button';
+import { Input } from '../../components/common/Input';
 
 export const Meetings = ({ view }) => {
   const { activeClub, activeRole, activeMembershipId } = useClub();
@@ -21,7 +39,6 @@ export const Meetings = ({ view }) => {
   
   const [saving, setSaving] = useState(false);
 
-  // PROJELERDEKİ STABİL ROL KONTROLLERİ
   const isAdmin = activeRole === 'baskan' || user?.loginType === 'club';
   const isLider = activeRole === 'ekip_lideri' || activeRole === 'ekip-lideri';
   const canAnnounce = isAdmin || isLider;
@@ -80,13 +97,11 @@ export const Meetings = ({ view }) => {
     document.body.removeChild(link);
   };
 
-  // Ekip Liderinin kendi ekibini seçebildiği o meşhur filtre (Projects.jsx ile aynı)
   const selectableTeams = useMemo(() => {
     if (isAdmin) return teams;
     return teams.filter(t => Number(t.leader?.id) === Number(activeMembershipId));
   }, [teams, isAdmin, activeMembershipId]);
 
-  // Toplantı Listeleme Filtresi
   const filteredMeetings = useMemo(() => {
     const statusToFilter = view === 'announcements' ? 'DUYURU' : 'RAPORLANDI';
     const baseMeetings = meetings.filter(m => m.status === statusToFilter);
@@ -153,7 +168,7 @@ export const Meetings = ({ view }) => {
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm('Silmek istediğinize emin misiniz?')) return;
+    if (!window.confirm('Bu toplantı kaydını silmek istediğinize emin misiniz?')) return;
     try {
       await api.delete(`/clubs/${activeClub.id}/meetings/${id}`);
       fetchData();
@@ -161,72 +176,247 @@ export const Meetings = ({ view }) => {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm">
+    <div className="space-y-8 max-w-7xl mx-auto">
+      {/* Header */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-gray-100">
         <div className="flex items-center gap-4">
-          <div className={`p-3 rounded-2xl ${view === 'announcements' ? 'bg-amber-50 text-amber-600' : 'bg-teal-50 text-teal-600'}`}>
+          <div className={`w-12 h-12 rounded-xl flex items-center justify-center shadow-sm ${view === 'announcements' ? 'bg-amber-50 text-amber-600' : 'bg-indigo-50 text-indigo-600'}`}>
             {view === 'announcements' ? <Megaphone size={24} /> : <BookOpen size={24} />}
           </div>
           <div>
-            <h1 className="text-2xl font-black text-gray-900 tracking-tight">
+            <h1 className="text-3xl font-bold text-gray-900 tracking-tight">
               {view === 'announcements' ? 'Toplantı Duyuruları' : 'Toplantı Raporları'}
             </h1>
-            <p className="text-sm text-gray-500 font-medium">{activeClub?.name}</p>
+            <p className="text-gray-500 font-medium">
+              {activeClub?.name} topluluk koordinasyonu
+            </p>
           </div>
         </div>
         {canAnnounce && view === 'announcements' && (
-          <button onClick={() => setShowForm(true)} className="flex items-center gap-2 px-5 py-2.5 bg-indigo-600 text-white rounded-xl text-sm font-bold hover:bg-indigo-700 transition">
-            <Plus size={18} /> Yeni Duyuru
-          </button>
+          <Button variant="primary" onClick={() => setShowForm(true)} icon={Plus}>
+            Yeni Duyuru
+          </Button>
         )}
       </div>
 
-      {showForm && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
-            <div className="flex items-center justify-between px-6 py-4 border-b">
-              <h2 className="font-bold text-gray-900">Toplantı Planla</h2>
-              <button onClick={() => setShowForm(false)} className="text-gray-400"><X size={20} /></button>
-            </div>
-            <form onSubmit={handleCreateAnnouncement} className="p-6 space-y-4">
-              <input required placeholder="Toplantı Başlığı" value={form.title} onChange={e => setForm({...form, title: e.target.value})} className="w-full border border-gray-100 bg-gray-50 rounded-xl px-4 py-3 text-sm outline-none" />
-              <div className="grid grid-cols-2 gap-4">
-                {isAdmin ? (
-                  <select value={form.type} onChange={e => setForm({...form, type: e.target.value})} className="border border-gray-100 bg-gray-50 rounded-xl px-4 py-3 text-sm outline-none">
-                    <option value="GENEL">Genel</option>
-                    <option value="EKIP">Ekip</option>
-                  </select>
-                ) : <div className="p-3 text-sm font-bold text-indigo-600">Ekip Toplantısı</div>}
-                <input type="datetime-local" required value={form.meetingDate} onChange={e => setForm({...form, meetingDate: e.target.value})} className="border border-gray-100 bg-gray-50 rounded-xl px-4 py-3 text-sm outline-none" />
+      {loading ? (
+        <div className="flex flex-col items-center justify-center py-24 gap-4">
+          <Loader2 className="w-10 h-10 text-indigo-500 animate-spin" />
+          <p className="text-sm font-medium text-gray-500">Toplantılar yükleniyor...</p>
+        </div>
+      ) : filteredMeetings.length === 0 ? (
+        <div className="bg-white border border-dashed border-gray-200 rounded-2xl p-24 text-center">
+          <BookOpen size={48} className="text-gray-200 mx-auto mb-4" />
+          <p className="text-sm font-bold text-gray-900 mb-1">Henüz bir kayıt bulunmuyor</p>
+          <p className="text-xs text-gray-500 italic">Paylaşılan duyurular veya raporlar burada görünecek.</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredMeetings.map(m => (
+            <Card key={m.id} className={`group hover:border-indigo-300 hover:shadow-md transition-all duration-300 flex flex-col h-full`} noPadding>
+              <div className="p-6 flex flex-col h-full">
+                <div className="flex items-start justify-between mb-4">
+                  <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-bold border shadow-sm ${
+                    m.status === 'DUYURU' 
+                    ? 'bg-amber-50 text-amber-700 border-amber-100' 
+                    : 'bg-emerald-50 text-emerald-700 border-emerald-100'
+                  }`}>
+                    {m.status === 'DUYURU' ? <Megaphone size={12} /> : <CheckCircle size={12} />}
+                    {m.status}
+                  </span>
+                  
+                  {isAdmin && (
+                    <button 
+                      onClick={() => handleDelete(m.id)}
+                      className="p-1.5 text-gray-300 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-all"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  )}
+                </div>
+
+                <h3 className="text-lg font-bold text-gray-900 mb-4 group-hover:text-indigo-600 transition-colors line-clamp-2 min-h-[3.5rem]">
+                  {m.title}
+                </h3>
+
+                <div className="space-y-2 mb-6">
+                  <div className="flex items-center gap-2 text-xs font-medium text-gray-500">
+                    <Calendar size={14} className="text-gray-400" />
+                    {new Date(m.meetingDate).toLocaleDateString('tr-TR')}
+                  </div>
+                  <div className="flex items-center gap-2 text-xs font-medium text-gray-500">
+                    <Clock size={14} className="text-gray-400" />
+                    {new Date(m.meetingDate).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}
+                  </div>
+                  {m.location && (
+                    <div className="flex items-center gap-2 text-xs font-medium text-gray-500">
+                      <MapPin size={14} className="text-gray-400" />
+                      {m.location}
+                    </div>
+                  )}
+                  {m.type === 'EKIP' && (
+                    <div className="inline-flex items-center gap-1.5 px-2 py-0.5 bg-indigo-50 text-indigo-700 rounded-md text-[10px] font-bold border border-indigo-100 mt-2">
+                       {m.team?.name?.toUpperCase()}
+                    </div>
+                  )}
+                </div>
+
+                {/* Report Preview */}
+                {m.status === 'RAPORLANDI' && (
+                  <div className="mt-auto pt-4 border-t border-gray-100 space-y-4">
+                    <div className="flex items-center gap-2">
+                       <Users size={14} className="text-emerald-500" />
+                       <p className="text-[10px] font-bold text-gray-500 uppercase">Katılımcılar: <span className="text-gray-900 normal-case font-medium">{m.attendees}</span></p>
+                    </div>
+                    {m.content && <p className="text-xs text-gray-500 line-clamp-3 bg-gray-50 p-3 rounded-lg border border-gray-100 italic">"{m.content}"</p>}
+                    {m.fileData && (
+                      <button 
+                        onClick={() => downloadPDF(m)}
+                        className="w-full flex items-center justify-between p-3 bg-indigo-50/50 rounded-xl border border-indigo-100 group/btn hover:bg-indigo-100 transition-colors"
+                      >
+                        <div className="flex items-center gap-2 min-w-0">
+                          <FileText size={16} className="text-indigo-600" />
+                          <span className="text-[11px] font-bold text-indigo-700 truncate">{m.fileName || 'Toplantı_Raporu.pdf'}</span>
+                        </div>
+                        <Download size={14} className="text-indigo-400 group-hover/btn:text-indigo-600 transition-colors" />
+                      </button>
+                    )}
+                  </div>
+                )}
+
+                {/* Report Action */}
+                {m.status === 'DUYURU' && (
+                  <div className="mt-auto pt-4 border-t border-gray-100">
+                    <Button 
+                      variant="secondary" 
+                      size="sm" 
+                      className="w-full text-[11px] font-bold text-emerald-700 border-emerald-200 hover:bg-emerald-50"
+                      onClick={() => openReportForm(m)}
+                      icon={FileText}
+                    >
+                      RAPOR HAZIRLA
+                    </Button>
+                  </div>
+                )}
               </div>
-              {(form.type === 'EKIP' || !isAdmin) && (
-                <select required value={form.teamId} onChange={e => setForm({...form, teamId: e.target.value})} className="w-full border border-gray-100 bg-gray-50 rounded-xl px-4 py-3 text-sm outline-none">
-                  <option value="">Ekip Seçin...</option>
-                  {selectableTeams.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
-                </select>
-              )}
-              <input placeholder="Yer (Zoom, Ofis vb.)" value={form.location} onChange={e => setForm({...form, location: e.target.value})} className="w-full border border-gray-100 bg-gray-50 rounded-xl px-4 py-3 text-sm outline-none" />
-              <button type="submit" disabled={saving} className="w-full py-3 bg-indigo-600 text-white rounded-xl text-sm font-bold hover:bg-indigo-700 transition">
-                {saving ? 'Oluşturuluyor...' : 'Duyuruyu Yayınla'}
-              </button>
-            </form>
-          </div>
+            </Card>
+          ))}
         </div>
       )}
 
-      {reportingMeeting && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden">
-            <div className="px-6 py-4 border-b bg-emerald-50/20 flex justify-between items-center">
-              <h2 className="font-bold text-gray-900">Rapor Hazırla</h2>
-              <button onClick={() => setReportingMeeting(null)} className="text-gray-400"><X size={20} /></button>
+      {/* ANNOUNCEMENT MODAL */}
+      {showForm && (
+        <div className="fixed inset-0 bg-gray-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <Card className="w-full max-w-md animate-in zoom-in-95 duration-200" noPadding>
+            <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
+              <div>
+                <h2 className="text-lg font-bold text-gray-900">Toplantı Planla</h2>
+                <p className="text-xs font-medium text-gray-500">Duyuruyu yayınlayın</p>
+              </div>
+              <button onClick={() => setShowForm(false)} className="p-2 text-gray-400 hover:text-gray-600 transition-all">
+                <X size={20} />
+              </button>
             </div>
-            <form onSubmit={handleAddReport} className="p-6 space-y-4">
-              <input required placeholder="Katılımcılar" value={form.attendees} onChange={e => setForm({...form, attendees: e.target.value})} className="w-full border border-gray-100 bg-gray-50 rounded-xl px-4 py-3 text-sm outline-none" />
-              <textarea placeholder="Notlar / Kararlar (Opsiyonel)" rows={4} value={form.content} onChange={e => setForm({...form, content: e.target.value})} className="w-full border border-gray-100 bg-gray-50 rounded-xl px-4 py-3 text-sm outline-none" />
+            
+            <form onSubmit={handleCreateAnnouncement} className="p-6 space-y-5">
+              <Input 
+                label="Toplantı Başlığı"
+                required 
+                value={form.title} 
+                onChange={e => setForm({...form, title: e.target.value})} 
+                placeholder="Örn: Haftalık Koordinasyon"
+              />
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <label className="text-sm font-bold text-gray-700">Toplantı Türü</label>
+                  {isAdmin ? (
+                    <select 
+                      value={form.type} 
+                      onChange={e => setForm({...form, type: e.target.value})} 
+                      className="w-full px-3 py-2 text-sm bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all"
+                    >
+                      <option value="GENEL">Genel</option>
+                      <option value="EKIP">Ekip</option>
+                    </select>
+                  ) : <div className="px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-xs font-bold text-indigo-600">EKİP TOPLANTISI</div>}
+                </div>
+                <Input 
+                  label="Tarih & Saat"
+                  type="datetime-local" 
+                  required 
+                  value={form.meetingDate} 
+                  onChange={e => setForm({...form, meetingDate: e.target.value})} 
+                />
+              </div>
+
+              {(form.type === 'EKIP' || !isAdmin) && (
+                <div className="space-y-1.5">
+                  <label className="text-sm font-bold text-gray-700">Ekip Seçimi</label>
+                  <select 
+                    required 
+                    value={form.teamId} 
+                    onChange={e => setForm({...form, teamId: e.target.value})} 
+                    className="w-full px-3 py-2 text-sm bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all"
+                  >
+                    <option value="">Ekip Seçin...</option>
+                    {selectableTeams.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
+                  </select>
+                </div>
+              )}
+
+              <Input 
+                label="Yer / Platform"
+                value={form.location} 
+                onChange={e => setForm({...form, location: e.target.value})} 
+                placeholder="Örn: Zoom, Ofis, B102" 
+              />
+
+              <div className="flex gap-3 pt-2">
+                <Button variant="secondary" type="button" onClick={() => setShowForm(false)} className="flex-1">İPTAL</Button>
+                <Button variant="primary" type="submit" loading={saving} className="flex-1">YAYINLA</Button>
+              </div>
+            </form>
+          </Card>
+        </div>
+      )}
+
+      {/* REPORT MODAL */}
+      {reportingMeeting && (
+        <div className="fixed inset-0 bg-gray-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <Card className="w-full max-w-lg animate-in zoom-in-95 duration-200" noPadding>
+            <div className="px-6 py-5 border-b border-gray-100 bg-emerald-50/20 flex items-center justify-between">
+              <div>
+                <h2 className="text-lg font-bold text-gray-900">Toplantı Raporu</h2>
+                <p className="text-xs font-medium text-emerald-700">{reportingMeeting.title}</p>
+              </div>
+              <button onClick={() => setReportingMeeting(null)} className="p-2 text-gray-400 hover:text-gray-600 transition-all">
+                <X size={20} />
+              </button>
+            </div>
+            
+            <form onSubmit={handleAddReport} className="p-6 space-y-6">
+              <Input 
+                label="Katılımcı Listesi"
+                required 
+                value={form.attendees} 
+                onChange={e => setForm({...form, attendees: e.target.value})} 
+                placeholder="İsimleri aralarında virgül ile yazın..."
+              />
+
+              <div className="space-y-1.5">
+                <label className="text-sm font-bold text-gray-700">Toplantı Özeti & Kararlar</label>
+                <textarea 
+                  rows={4} 
+                  value={form.content} 
+                  onChange={e => setForm({...form, content: e.target.value})} 
+                  className="w-full px-3 py-2 text-sm bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-medium"
+                  placeholder="Konuşulan başlıkları ve alınan kararları belirtin..." 
+                />
+              </div>
               
               <div className="space-y-2">
-                <label className="text-[11px] font-bold text-gray-400 uppercase tracking-widest px-1">PDF Rapor Yükle</label>
+                <label className="text-sm font-bold text-gray-700">PDF Rapor Belgesi (Opsiyonel)</label>
                 <div className="relative group">
                   <input 
                     type="file" 
@@ -234,78 +424,24 @@ export const Meetings = ({ view }) => {
                     onChange={handleFileChange}
                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" 
                   />
-                  <div className="border-2 border-dashed border-gray-100 group-hover:border-emerald-200 bg-gray-50 rounded-2xl p-6 transition-all flex flex-col items-center gap-2">
-                    <Upload className="text-gray-300 group-hover:text-emerald-500 transition-colors" size={24} />
-                    <span className="text-sm font-medium text-gray-500 group-hover:text-emerald-600">
-                      {selectedFile ? selectedFile.name : 'Dosya Seçin veya Sürükleyin'}
-                    </span>
-                    <span className="text-[10px] text-gray-400">Sadece PDF (Maks 10MB)</span>
-                  </div>
-                </div>
-              </div>
-
-              <button type="submit" disabled={saving} className="w-full py-3 bg-emerald-600 text-white rounded-xl text-sm font-bold hover:bg-emerald-700 transition">
-                {saving ? 'Kaydediliyor...' : 'Raporu Tamamla'}
-              </button>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {loading ? (
-        <div className="flex justify-center py-20"><div className="w-10 h-10 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin" /></div>
-      ) : filteredMeetings.length === 0 ? (
-        <div className="bg-white border border-gray-100 rounded-[2rem] p-20 text-center shadow-sm">
-          <BookOpen size={48} className="text-gray-200 mx-auto mb-4" />
-          <p className="text-gray-400 font-bold">Henüz bir kayıt bulunmuyor.</p>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredMeetings.map(m => (
-            <div key={m.id} className={`bg-white border border-gray-100 rounded-[2rem] p-6 transition-all hover:shadow-xl border-l-[6px] ${m.status === 'DUYURU' ? 'border-l-amber-400' : 'border-l-emerald-400'}`}>
-              <div className="flex justify-between items-start mb-4">
-                <div className={`p-3 rounded-2xl ${m.status === 'DUYURU' ? 'bg-amber-50 text-amber-600' : 'bg-emerald-50 text-emerald-600'}`}>
-                  {m.status === 'DUYURU' ? <Megaphone size={20} /> : <CheckCircle size={20} />}
-                </div>
-                <div className="flex items-center gap-1">
-                  {m.status === 'DUYURU' && (
-                    <button onClick={() => openReportForm(m)} className="flex items-center gap-1 px-3 py-1.5 bg-emerald-50 text-emerald-600 rounded-xl text-[10px] font-bold uppercase hover:bg-emerald-100 transition">
-                      <FileText size={12} /> Rapor Yaz
-                    </button>
-                  )}
-                  {m.fileData && (
-                    <button onClick={() => downloadPDF(m)} className="flex items-center gap-1 px-3 py-1.5 bg-indigo-50 text-indigo-600 rounded-xl text-[10px] font-bold uppercase hover:bg-indigo-100 transition">
-                      <Download size={12} /> PDF İndir
-                    </button>
-                  )}
-                  {isAdmin && <button onClick={() => handleDelete(m.id)} className="p-2 text-gray-300 hover:text-red-500 transition"><Trash2 size={16} /></button>}
-                </div>
-              </div>
-              <div className="space-y-4">
-                <div>
-                  <h3 className="font-black text-gray-900 text-lg leading-tight">{m.title}</h3>
-                  <div className="flex items-center gap-2 mt-2">
-                    {m.type === 'EKIP' && <span className="bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded-lg text-[9px] font-bold uppercase tracking-wider">{m.team?.name || 'Ekip'}</span>}
-                    <div className="flex items-center gap-1 text-[11px] font-bold text-gray-500">
-                      <Calendar size={12} className="text-indigo-400" /> {new Date(m.meetingDate).toLocaleString('tr-TR')}
+                  <div className="border-2 border-dashed border-gray-200 group-hover:border-emerald-300 bg-gray-50 rounded-xl p-6 transition-all flex flex-col items-center gap-3">
+                    <Upload className={`transition-colors ${selectedFile ? 'text-emerald-500' : 'text-gray-300 group-hover:text-emerald-400'}`} size={24} />
+                    <div className="text-center">
+                      <p className="text-xs font-bold text-gray-600">
+                        {selectedFile ? selectedFile.name : 'Dosya Seçin veya Sürükleyin'}
+                      </p>
+                      <p className="text-[10px] text-gray-400 mt-1 uppercase tracking-tight">Yalnızca PDF (Maks. 10MB)</p>
                     </div>
                   </div>
                 </div>
-                {m.status === 'RAPORLANDI' && (
-                  <div className="pt-4 border-t border-gray-50 space-y-2">
-                    <p className="text-[10px] font-bold text-emerald-600 uppercase tracking-widest">Katılımcılar: <span className="text-gray-500 normal-case">{m.attendees}</span></p>
-                    {m.content && <div className="p-4 bg-gray-50 rounded-2xl text-[13px] text-gray-600 italic line-clamp-3">{m.content}</div>}
-                    {m.fileData && (
-                      <div className="flex items-center gap-2 p-3 bg-indigo-50/50 rounded-2xl border border-indigo-100">
-                        <FileText size={16} className="text-indigo-500" />
-                        <span className="text-[11px] font-bold text-indigo-700 truncate">{m.fileName || 'Rapor.pdf'}</span>
-                      </div>
-                    )}
-                  </div>
-                )}
               </div>
-            </div>
-          ))}
+
+              <div className="flex gap-3">
+                <Button variant="secondary" type="button" onClick={() => setReportingMeeting(null)} className="flex-1">VAZGEÇ</Button>
+                <Button variant="primary" type="submit" loading={saving} className="flex-1 bg-emerald-600 hover:bg-emerald-700 border-emerald-600">RAPORU KAYDET</Button>
+              </div>
+            </form>
+          </Card>
         </div>
       )}
     </div>

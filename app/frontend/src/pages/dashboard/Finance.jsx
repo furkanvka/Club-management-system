@@ -3,12 +3,33 @@ import { useClub } from '../../store/ClubContext';
 import { useAuth } from '../../store/AuthContext';
 import api from '../../services/api';
 import { 
-  Plus, TrendingUp, TrendingDown, DollarSign, X, FileDown, 
-  Trash2, Image as ImageIcon, Eye, Upload, Search, 
-  Calendar as CalendarIcon, Tag, CreditCard, ChevronDown, Filter
+  Plus, 
+  TrendingUp, 
+  TrendingDown, 
+  DollarSign, 
+  X, 
+  FileDown, 
+  Trash2, 
+  Upload, 
+  Search, 
+  Calendar as CalendarIcon, 
+  Tag, 
+  Filter,
+  Receipt
 } from 'lucide-react';
+import { Card } from '../../components/common/Card';
+import { Button } from '../../components/common/Button';
+import { Table, TableCell } from '../../components/common/Table';
+import { Input } from '../../components/common/Input';
 
-const EMPTY_FORM = { type: 'expense', description: '', amount: '', category: '', transactionDate: new Date().toISOString().split('T')[0], receiptData: null };
+const EMPTY_FORM = { 
+  type: 'expense', 
+  description: '', 
+  amount: '', 
+  category: '', 
+  transactionDate: new Date().toISOString().split('T')[0], 
+  receiptData: null 
+};
 
 export const Finance = () => {
   const { activeClub, activeRole } = useClub();
@@ -28,7 +49,10 @@ export const Finance = () => {
     if (!activeClub?.id) return;
     setLoading(true);
     api.get(`/clubs/${activeClub.id}/transactions`)
-      .then(r => { setTransactions(r.data.sort((a,b) => new Date(b.transactionDate) - new Date(a.transactionDate))); setLoading(false); })
+      .then(r => { 
+        setTransactions(r.data.sort((a,b) => new Date(b.transactionDate) - new Date(a.transactionDate))); 
+        setLoading(false); 
+      })
       .catch(() => setLoading(false));
   }, [activeClub?.id]);
 
@@ -110,250 +134,279 @@ export const Finance = () => {
   });
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8 max-w-7xl mx-auto">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-gray-100">
         <div>
-          <h1 className="text-2xl font-black text-gray-900">Finans Yönetimi</h1>
-          <p className="text-xs text-gray-500 font-bold uppercase tracking-wider">{activeClub?.name} — {transactions.length} İşlem Kaydı</p>
+          <h1 className="text-3xl font-bold text-gray-900 tracking-tight mb-2">Finans Yönetimi</h1>
+          <p className="text-gray-500 font-medium">
+            {activeClub?.name} finansal hareketleri ve bütçe raporu
+          </p>
         </div>
-        <div className="flex gap-2">
-          <button onClick={handleExport}
-            className="flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-200 text-gray-700 rounded-2xl text-sm font-bold hover:bg-gray-50 transition shadow-sm">
-            <FileDown size={18} /> Excel (CSV)
-          </button>
+        <div className="flex items-center gap-3">
+          <Button variant="secondary" onClick={handleExport} icon={FileDown}>
+            Rapor Al (CSV)
+          </Button>
           {canManage && (
-            <button onClick={() => setShowForm(true)}
-              className="flex items-center gap-2 px-6 py-2.5 bg-indigo-600 text-white rounded-2xl text-sm font-black hover:bg-indigo-700 transition shadow-lg shadow-indigo-200">
-              <Plus size={18} /> Yeni İşlem Ekle
-            </button>
+            <Button variant="primary" onClick={() => setShowForm(true)} icon={Plus}>
+              Yeni İşlem
+            </Button>
           )}
         </div>
       </div>
 
-      {/* Stats Cards */}
+      {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {[
-          { label: 'Toplam Gelir', value: fmt(income), cls: 'from-emerald-500 to-teal-600', icon: TrendingUp },
-          { label: 'Toplam Gider', value: fmt(expense), cls: 'from-rose-500 to-pink-600', icon: TrendingDown },
-          { label: 'Kasa Bakiyesi', value: fmt(balance), cls: balance >= 0 ? 'from-indigo-600 to-blue-700' : 'from-orange-600 to-red-700', icon: DollarSign },
-        ].map(s => {
-          const Icon = s.icon;
-          return (
-            <div key={s.label} className={`bg-gradient-to-br ${s.cls} rounded-[2rem] p-6 text-white shadow-xl relative overflow-hidden`}>
-              <div className="absolute top-0 right-0 p-4 opacity-10">
-                 <Icon size={80} />
+          { label: 'Toplam Gelir', value: fmt(income), color: 'bg-emerald-50 text-emerald-600', icon: TrendingUp },
+          { label: 'Toplam Gider', value: fmt(expense), color: 'bg-rose-50 text-rose-600', icon: TrendingDown },
+          { label: 'Mevcut Bakiye', value: fmt(balance), color: balance >= 0 ? 'bg-indigo-50 text-indigo-600' : 'bg-amber-50 text-amber-600', icon: DollarSign },
+        ].map(s => (
+          <Card key={s.label}>
+            <div className="flex items-center gap-4">
+              <div className={`w-12 h-12 rounded-xl ${s.color} flex items-center justify-center`}>
+                <s.icon size={24} />
               </div>
-              <div className="relative z-10">
-                <p className="text-[10px] font-black uppercase opacity-70 tracking-[0.2em] mb-1">{s.label}</p>
-                <p className="text-3xl font-black">{s.value}</p>
+              <div>
+                <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-0.5">{s.label}</p>
+                <p className="text-2xl font-bold text-gray-900">{s.value}</p>
               </div>
             </div>
-          );
-        })}
+          </Card>
+        ))}
       </div>
 
-      {/* Filters & Search - Excel Style */}
-      <div className="bg-white border border-gray-100 rounded-[2rem] p-4 flex flex-wrap items-center gap-4 shadow-sm">
-         <div className="flex-1 min-w-[240px] relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+      {/* Main Content */}
+      <Card noPadding>
+        {/* Table Toolbar */}
+        <div className="p-6 border-b border-gray-100 bg-gray-50/30 flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="relative max-w-sm w-full">
+            <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
             <input 
               type="text" 
-              placeholder="Açıklama veya kategori ara..." 
+              placeholder="İşlem ara..." 
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
-              className="w-full pl-11 pr-4 py-2.5 bg-gray-50 border-none rounded-xl text-sm font-medium focus:ring-2 focus:ring-indigo-400"
+              className="w-full pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-medium"
             />
-         </div>
-         <div className="flex items-center gap-2 bg-gray-50 rounded-xl px-3 py-1">
-            <Filter size={16} className="text-gray-400" />
-            <select 
-              value={filterType} 
-              onChange={e => setFilterType(e.target.value)}
-              className="bg-transparent border-none text-xs font-black uppercase focus:ring-0 cursor-pointer"
-            >
-              <option value="all">Tümü</option>
-              <option value="income">Gelirler</option>
-              <option value="expense">Giderler</option>
-            </select>
-         </div>
-      </div>
-
-      {/* Transactions List - Modern Excel Table */}
-      <div className="bg-white border border-gray-100 rounded-[2.5rem] shadow-sm overflow-hidden">
-        {loading ? (
-          <div className="p-20 text-center"><div className="w-10 h-10 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mx-auto" /></div>
-        ) : filteredTransactions.length === 0 ? (
-          <div className="p-20 text-center">
-            <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
-               <CreditCard size={32} className="text-gray-200" />
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 px-3 py-1.5 bg-white border border-gray-200 rounded-lg">
+              <Filter size={14} className="text-gray-400" />
+              <select 
+                value={filterType} 
+                onChange={e => setFilterType(e.target.value)}
+                className="bg-transparent border-none text-xs font-bold text-gray-600 focus:ring-0 cursor-pointer"
+              >
+                <option value="all">TÜMÜ</option>
+                <option value="income">GELİR</option>
+                <option value="expense">GİDER</option>
+              </select>
             </div>
-            <p className="text-gray-400 font-bold">Kayıtlı işlem bulunamadı.</p>
           </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="bg-gray-50/50 border-b border-gray-100">
-                  <th className="text-left px-8 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Tarih</th>
-                  <th className="text-left px-8 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Açıklama</th>
-                  <th className="text-left px-8 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Kategori</th>
-                  <th className="text-left px-8 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Tür</th>
-                  <th className="text-right px-8 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Tutar</th>
-                  <th className="text-center px-8 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">İşlem</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-50">
-                {filteredTransactions.map(t => (
-                  <tr key={t.id} className="hover:bg-gray-50/80 transition-colors group">
-                    <td className="px-8 py-4 whitespace-nowrap">
-                       <div className="flex items-center gap-2 text-gray-500 font-bold text-xs">
-                          <CalendarIcon size={14} className="opacity-40" />
-                          {t.transactionDate ? new Date(t.transactionDate).toLocaleDateString('tr-TR') : '—'}
-                       </div>
-                    </td>
-                    <td className="px-8 py-4">
-                       <p className="font-black text-gray-900 text-sm leading-tight">{t.description}</p>
-                    </td>
-                    <td className="px-8 py-4">
-                       {t.category ? (
-                         <span className="inline-flex items-center gap-1 text-[10px] font-black uppercase text-gray-400 bg-gray-100 px-2 py-1 rounded-lg">
-                           <Tag size={10} /> {t.category}
-                         </span>
-                       ) : <span className="text-gray-200">—</span>}
-                    </td>
-                    <td className="px-8 py-4">
-                      <span className={`text-[10px] font-black uppercase px-3 py-1 rounded-xl ${t.type === 'income' ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-rose-50 text-rose-600 border border-rose-100'}`}>
-                        {t.type === 'income' ? 'Gelir' : 'Gider'}
-                      </span>
-                    </td>
-                    <td className={`px-8 py-4 text-right font-black text-base ${t.type === 'income' ? 'text-emerald-600' : 'text-rose-600'}`}>
-                      {t.type === 'income' ? '+' : '-'}{fmt(t.amount)}
-                    </td>
-                    <td className="px-8 py-4">
-                       <div className="flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                          {t.receiptData && (
-                            <button onClick={() => setPreviewReceipt(t)} className="p-2 bg-indigo-50 text-indigo-600 rounded-xl hover:bg-indigo-100 transition shadow-sm" title="Fişi Görüntüle">
-                               <ImageIcon size={16} />
-                            </button>
-                          )}
-                          {canManage && (
-                            <button onClick={() => handleDelete(t.id)} className="p-2 bg-rose-50 text-rose-600 rounded-xl hover:bg-rose-100 transition shadow-sm" title="Sil">
-                               <Trash2 size={16} />
-                            </button>
-                          )}
-                       </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
+        </div>
+
+        <Table
+          headers={['Tarih', 'Açıklama', 'Kategori', 'Tür', 'Tutar', '']}
+          data={filteredTransactions}
+          loading={loading}
+          emptyMessage="Kayıtlı finansal işlem bulunamadı."
+          renderRow={(t) => (
+            <>
+              <TableCell>
+                <div className="flex items-center gap-2 text-gray-500 font-medium text-xs">
+                  <CalendarIcon size={14} className="text-gray-300" />
+                  {t.transactionDate ? new Date(t.transactionDate).toLocaleDateString('tr-TR') : '—'}
+                </div>
+              </TableCell>
+              <TableCell>
+                <p className="font-bold text-gray-900">{t.description}</p>
+              </TableCell>
+              <TableCell>
+                {t.category ? (
+                  <span className="inline-flex items-center gap-1 text-[11px] font-bold text-gray-500 bg-gray-100 px-2 py-0.5 rounded-md">
+                    <Tag size={10} /> {t.category.toUpperCase()}
+                  </span>
+                ) : <span className="text-gray-300">—</span>}
+              </TableCell>
+              <TableCell>
+                <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold border ${
+                  t.type === 'income' 
+                  ? 'bg-emerald-50 text-emerald-700 border-emerald-100' 
+                  : 'bg-rose-50 text-rose-700 border-rose-100'
+                }`}>
+                  <div className={`w-1.5 h-1.5 rounded-full ${t.type === 'income' ? 'bg-emerald-500' : 'bg-rose-500'}`} />
+                  {t.type === 'income' ? 'GELİR' : 'GİDER'}
+                </span>
+              </TableCell>
+              <TableCell className={`text-right font-bold ${t.type === 'income' ? 'text-emerald-600' : 'text-rose-600'}`}>
+                {t.type === 'income' ? '+' : '-'}{fmt(t.amount)}
+              </TableCell>
+              <TableCell className="text-right">
+                 <div className="flex justify-end gap-1">
+                    {t.receiptData && (
+                      <button 
+                        onClick={() => setPreviewReceipt(t)} 
+                        className="p-2 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all"
+                        title="Fişi Görüntüle"
+                      >
+                         <Receipt size={18} />
+                      </button>
+                    )}
+                    {canManage && (
+                      <button 
+                        onClick={() => handleDelete(t.id)} 
+                        className="p-2 text-gray-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-all"
+                        title="Sil"
+                      >
+                         <Trash2 size={18} />
+                      </button>
+                    )}
+                 </div>
+              </TableCell>
+            </>
+          )}
+        />
+      </Card>
 
       {/* Receipt Preview Modal */}
       {previewReceipt && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[60] flex items-center justify-center p-4" onClick={() => setPreviewReceipt(null)}>
-           <div className="bg-white rounded-[2rem] p-2 max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col relative" onClick={e => e.stopPropagation()}>
-              <button onClick={() => setPreviewReceipt(null)} className="absolute top-4 right-4 bg-black/10 hover:bg-black/20 p-2 rounded-full transition"><X size={20} /></button>
-              <div className="p-6 border-b border-gray-100">
-                 <h3 className="font-black text-gray-900">{previewReceipt.description}</h3>
-                 <p className="text-xs font-bold text-gray-500 uppercase">{fmt(previewReceipt.amount)} — {new Date(previewReceipt.transactionDate).toLocaleDateString('tr-TR')}</p>
+        <div className="fixed inset-0 bg-gray-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setPreviewReceipt(null)}>
+           <Card className="max-w-xl w-full max-h-[90vh] flex flex-col animate-in zoom-in-95 duration-200" noPadding onClick={e => e.stopPropagation()}>
+              <div className="p-6 border-b border-gray-100 flex items-center justify-between">
+                 <div>
+                    <h3 className="text-lg font-bold text-gray-900">{previewReceipt.description}</h3>
+                    <p className="text-xs font-medium text-gray-500">
+                      {fmt(previewReceipt.amount)} — {new Date(previewReceipt.transactionDate).toLocaleDateString('tr-TR')}
+                    </p>
+                 </div>
+                 <button onClick={() => setPreviewReceipt(null)} className="p-2 text-gray-400 hover:text-gray-600 transition-all">
+                    <X size={20} />
+                 </button>
               </div>
-              <div className="flex-1 overflow-auto bg-gray-50 p-4 flex items-center justify-center">
-                 <img src={previewReceipt.receiptData} alt="Receipt" className="max-w-full rounded-xl shadow-lg" />
+              <div className="flex-1 overflow-auto bg-gray-50 p-6 flex items-center justify-center min-h-[400px]">
+                 <img src={previewReceipt.receiptData} alt="Receipt" className="max-w-full rounded-lg shadow-sm" />
               </div>
-           </div>
+           </Card>
         </div>
       )}
 
       {/* Transaction Add Modal */}
       {showForm && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-[3rem] shadow-2xl w-full max-w-md overflow-hidden">
-            <div className="bg-gradient-to-r from-indigo-600 to-indigo-800 px-8 py-6 text-white flex items-center justify-between">
+        <div className="fixed inset-0 bg-gray-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <Card className="w-full max-w-md animate-in zoom-in-95 duration-200" noPadding>
+            <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
               <div>
-                <h2 className="text-xl font-black">Yeni İşlem Kaydı</h2>
-                <p className="text-xs opacity-70 font-bold uppercase tracking-wider">Finansal Veri Girişi</p>
+                <h2 className="text-lg font-bold text-gray-900">Yeni İşlem Kaydı</h2>
+                <p className="text-xs font-medium text-gray-500">Bütçe hareketini kaydedin</p>
               </div>
-              <button onClick={() => setShowForm(false)} className="bg-white/10 hover:bg-white/20 p-2 rounded-full transition"><X size={20} /></button>
+              <button onClick={() => setShowForm(false)} className="p-2 text-gray-400 hover:text-gray-600 transition-all">
+                <X size={20} />
+              </button>
             </div>
-            <form onSubmit={handleCreate} className="p-8 space-y-5">
-              <div className="flex bg-gray-100 p-1 rounded-2xl">
+            
+            <form onSubmit={handleCreate} className="p-6 space-y-6">
+              <div className="flex bg-gray-100/50 p-1 rounded-xl">
                 {['income', 'expense'].map(t => (
-                  <button key={t} type="button" onClick={() => setForm({...form, type: t})}
-                    className={`flex-1 py-3 text-xs font-black uppercase tracking-widest rounded-xl transition ${
+                  <button 
+                    key={t} 
+                    type="button" 
+                    onClick={() => setForm({...form, type: t})}
+                    className={`flex-1 py-2 text-xs font-bold uppercase tracking-wider rounded-lg transition-all ${
                       form.type === t
-                        ? 'bg-white text-gray-900 shadow-sm'
-                        : 'text-gray-400 hover:text-gray-600'
-                    }`}>
+                        ? 'bg-white text-indigo-600 shadow-sm'
+                        : 'text-gray-500 hover:text-gray-700'
+                    }`}
+                  >
                     {t === 'income' ? 'Gelir' : 'Gider'}
                   </button>
                 ))}
               </div>
 
               <div className="space-y-4">
-                <div>
-                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">İşlem Açıklaması *</label>
-                  <input required value={form.description} onChange={e => setForm({...form, description: e.target.value})}
-                    className="mt-1 w-full bg-gray-50 border-none rounded-2xl px-5 py-3 text-sm font-bold focus:ring-2 focus:ring-indigo-400" placeholder="Örn: 2025 Üye Aidatları" />
-                </div>
+                <Input 
+                  label="İşlem Açıklaması"
+                  required 
+                  value={form.description} 
+                  onChange={e => setForm({...form, description: e.target.value})}
+                  placeholder="Örn: 2025 Üye Aidatları" 
+                />
 
                 <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Tutar (₺) *</label>
-                    <input required type="number" step="0.01" min="0" value={form.amount} onChange={e => setForm({...form, amount: e.target.value})}
-                      className="mt-1 w-full bg-gray-50 border-none rounded-2xl px-5 py-3 text-sm font-bold focus:ring-2 focus:ring-indigo-400" placeholder="0.00" />
-                  </div>
-                  <div>
-                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">İşlem Tarihi</label>
-                    <input type="date" value={form.transactionDate} onChange={e => setForm({...form, transactionDate: e.target.value})}
-                      className="mt-1 w-full bg-gray-50 border-none rounded-2xl px-5 py-3 text-sm font-bold focus:ring-2 focus:ring-indigo-400" />
-                  </div>
+                  <Input 
+                    label="Tutar (₺)"
+                    required 
+                    type="number" 
+                    step="0.01" 
+                    min="0" 
+                    value={form.amount} 
+                    onChange={e => setForm({...form, amount: e.target.value})}
+                    placeholder="0.00" 
+                  />
+                  <Input 
+                    label="İşlem Tarihi"
+                    type="date" 
+                    value={form.transactionDate} 
+                    onChange={e => setForm({...form, transactionDate: e.target.value})}
+                  />
                 </div>
 
-                <div>
-                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Kategori</label>
-                  <input value={form.category} onChange={e => setForm({...form, category: e.target.value})}
-                    className="mt-1 w-full bg-gray-50 border-none rounded-2xl px-5 py-3 text-sm font-bold focus:ring-2 focus:ring-indigo-400" placeholder="Aidat, Ekipman, Kira..." />
-                </div>
+                <Input 
+                  label="Kategori"
+                  value={form.category} 
+                  onChange={e => setForm({...form, category: e.target.value})}
+                  placeholder="Aidat, Ekipman, Kira..." 
+                />
 
-                {/* Receipt Upload */}
-                <div>
-                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">
+                <div className="space-y-2">
+                  <label className="text-sm font-bold text-gray-700">
                     {form.type === 'expense' ? 'Fiş / Fatura Fotoğrafı *' : 'Fiş Fotoğrafı (Opsiyonel)'}
                   </label>
-                  <div className="mt-1 relative border-2 border-dashed border-gray-200 rounded-2xl p-4 hover:bg-gray-50 transition-all text-center group cursor-pointer">
-                    <input type="file" accept="image/*" onChange={handleFileChange} className="absolute inset-0 opacity-0 cursor-pointer z-10" />
+                  <div className="relative border-2 border-dashed border-gray-200 rounded-xl p-4 hover:border-indigo-300 hover:bg-indigo-50/30 transition-all text-center group cursor-pointer">
+                    <input 
+                      type="file" 
+                      accept="image/*" 
+                      onChange={handleFileChange} 
+                      className="absolute inset-0 opacity-0 cursor-pointer z-10" 
+                    />
                     {form.receiptData ? (
                       <div className="flex items-center gap-4">
-                         <img src={form.receiptData} alt="Preview" className="w-16 h-16 rounded-xl object-cover shadow-md" />
+                         <img src={form.receiptData} alt="Preview" className="w-16 h-16 rounded-lg object-cover shadow-sm border border-gray-200" />
                          <div className="text-left">
-                            <p className="text-xs font-black text-emerald-600">Fotoğraf Seçildi</p>
-                            <p className="text-[10px] text-gray-400">Değiştirmek için tıklayın</p>
+                            <p className="text-xs font-bold text-emerald-600">Fotoğraf Seçildi</p>
+                            <p className="text-[10px] text-gray-400 font-medium">Değiştirmek için tıklayın</p>
                          </div>
                       </div>
                     ) : (
-                      <div className="flex flex-col items-center py-2">
-                        <Upload className="h-8 w-8 text-gray-300 group-hover:text-indigo-400 transition-colors mb-2" />
-                        <p className="text-xs font-bold text-gray-500">Fotoğraf Yüklemek İçin Tıklayın</p>
+                      <div className="py-4">
+                        <Upload className="h-8 w-8 text-gray-300 group-hover:text-indigo-400 transition-colors mx-auto mb-2" />
+                        <p className="text-xs font-bold text-gray-500">Fotoğraf yüklemek için tıklayın</p>
+                        <p className="text-[10px] text-gray-400 mt-1">PNG, JPG (Maks. 5MB)</p>
                       </div>
                     )}
                   </div>
                 </div>
               </div>
 
-              <div className="flex gap-4 pt-4">
-                <button type="button" onClick={() => setShowForm(false)}
-                  className="flex-1 py-4 text-xs font-black uppercase tracking-widest text-gray-400 hover:text-gray-600 transition">İptal</button>
-                <button type="submit" disabled={saving}
-                  className="flex-[2] py-4 bg-indigo-600 text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-indigo-700 disabled:opacity-50 shadow-lg shadow-indigo-100">
-                  {saving ? 'Kaydediliyor...' : 'İşlemi Kaydet'}
-                </button>
+              <div className="flex gap-3 pt-2">
+                <Button 
+                  type="button" 
+                  variant="secondary"
+                  className="flex-1"
+                  onClick={() => setShowForm(false)}
+                >
+                  İPTAL
+                </Button>
+                <Button 
+                  type="submit" 
+                  loading={saving}
+                  className="flex-[2]"
+                >
+                  KAYDET
+                </Button>
               </div>
             </form>
-          </div>
+          </Card>
         </div>
       )}
     </div>

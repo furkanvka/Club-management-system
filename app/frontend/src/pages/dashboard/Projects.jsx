@@ -4,23 +4,30 @@ import { useAuth } from '../../store/AuthContext';
 import api from '../../services/api';
 import { 
   Folder, Plus, CheckCircle2, 
-  ChevronRight, Layout, 
-  ListTodo, Calendar, User2, ArrowLeft,
-  Flag
+  ChevronRight, 
+  ListTodo, User2, ArrowLeft,
+  Flag,
+  Loader2,
+  Clock,
+  Info,
+  ClipboardList
 } from 'lucide-react';
+import { Card } from '../../components/common/Card';
+import { Button } from '../../components/common/Button';
+import { Input } from '../../components/common/Input';
 
 const PRIORITY = {
-  low: { label: 'Düşük', cls: 'bg-blue-50 text-blue-600 border-blue-100' },
-  normal: { label: 'Orta', cls: 'bg-emerald-50 text-emerald-600 border-emerald-100' },
-  high: { label: 'Yüksek', cls: 'bg-amber-50 text-amber-600 border-amber-100' },
-  critical: { label: 'Kritik', cls: 'bg-red-50 text-red-600 border-red-100' },
+  low: { label: 'DÜŞÜK', cls: 'bg-blue-50 text-blue-600 border-blue-100' },
+  normal: { label: 'ORTA', cls: 'bg-emerald-50 text-emerald-600 border-emerald-100' },
+  high: { label: 'YÜKSEK', cls: 'bg-amber-50 text-amber-600 border-amber-100' },
+  critical: { label: 'KRİTİK', cls: 'bg-rose-50 text-rose-600 border-rose-100' },
 };
 
 export const Projects = () => {
   const { activeClub, activeRole, activeMembershipId } = useClub();
   const { user } = useAuth();
   const [projects, setProjects] = useState([]);
-  const [teams, setTeams] = useState([]); // Tüm ekipler burada tutulacak
+  const [teams, setTeams] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
@@ -42,7 +49,6 @@ export const Projects = () => {
   const isAdmin = activeRole === 'baskan' || user?.loginType === 'club';
   const isLider = activeRole === 'ekip_lideri' || activeRole === 'ekip-lideri';
 
-  // 1. Ekipleri çekme (Teams.jsx ile aynı)
   const fetchTeams = useCallback(() => {
     if (!activeClub?.id) return;
     api.get(`/clubs/${activeClub.id}/teams`)
@@ -50,11 +56,9 @@ export const Projects = () => {
       .catch(() => setTeams([]));
   }, [activeClub?.id]);
 
-  // 2. Projeleri çekme (Backend artık requesterId'ye göre filtreliyor)
   const fetchProjects = useCallback(() => {
     if (!activeClub?.id) return;
     setLoading(true);
-    
     api.get(`/clubs/${activeClub.id}/projects`, {
       params: { requesterId: activeMembershipId }
     })
@@ -76,12 +80,10 @@ export const Projects = () => {
     api.get(`/clubs/${activeClub.id}/teams/${teamId}/members`).then(r => setTeamMembers(r.data));
   };
 
-  // İlk yükleme
   useEffect(() => {
     fetchTeams();
   }, [fetchTeams]);
 
-  // Ekipler yüklendiğinde projeleri getir
   useEffect(() => {
     if (teams.length >= 0) {
       fetchProjects();
@@ -152,255 +154,276 @@ export const Projects = () => {
 
   const isLeaderOfSelectedProject = Number(selectedProject?.team?.leader?.id) === Number(activeMembershipId);
 
-  // DROPDOWN FİLTRESİ: Teams.jsx ile birebir aynı kontrol
   const selectableTeams = isAdmin 
     ? teams 
     : teams.filter(t => Number(t.leader?.id) === Number(activeMembershipId));
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8 max-w-7xl mx-auto">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-gray-100">
         <div>
-          <h1 className="text-2xl font-black text-gray-900 tracking-tight flex items-center gap-2">
-            <Layout className="text-indigo-600" size={24} />
-            Projeler & Görevler
-          </h1>
-          <p className="text-sm text-gray-500 font-medium mt-1">
+          <h1 className="text-3xl font-bold text-gray-900 tracking-tight mb-2">Projeler & Görevler</h1>
+          <p className="text-gray-500 font-medium">
             Ekiplerinizin çalışmalarını ve görev dağılımını yönetin
           </p>
         </div>
-        {isLider && !selectedProject && (
-          <button 
-            onClick={() => setShowForm(true)} 
-            className="flex items-center justify-center gap-2 px-5 py-2.5 bg-indigo-600 text-white rounded-2xl text-sm font-bold hover:bg-indigo-700 transition shadow-lg shadow-indigo-100"
-          >
-            <Plus size={18} /> Yeni Proje Başlat
-          </button>
-        )}
-        {selectedProject && (
-          <button 
-            onClick={() => setSelectedProject(null)} 
-            className="flex items-center justify-center gap-2 px-5 py-2.5 bg-white border border-gray-200 text-gray-600 rounded-2xl text-sm font-bold hover:bg-gray-50 transition"
-          >
-            <ArrowLeft size={18} /> Projelere Dön
-          </button>
-        )}
+        <div className="flex gap-3">
+          {selectedProject && (
+            <Button variant="secondary" onClick={() => setSelectedProject(null)} icon={ArrowLeft}>
+              PROJELERE DÖN
+            </Button>
+          )}
+          {isLider && !selectedProject && (
+            <Button variant="primary" onClick={() => setShowForm(true)} icon={Plus}>
+              YENİ PROJE
+            </Button>
+          )}
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Proje Listesi */}
-        <div className={`${selectedProject ? 'hidden lg:block lg:col-span-4' : 'lg:col-span-12'} space-y-4`}>
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        {/* Project List / Selection */}
+        <div className={`${selectedProject ? 'hidden lg:block lg:col-span-4' : 'lg:col-span-12'} space-y-6`}>
           {showForm && (
-            <div className="bg-white p-6 rounded-[2rem] border border-indigo-100 shadow-xl shadow-indigo-50/50 space-y-4 animate-in fade-in slide-in-from-top-4 duration-300">
-              <h3 className="font-bold text-gray-900">Yeni Proje Detayları</h3>
-              <div className="space-y-3">
-                <input 
-                  placeholder="Proje Adı..." 
+            <Card className="animate-in fade-in slide-in-from-top-4 duration-300 border-indigo-200" title="Yeni Proje Başlat">
+              <form onSubmit={handleCreateProject} className="space-y-4">
+                <Input 
+                  label="Proje Adı"
+                  placeholder="Örn: Web Sitesi Yenileme" 
                   value={name} 
                   onChange={e => setName(e.target.value)} 
-                  className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500/20" 
+                  required
                 />
-                <textarea 
-                  placeholder="Proje Açıklaması..." 
-                  value={description} 
-                  onChange={e => setDescription(e.target.value)} 
-                  rows={2} 
-                  className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500/20" 
-                />
-                <div className="space-y-1">
-                  <label className="text-[10px] font-black uppercase text-gray-400 ml-1">Sorumlu Ekip</label>
+                <div className="space-y-1.5">
+                  <label className="text-sm font-bold text-gray-700">Açıklama</label>
+                  <textarea 
+                    placeholder="Proje hedeflerini kısaca açıklayın..." 
+                    value={description} 
+                    onChange={e => setDescription(e.target.value)} 
+                    rows={3} 
+                    className="w-full px-3 py-2 text-sm bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-medium"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-sm font-bold text-gray-700">Sorumlu Ekip</label>
                   <select 
+                    required
                     value={selectedTeamId}
                     onChange={e => setSelectedTeamId(e.target.value)}
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500/20"
+                    className="w-full px-3 py-2 text-sm bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all"
                   >
                     <option value="">Ekip Seçiniz...</option>
-                    {selectableTeams.length === 0 ? (
-                      <option disabled>Yönettiğiniz ekip bulunamadı</option>
-                    ) : (
-                      selectableTeams.map(t => (
-                        <option key={t.id} value={t.id}>{t.name} {isAdmin && `(Lider: ${t.leader?.user?.email?.split('@')[0]})`}</option>
-                      ))
-                    )}
+                    {selectableTeams.map(t => (
+                      <option key={t.id} value={t.id}>{t.name}</option>
+                    ))}
                   </select>
                 </div>
-              </div>
-              <div className="flex gap-2">
-                <button onClick={() => setShowForm(false)} className="flex-1 py-3 bg-gray-100 text-gray-600 rounded-xl text-sm font-bold hover:bg-gray-200 transition">İptal</button>
-                <button 
-                  onClick={handleCreateProject} 
-                  disabled={selectableTeams.length === 0}
-                  className="flex-[2] py-3 bg-indigo-600 text-white rounded-xl text-sm font-bold hover:bg-indigo-700 shadow-md shadow-indigo-100 disabled:opacity-50"
-                >
-                  Projeyi Başlat
-                </button>
-              </div>
-            </div>
+                <div className="flex gap-2 pt-2">
+                  <Button variant="secondary" type="button" onClick={() => setShowForm(false)} className="flex-1">İPTAL</Button>
+                  <Button variant="primary" type="submit" disabled={selectableTeams.length === 0} className="flex-1">OLUŞTUR</Button>
+                </div>
+              </form>
+            </Card>
           )}
 
           {loading ? (
-            <div className="flex justify-center py-20"><div className="w-8 h-8 border-3 border-indigo-100 border-t-indigo-600 rounded-full animate-spin" /></div>
+            <div className="flex flex-col items-center justify-center py-24 gap-4">
+              <Loader2 className="w-10 h-10 text-indigo-500 animate-spin" />
+              <p className="text-sm font-medium text-gray-500">Projeler yükleniyor...</p>
+            </div>
+          ) : projects.length === 0 ? (
+            <div className="bg-white border border-dashed border-gray-200 rounded-2xl p-16 text-center">
+               <Folder size={48} className="text-gray-200 mx-auto mb-4" />
+               <p className="text-sm font-bold text-gray-900 mb-1">Henüz proje bulunmuyor</p>
+               <p className="text-xs text-gray-500 italic">Ekipleriniz için yeni projeler başlatın.</p>
+            </div>
           ) : (
-            <div className={`grid grid-cols-1 ${selectedProject ? 'gap-3' : 'md:grid-cols-2 lg:grid-cols-3 gap-6'}`}>
-              {projects.length === 0 ? (
-                <div className="col-span-full py-12 text-center bg-gray-50 rounded-[2rem] border border-dashed border-gray-200">
-                   <Folder className="mx-auto text-gray-300 mb-2" size={48} />
-                   <p className="text-gray-500 font-bold italic">Görüntülenecek proje bulunmuyor.</p>
-                </div>
-              ) : (
-                projects.map(p => (
-                  <div 
-                    key={p.id} 
-                    onClick={() => { setSelectedProject(p); fetchTasks(p.id); fetchTeamMembers(p.team.id); }}
-                    className={`group cursor-pointer bg-white border rounded-[2rem] p-6 transition-all duration-300 ${
-                      selectedProject?.id === p.id ? 'border-indigo-500 ring-4 ring-indigo-50' : 'border-gray-100 hover:border-indigo-200'
-                    }`}
-                  >
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="p-2.5 bg-indigo-50 rounded-xl text-indigo-600"><Folder size={20} /></div>
-                      <div className="px-2 py-1 bg-gray-50 text-gray-400 rounded-lg text-[10px] font-black uppercase tracking-widest">{p.team?.name}</div>
+            <div className={`grid grid-cols-1 ${selectedProject ? 'gap-4' : 'md:grid-cols-2 lg:grid-cols-3 gap-6'}`}>
+              {projects.map(p => (
+                <button 
+                  key={p.id} 
+                  onClick={() => { setSelectedProject(p); fetchTasks(p.id); fetchTeamMembers(p.team.id); }}
+                  className={`w-full text-left bg-white border rounded-2xl p-6 transition-all duration-300 group relative overflow-hidden ${
+                    selectedProject?.id === p.id 
+                    ? 'border-indigo-500 shadow-lg shadow-indigo-500/10' 
+                    : 'border-gray-100 hover:border-indigo-300 hover:shadow-md'
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-4">
+                    <div className={`p-2 rounded-xl transition-colors ${selectedProject?.id === p.id ? 'bg-indigo-600 text-white' : 'bg-indigo-50 text-indigo-600 group-hover:bg-indigo-100'}`}>
+                      <Folder size={20} />
                     </div>
-                    <h3 className="font-black text-gray-900 mb-1">{p.name}</h3>
-                    <p className="text-xs text-gray-500 line-clamp-2 h-8">{p.description}</p>
-                    <div className="mt-4 pt-4 border-t border-gray-50 flex items-center justify-between">
-                      <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Görevleri Gör</span>
-                      <ChevronRight size={16} className="text-gray-300" />
-                    </div>
+                    <span className="px-2 py-0.5 bg-gray-50 text-gray-500 rounded-lg text-[10px] font-bold uppercase tracking-wider border border-gray-100">
+                      {p.team?.name}
+                    </span>
                   </div>
-                ))
-              )}
+                  <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-indigo-600 transition-colors line-clamp-1">{p.name}</h3>
+                  <p className="text-xs text-gray-500 font-medium line-clamp-2 h-8 leading-relaxed">{p.description}</p>
+                  <div className="mt-6 pt-4 border-t border-gray-50 flex items-center justify-between">
+                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">GÖREVLERİ GÖR</span>
+                    <ChevronRight size={16} className={`transition-transform duration-300 ${selectedProject?.id === p.id ? 'translate-x-0' : '-translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100'}`} />
+                  </div>
+                </button>
+              ))}
             </div>
           )}
         </div>
 
-        {/* Görev Paneli */}
+        {/* Task Detail Panel */}
         {selectedProject && (
           <div className="lg:col-span-8 space-y-6 animate-in fade-in slide-in-from-right-4 duration-500">
-            <div className="bg-white border border-gray-100 rounded-[2.5rem] shadow-xl shadow-gray-200/40 overflow-hidden">
-              <div className="p-8 border-b border-gray-50 bg-gradient-to-br from-indigo-50/20 to-white">
-                <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-indigo-500 mb-2">
+            <Card noPadding className="overflow-hidden shadow-xl shadow-indigo-900/5 border-indigo-100">
+              {/* Project Header */}
+              <div className="p-8 border-b border-gray-100 bg-gray-50/50 relative">
+                <div className="flex items-center gap-2 text-[11px] font-bold text-indigo-600 uppercase tracking-widest mb-3">
                     <Flag size={14} /> {selectedProject.team?.name} PROJESİ
                 </div>
-                <h2 className="text-3xl font-black text-gray-900 mb-3">{selectedProject.name}</h2>
-                <div className="flex items-center gap-4">
-                    <div className="flex items-center gap-1.5 text-sm text-gray-500 font-medium">
-                        <User2 size={16} className="text-gray-400" /> Lider: {selectedProject.team?.leader?.user?.email}
+                <h2 className="text-3xl font-bold text-gray-900 mb-4">{selectedProject.name}</h2>
+                <div className="flex flex-wrap gap-4">
+                    <div className="flex items-center gap-2 px-3 py-1.5 bg-white border border-gray-200 rounded-lg text-xs font-medium text-gray-600 shadow-sm">
+                        <User2 size={14} className="text-gray-400" />
+                        <span className="font-bold">Lider:</span> {selectedProject.team?.leader?.user?.firstName ? `${selectedProject.team.leader.user.firstName} ${selectedProject.team.leader.user.lastName}` : selectedProject.team?.leader?.user?.email?.split('@')[0]}
+                    </div>
+                    <div className="flex items-center gap-2 px-3 py-1.5 bg-white border border-gray-200 rounded-lg text-xs font-medium text-gray-600 shadow-sm">
+                        <Info size={14} className="text-gray-400" />
+                        <span className="font-bold">Durum:</span> {selectedProject.status?.toUpperCase() || 'PLANLANIYOR'}
                     </div>
                 </div>
               </div>
 
-              <div className="p-8 space-y-8">
-                {/* Görev Ekleme */}
+              <div className="p-8 space-y-10">
+                {/* Task Assignment Form */}
                 {isLeaderOfSelectedProject && (
-                  <div className="bg-gray-50/50 border border-gray-100 rounded-3xl p-6 space-y-4">
-                    <h4 className="text-sm font-black text-gray-800 uppercase tracking-wider flex items-center gap-2">
-                        <Plus size={16} className="text-indigo-600" /> Yeni Görev Ata
-                    </h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <input 
-                            placeholder="Görev başlığı..." 
+                  <div className="bg-indigo-50/30 border border-indigo-100 rounded-2xl p-6 space-y-6">
+                    <div className="flex items-center gap-2 text-sm font-bold text-indigo-700 uppercase tracking-wider">
+                        <Plus size={16} /> Yeni Görev Tanımla
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div className="md:col-span-2">
+                          <Input 
+                            label="Görev Başlığı"
+                            placeholder="Örn: Rapor taslağını hazırla" 
                             value={taskTitle}
                             onChange={e => setTaskTitle(e.target.value)}
-                            className="col-span-1 md:col-span-2 px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500/20"
-                        />
-                        <div className="space-y-1">
-                            <label className="text-[9px] font-black text-gray-400 ml-1 uppercase">Son Tarih</label>
-                            <input 
-                                type="date"
-                                value={taskDueDate}
-                                onChange={e => setTaskDueDate(e.target.value)}
-                                className="w-full px-4 py-2 bg-white border border-gray-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500/20"
-                            />
+                            className="bg-white border-indigo-100"
+                          />
                         </div>
-                        <div className="space-y-1">
-                            <label className="text-[9px] font-black text-gray-400 ml-1 uppercase">Öncelik</label>
+                        <Input 
+                            label="Son Tarih"
+                            type="date"
+                            value={taskDueDate}
+                            onChange={e => setTaskDueDate(e.target.value)}
+                            className="bg-white border-indigo-100"
+                        />
+                        <div className="space-y-1.5">
+                            <label className="text-sm font-bold text-gray-700">Öncelik Seviyesi</label>
                             <select 
                                 value={taskPriority}
                                 onChange={e => setTaskPriority(e.target.value)}
-                                className="w-full px-4 py-2 bg-white border border-gray-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500/20"
+                                className="w-full px-3 py-2 text-sm bg-white border border-indigo-100 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all"
                             >
                                 <option value="low">Düşük</option>
                                 <option value="normal">Orta</option>
                                 <option value="high">Yüksek</option>
+                                <option value="critical">Kritik</option>
                             </select>
                         </div>
-                        <div className="col-span-1 md:col-span-2 space-y-1">
-                            <label className="text-[9px] font-black text-gray-400 ml-1 uppercase">Görevi Ata (Ekip Üyesi)</label>
+                        <div className="md:col-span-2 space-y-1.5">
+                            <label className="text-sm font-bold text-gray-700">Sorumlu Atayın</label>
                             <select 
                                 value={taskAssignedToId}
                                 onChange={e => setTaskAssignedToId(e.target.value)}
-                                className="w-full px-4 py-2 bg-white border border-gray-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500/20"
+                                className="w-full px-3 py-2 text-sm bg-white border border-indigo-100 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all"
                             >
-                                <option value="">Sorumlu Seçiniz...</option>
+                                <option value="">Bir ekip üyesi seçin...</option>
                                 {teamMembers.map(tm => (
-                                    <option key={tm.id} value={tm.membership.id}>{tm.membership.user?.email}</option>
+                                    <option key={tm.id} value={tm.membership.id}>
+                                      {tm.membership.user?.firstName ? `${tm.membership.user.firstName} ${tm.membership.user.lastName}` : tm.membership.user?.email}
+                                    </option>
                                 ))}
                             </select>
                         </div>
                     </div>
-                    <button 
+                    <Button 
                         onClick={handleCreateTask}
-                        className="w-full py-3 bg-indigo-600 text-white rounded-xl text-sm font-black uppercase tracking-widest hover:bg-indigo-700 transition shadow-lg shadow-indigo-100"
+                        className="w-full py-3"
+                        icon={Plus}
                     >
-                        Görevi Yayınla
-                    </button>
+                        GÖREVİ YAYINLA
+                    </Button>
                   </div>
                 )}
 
-                {/* Görev Listesi */}
-                <div className="space-y-4">
-                  <h3 className="text-lg font-black text-gray-800 flex items-center gap-2">
-                    <ListTodo size={20} className="text-indigo-500" /> Görevler
-                  </h3>
+                {/* Task List */}
+                <div className="space-y-6">
+                  <div className="flex items-center justify-between border-b border-gray-50 pb-2">
+                    <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+                      <ListTodo size={20} className="text-indigo-500" /> Mevcut Görevler
+                    </h3>
+                    <span className="text-[10px] font-bold text-gray-400 bg-gray-50 px-2 py-1 rounded-md border border-gray-100">
+                      {tasks.length} TOPLAM
+                    </span>
+                  </div>
 
                   {loadingTasks ? (
-                    <div className="flex justify-center py-12"><div className="w-8 h-8 border-3 border-indigo-100 border-t-indigo-600 rounded-full animate-spin" /></div>
+                    <div className="flex justify-center py-12"><Loader2 className="w-8 h-8 text-indigo-500 animate-spin" /></div>
                   ) : tasks.length === 0 ? (
-                    <div className="text-center py-12 bg-gray-50/50 rounded-3xl border border-dashed border-gray-200">
-                      <p className="text-gray-400 font-bold text-sm">Henüz bir görev atanmamış.</p>
+                    <div className="text-center py-16 bg-gray-50/50 rounded-2xl border border-dashed border-gray-200">
+                      <ClipboardList size={40} className="text-gray-200 mx-auto mb-3" />
+                      <p className="text-gray-400 font-medium italic">Henüz bir görev atanmamış.</p>
                     </div>
                   ) : (
                     <div className="space-y-3">
-                      {tasks.map(task => (
-                        <div 
-                          key={task.id} 
-                          onClick={() => toggleTaskStatus(task)}
-                          className={`flex items-center justify-between p-5 rounded-2xl border transition-all cursor-pointer ${
-                            task.status === 'completed' ? 'bg-emerald-50/30 border-emerald-100 opacity-60' : 'bg-white border-gray-100 hover:border-indigo-200 shadow-sm'
-                          }`}
-                        >
-                          <div className="flex items-center gap-4">
-                            <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
-                              task.status === 'completed' ? 'bg-emerald-500 text-white' : 'border-2 border-gray-200 text-transparent'
-                            }`}>
-                              <CheckCircle2 size={16} />
+                      {tasks.map(task => {
+                        const isDone = task.status === 'completed';
+                        const priorityInfo = PRIORITY[task.priority || 'normal'];
+                        
+                        return (
+                          <div 
+                            key={task.id} 
+                            onClick={() => toggleTaskStatus(task)}
+                            className={`flex items-center justify-between p-5 rounded-xl border transition-all cursor-pointer group/task ${
+                              isDone 
+                              ? 'bg-emerald-50/20 border-emerald-100 opacity-75' 
+                              : 'bg-white border-gray-100 hover:border-indigo-300 hover:shadow-sm'
+                            }`}
+                          >
+                            <div className="flex items-center gap-4">
+                              <div className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all ${
+                                isDone 
+                                ? 'bg-emerald-500 border-emerald-500 text-white' 
+                                : 'border-gray-200 text-transparent group-hover/task:border-indigo-400'
+                              }`}>
+                                <CheckCircle2 size={14} />
+                              </div>
+                              <div>
+                                <div className={`text-sm font-bold transition-all ${isDone ? 'text-gray-400 line-through' : 'text-gray-800'}`}>
+                                  {task.title}
+                                </div>
+                                <div className="flex items-center gap-4 mt-1.5">
+                                  <span className="text-[10px] font-medium text-gray-400 flex items-center gap-1.5">
+                                    <Clock size={12} className="text-gray-300" /> {task.dueDate}
+                                  </span>
+                                  <span className="text-[10px] font-bold text-indigo-600/70 flex items-center gap-1.5">
+                                    <User2 size={12} className="text-indigo-400" /> {task.assignedTo?.user?.email?.split('@')[0].toUpperCase()}
+                                  </span>
+                                </div>
+                              </div>
                             </div>
-                            <div>
-                              <div className={`text-sm font-bold ${task.status === 'completed' ? 'text-emerald-700 line-through' : 'text-gray-800'}`}>
-                                {task.title}
-                              </div>
-                              <div className="flex items-center gap-3 mt-1">
-                                <span className="text-[10px] font-black uppercase tracking-wider text-gray-400 flex items-center gap-1">
-                                  <Calendar size={10} /> {task.dueDate}
-                                </span>
-                                <span className="text-[10px] font-black uppercase tracking-wider text-indigo-400 flex items-center gap-1">
-                                  <User2 size={10} /> {task.assignedTo?.user?.email?.split('@')[0]}
-                                </span>
-                              </div>
+                            
+                            <div className={`px-2.5 py-1 rounded-full text-[9px] font-bold uppercase tracking-wider border shadow-sm ${priorityInfo.cls}`}>
+                              {priorityInfo.label}
                             </div>
                           </div>
-                          
-                          <div className={`px-2.5 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border ${PRIORITY[task.priority || 'normal'].cls}`}>
-                            {PRIORITY[task.priority || 'normal'].label}
-                          </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   )}
                 </div>
               </div>
-            </div>
+            </Card>
           </div>
         )}
       </div>

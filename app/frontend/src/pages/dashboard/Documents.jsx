@@ -2,7 +2,25 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useClub } from '../../store/ClubContext';
 import { useAuth } from '../../store/AuthContext';
 import api from '../../services/api';
-import { Plus, FileText, Trash2, Download, X, Folder, Check, XCircle, AlertCircle, Upload, Image as ImageIcon, Eye, Globe, Lock, ShieldCheck } from 'lucide-react';
+import { 
+  Plus, 
+  FileText, 
+  Trash2, 
+  Download, 
+  X, 
+  Folder, 
+  Check, 
+  XCircle, 
+  Upload, 
+  Eye, 
+  Globe, 
+  Lock, 
+  ShieldCheck,
+  Loader2
+} from 'lucide-react';
+import { Card } from '../../components/common/Card';
+import { Button } from '../../components/common/Button';
+import { Input } from '../../components/common/Input';
 
 const CATEGORIES = ['Public', 'Etkinlik', 'Proje', 'Resmi', 'Şablon', 'Diğer'];
 const EMPTY_FORM = { title: '', category: 'Public', description: '', fileData: null };
@@ -115,28 +133,27 @@ export const Documents = () => {
     } catch (e) { alert('Silinemedi.'); }
   };
 
-  // Visibility filtering logic
   const canSee = (cat) => {
     if (isBaskan) return true;
     if (cat === 'Resmi' || cat === 'Finans') return false;
     if (cat === 'Etkinlik' || cat === 'Proje') return isStaff;
     if (cat === 'Public') return true;
-    return isStaff; // Default for others
+    return isStaff;
   };
 
   const visibleDocs = docs.filter(d => canSee(d.category));
   const filtered = activeCategory === 'Tümü' ? visibleDocs : visibleDocs.filter(d => d.category === activeCategory);
 
-  const getCatColor = (cat) => {
+  const getCatBadge = (cat) => {
     const map = { 
-        Public: 'bg-emerald-100 text-emerald-700',
-        Etkinlik: 'bg-purple-100 text-purple-700', 
-        Proje: 'bg-indigo-100 text-indigo-700',
-        Resmi: 'bg-blue-100 text-blue-700', 
-        Şablon: 'bg-gray-100 text-gray-600', 
-        Diğer: 'bg-gray-100 text-gray-600' 
+        Public: 'bg-emerald-50 text-emerald-700 border-emerald-100',
+        Etkinlik: 'bg-purple-50 text-purple-700 border-purple-100', 
+        Proje: 'bg-indigo-50 text-indigo-700 border-indigo-100',
+        Resmi: 'bg-blue-50 text-blue-700 border-blue-100', 
+        Şablon: 'bg-gray-50 text-gray-600 border-gray-200', 
+        Diğer: 'bg-gray-50 text-gray-600 border-gray-200' 
     };
-    return map[cat] || 'bg-gray-100 text-gray-600';
+    return map[cat] || 'bg-gray-50 text-gray-600 border-gray-200';
   };
 
   const getCatIcon = (cat) => {
@@ -148,211 +165,255 @@ export const Documents = () => {
   const isImage = (data) => data?.startsWith('data:image/');
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8 max-w-7xl mx-auto">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-gray-100">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Belgeler ve Fotoğraflar</h1>
-          <p className="text-sm text-gray-500 mt-0.5">{activeClub?.name} — {visibleDocs.length} dosya</p>
+          <h1 className="text-3xl font-bold text-gray-900 tracking-tight mb-2">Belgeler & Galeri</h1>
+          <p className="text-gray-500 font-medium">
+            {activeClub?.name} arşivindeki dosyalar ve görseller
+          </p>
         </div>
         {canUpload && (
-          <button onClick={() => setShowForm(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-xl text-sm font-semibold hover:bg-indigo-700 transition shadow-sm">
-            <Plus size={16} /> Ekle
-          </button>
+          <Button variant="primary" onClick={() => setShowForm(true)} icon={Plus}>
+            Yeni Dosya Ekle
+          </Button>
         )}
       </div>
 
       {/* Category filters */}
-      <div className="flex gap-2 flex-wrap">
+      <div className="flex gap-2 flex-wrap pb-2">
         {['Tümü', ...CATEGORIES].filter(cat => cat === 'Tümü' || canSee(cat)).map(cat => (
-          <button key={cat} onClick={() => setActiveCategory(cat)}
-            className={`px-3 py-1.5 rounded-full text-xs font-semibold transition flex items-center gap-1.5 ${activeCategory === cat ? 'bg-indigo-600 text-white' : 'bg-white border border-gray-200 text-gray-600 hover:border-indigo-300'}`}>
+          <button 
+            key={cat} 
+            onClick={() => setActiveCategory(cat)}
+            className={`px-4 py-2 rounded-full text-xs font-bold transition-all flex items-center gap-2 border shadow-sm ${
+              activeCategory === cat 
+              ? 'bg-indigo-600 text-white border-indigo-600' 
+              : 'bg-white border-gray-200 text-gray-600 hover:border-indigo-300 hover:text-indigo-600'
+            }`}
+          >
             {cat !== 'Tümü' && getCatIcon(cat)}
-            {cat}
+            {cat.toUpperCase()}
           </button>
         ))}
       </div>
 
-      {/* Modal - Create */}
-      {showForm && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md">
-            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
-              <h2 className="font-bold text-gray-900">Yeni Dosya</h2>
-              <button onClick={() => setShowForm(false)} className="text-gray-400 hover:text-gray-600"><X size={20} /></button>
-            </div>
-            <form onSubmit={handleCreate} className="p-6 space-y-4">
-              <div>
-                <label className="text-xs font-semibold text-gray-500 uppercase">Başlık *</label>
-                <input required value={form.title} onChange={e => setForm({...form, title: e.target.value})}
-                  className="mt-1 w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400" placeholder="Örn: Etkinlik Fotoğrafı" />
-              </div>
-              <div>
-                <label className="text-xs font-semibold text-gray-500 uppercase">Dosya (PDF veya Resim) *</label>
-                <div className="mt-1 relative border-2 border-dashed border-gray-200 rounded-xl p-4 hover:bg-gray-50 transition-all text-center min-h-[120px] flex flex-col items-center justify-center">
-                   <input type="file" accept="application/pdf,image/*" onChange={handleFileChange} className="absolute inset-0 opacity-0 cursor-pointer" />
-                   {form.fileData ? (
-                     <div className="space-y-2">
-                        {isImage(form.fileData) ? (
-                          <img src={form.fileData} alt="Preview" className="h-20 w-auto rounded-lg shadow-sm mx-auto object-cover" />
-                        ) : (
-                          <FileText className="mx-auto h-12 w-12 text-indigo-500" />
-                        )}
-                        <p className="text-xs font-bold text-emerald-600">Dosya seçildi</p>
-                     </div>
-                   ) : (
-                     <div className="space-y-1">
-                        <Upload className="mx-auto h-8 w-8 text-gray-400" />
-                        <p className="text-xs font-bold text-gray-600">Dosya Seçmek İçin Tıklayın</p>
-                        <p className="text-[10px] text-gray-400">PDF, JPG, PNG, GIF, WEBP</p>
-                     </div>
-                   )}
-                </div>
-              </div>
-              <div>
-                <label className="text-xs font-semibold text-gray-500 uppercase">Kategori</label>
-                <select value={form.category} onChange={e => setForm({...form, category: e.target.value})}
-                  className="mt-1 w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400">
-                  {CATEGORIES.filter(c => canSee(c)).map(c => <option key={c}>{c}</option>)}
-                </select>
-              </div>
-              <div>
-                <label className="text-xs font-semibold text-gray-500 uppercase">Açıklama</label>
-                <textarea value={form.description} onChange={e => setForm({...form, description: e.target.value})}
-                  rows={2} className="mt-1 w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400" placeholder="Kısa açıklama..." />
-              </div>
-              <div className="flex gap-3 pt-2">
-                <button type="button" onClick={() => setShowForm(false)}
-                  className="flex-1 py-2.5 border border-gray-200 rounded-xl text-sm font-medium text-gray-600 hover:bg-gray-50">İptal</button>
-                <button type="submit" disabled={saving}
-                  className="flex-1 py-2.5 bg-indigo-600 text-white rounded-xl text-sm font-semibold hover:bg-indigo-700 disabled:opacity-50">
-                  {saving ? 'Kaydediliyor...' : 'Yükle'}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* Preview Modal */}
-      {previewDoc && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[60] flex items-center justify-center p-4" onClick={() => setPreviewDoc(null)}>
-          <div className="relative max-w-4xl w-full max-h-[90vh] flex flex-col" onClick={e => e.stopPropagation()}>
-            <button onClick={() => setPreviewDoc(null)} className="absolute -top-12 right-0 text-white hover:text-gray-300 flex items-center gap-2 font-bold">
-              <X size={24} /> Kapat
-            </button>
-            <div className="bg-white rounded-2xl overflow-hidden flex items-center justify-center p-2">
-              {isImage(previewDoc.fileData) ? (
-                <img src={previewDoc.fileData} alt={previewDoc.title} className="max-w-full max-h-[80vh] object-contain" />
-              ) : (
-                <div className="p-20 text-center">
-                   <FileText size={80} className="text-gray-200 mx-auto mb-4" />
-                   <p className="text-gray-500 font-bold">Bu dosya türü için önizleme desteklenmiyor.</p>
-                   <button onClick={() => handleDownload(previewDoc.id, previewDoc.title, previewDoc.fileData)} className="mt-4 px-6 py-2 bg-indigo-600 text-white rounded-xl font-bold">İndirerek Görüntüle</button>
-                </div>
-              )}
-            </div>
-            <div className="bg-white/10 backdrop-blur-md mt-4 p-4 rounded-xl text-white">
-              <h3 className="font-bold text-lg">{previewDoc.title}</h3>
-              <p className="text-sm opacity-80">{previewDoc.description}</p>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Docs Grid */}
       {loading ? (
-        <div className="flex justify-center items-center h-40">
-          <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+        <div className="flex flex-col items-center justify-center py-24 gap-4">
+          <Loader2 className="w-10 h-10 text-indigo-500 animate-spin" />
+          <p className="text-sm font-medium text-gray-500">Dosyalar yükleniyor...</p>
         </div>
       ) : filtered.length === 0 ? (
-        <div className="bg-white border border-gray-100 rounded-2xl p-16 text-center">
-          <Folder size={40} className="text-gray-200 mx-auto mb-3" />
-          <p className="text-gray-400 font-medium">{activeCategory === 'Tümü' ? 'Henüz dosya eklenmemiş.' : `Bu kategoride dosya yok.`}</p>
-          {canUpload && activeCategory === 'Tümü' && (
-            <button onClick={() => setShowForm(true)} className="mt-4 text-sm text-indigo-600 hover:underline">İlk dosyayı ekle →</button>
-          )}
+        <div className="bg-white border border-dashed border-gray-200 rounded-2xl p-24 text-center">
+          <Folder size={48} className="text-gray-200 mx-auto mb-4" />
+          <p className="text-sm font-bold text-gray-900 mb-1">Henüz dosya bulunmuyor</p>
+          <p className="text-xs text-gray-500 italic">Bu kategoride kaydedilmiş bir belge veya fotoğraf yok.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
           {filtered.map(doc => (
-            <div key={doc.id} className="bg-white border border-gray-100 rounded-2xl p-3 hover:shadow-md transition group flex flex-col">
-              {/* Image Preview Thumb */}
-              {isImage(doc.fileData) ? (
-                <div className="relative aspect-square rounded-xl overflow-hidden mb-2 bg-gray-50 group-hover:shadow-inner transition border border-gray-50">
-                   <img src={doc.fileData} alt={doc.title} className="w-full h-full object-cover" />
-                   <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
-                      <button onClick={() => setPreviewDoc(doc)} className="w-8 h-8 bg-white rounded-full flex items-center justify-center text-gray-900 shadow-xl hover:scale-110 transition">
-                         <Eye size={16} />
-                      </button>
+            <Card key={doc.id} className="group flex flex-col h-full overflow-hidden hover:border-indigo-300 hover:shadow-md transition-all duration-300" noPadding>
+              {/* Preview Area */}
+              <div className="relative aspect-[4/3] bg-gray-50 border-b border-gray-100 overflow-hidden flex items-center justify-center group/preview">
+                 {isImage(doc.fileData) ? (
+                   <>
+                    <img src={doc.fileData} alt={doc.title} className="w-full h-full object-cover transition-transform duration-500 group-hover/preview:scale-110" />
+                    <div className="absolute inset-0 bg-indigo-900/40 opacity-0 group-hover/preview:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2">
+                       <button 
+                        onClick={() => setPreviewDoc(doc)}
+                        className="p-2.5 bg-white rounded-full text-indigo-600 shadow-xl hover:scale-110 transition-transform"
+                       >
+                          <Eye size={18} />
+                       </button>
+                       <button 
+                        onClick={() => handleDownload(doc.id, doc.title, doc.fileData)}
+                        className="p-2.5 bg-white rounded-full text-indigo-600 shadow-xl hover:scale-110 transition-transform"
+                       >
+                          <Download size={18} />
+                       </button>
+                    </div>
+                   </>
+                 ) : (
+                   <div className="flex flex-col items-center gap-3">
+                      <div className="w-16 h-16 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-400 group-hover:bg-indigo-100 group-hover:text-indigo-600 transition-colors">
+                        <FileText size={32} />
+                      </div>
+                      <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">PDF BELGESİ</span>
                    </div>
-                </div>
-              ) : (
-                <div className="aspect-square rounded-xl mb-2 bg-indigo-50 flex items-center justify-center text-indigo-200 border border-indigo-100">
-                   <FileText size={32} />
-                </div>
-              )}
-
-              <div className="flex items-start gap-2 mb-2">
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-bold text-gray-900 text-xs leading-tight truncate">{doc.title}</h3>
-                  <div className="flex gap-1 items-center flex-wrap">
-                    <span className={`inline-flex items-center gap-1 text-[8px] font-black px-1.5 py-0.5 rounded-md mt-1 ${getCatColor(doc.category)}`}>
+                 )}
+                 
+                 {/* Top Badge */}
+                 <div className="absolute top-3 left-3">
+                    <span className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-lg text-[9px] font-bold border shadow-sm backdrop-blur-sm ${getCatBadge(doc.category)}`}>
                       {getCatIcon(doc.category)}
-                      {doc.category || 'Diğer'}
+                      {doc.category?.toUpperCase() || 'DİĞER'}
                     </span>
-                    {doc.approvalStatus === 'PENDING' && (
-                      <span className="inline-flex items-center gap-0.5 text-[8px] font-black px-1.5 py-0.5 rounded-md mt-1 bg-amber-50 text-amber-600 border border-amber-100">
-                        <AlertCircle size={8} /> Beklemede
-                      </span>
-                    )}
-                  </div>
+                 </div>
+              </div>
+
+              {/* Content */}
+              <div className="p-4 flex flex-col flex-1">
+                <div className="flex items-start justify-between gap-2 mb-2">
+                  <h3 className="font-bold text-gray-900 text-sm leading-tight line-clamp-2 min-h-[2.5rem]" title={doc.title}>
+                    {doc.title}
+                  </h3>
+                  {isBaskan && (
+                    <button 
+                      onClick={() => handleDelete(doc.id)}
+                      className="shrink-0 p-1.5 text-gray-300 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-all"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  )}
+                </div>
+
+                <p className="text-[11px] text-gray-500 line-clamp-1 mb-4">
+                  {doc.description || 'Açıklama bulunmuyor.'}
+                </p>
+
+                {/* Footer Info */}
+                <div className="mt-auto pt-3 border-t border-gray-50 flex items-center justify-between">
+                  <span className="text-[10px] text-gray-400 font-bold">
+                    {doc.createdAt ? new Date(doc.createdAt).toLocaleDateString('tr-TR') : ''}
+                  </span>
+                  
+                  {doc.approvalStatus === 'PENDING' ? (
+                    isBaskan ? (
+                      <div className="flex gap-1">
+                         <button onClick={() => handleReject(doc.id)} className="p-1 text-rose-500 hover:bg-rose-50 rounded transition-colors" title="Reddet"><XCircle size={14} /></button>
+                         <button onClick={() => handleApprove(doc.id)} className="p-1 text-emerald-500 hover:bg-emerald-50 rounded transition-colors" title="Onayla"><Check size={14} /></button>
+                      </div>
+                    ) : (
+                      <span className="text-[9px] font-bold text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-100">BEKLEMEDE</span>
+                    )
+                  ) : !isImage(doc.fileData) && (
+                    <button 
+                      onClick={() => handleDownload(doc.id, doc.title, doc.fileData)}
+                      className="text-indigo-600 hover:text-indigo-800 text-[10px] font-bold uppercase tracking-wider flex items-center gap-1"
+                    >
+                      <Download size={12} /> İndir
+                    </button>
+                  )}
                 </div>
               </div>
-              
-              {isBaskan && doc.approvalStatus === 'PENDING' && (
-                <div className="mt-2 grid grid-cols-2 gap-1 mb-2">
-                  <button onClick={() => handleReject(doc.id)} className="flex items-center justify-center gap-1 py-1 border border-red-200 text-red-500 rounded-lg text-[8px] font-bold hover:bg-red-50 transition">
-                    <XCircle size={10} /> Reddet
-                  </button>
-                  <button onClick={() => handleApprove(doc.id)} className="flex items-center justify-center gap-1 py-1 bg-emerald-500 text-white rounded-lg text-[8px] font-bold hover:bg-emerald-600 transition">
-                    <Check size={10} /> Onayla
-                  </button>
+            </Card>
+          ))}
+        </div>
+      )}
+
+      {/* FORM MODAL */}
+      {showForm && (
+        <div className="fixed inset-0 bg-gray-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <Card className="w-full max-w-md animate-in zoom-in-95 duration-200" noPadding>
+            <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
+              <div>
+                <h2 className="text-lg font-bold text-gray-900">Yeni Dosya Ekle</h2>
+                <p className="text-xs font-medium text-gray-500">Arşive belge veya görsel yükleyin</p>
+              </div>
+              <button onClick={() => setShowForm(false)} className="p-2 text-gray-400 hover:text-gray-600 transition-all">
+                <X size={20} />
+              </button>
+            </div>
+            
+            <form onSubmit={handleCreate} className="p-6 space-y-5">
+              <Input 
+                label="Dosya Başlığı"
+                required 
+                value={form.title} 
+                onChange={e => setForm({...form, title: e.target.value})} 
+                placeholder="Örn: Toplantı Notları - 15 Ocak"
+              />
+
+              <div className="space-y-1.5">
+                <label className="text-sm font-bold text-gray-700">Dosya Seçimi *</label>
+                <div className="relative border-2 border-dashed border-gray-200 rounded-xl p-6 hover:border-indigo-300 hover:bg-indigo-50/30 transition-all text-center group cursor-pointer">
+                  <input 
+                    type="file" 
+                    accept="application/pdf,image/*" 
+                    onChange={handleFileChange} 
+                    className="absolute inset-0 opacity-0 cursor-pointer z-10" 
+                    required
+                  />
+                  {form.fileData ? (
+                    <div className="space-y-2">
+                       {isImage(form.fileData) ? (
+                         <img src={form.fileData} alt="Preview" className="h-24 w-auto rounded-lg shadow-sm mx-auto object-cover border border-white" />
+                       ) : (
+                         <FileText className="mx-auto h-16 w-16 text-indigo-500" />
+                       )}
+                       <p className="text-xs font-bold text-emerald-600">Dosya Başarıyla Seçildi</p>
+                    </div>
+                  ) : (
+                    <div className="py-2">
+                       <Upload className="mx-auto h-10 w-10 text-gray-300 group-hover:text-indigo-400 transition-colors mb-3" />
+                       <p className="text-xs font-bold text-gray-600">Yüklemek için tıklayın veya sürükleyin</p>
+                       <p className="text-[10px] text-gray-400 mt-1">PDF veya Resim (Maks. 10MB)</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-sm font-bold text-gray-700">Kategori</label>
+                <select 
+                  value={form.category} 
+                  onChange={e => setForm({...form, category: e.target.value})}
+                  className="w-full px-3 py-2 text-sm bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-medium"
+                >
+                  {CATEGORIES.filter(c => canSee(c)).map(c => <option key={c} value={c}>{c}</option>)}
+                </select>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-sm font-bold text-gray-700">Kısa Açıklama</label>
+                <textarea 
+                  value={form.description} 
+                  onChange={e => setForm({...form, description: e.target.value})}
+                  rows={2} 
+                  className="w-full px-3 py-2 text-sm bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-medium"
+                  placeholder="Dosya hakkında kısa bilgi..." 
+                />
+              </div>
+
+              <div className="flex gap-3 pt-2">
+                <Button variant="secondary" type="button" onClick={() => setShowForm(false)} className="flex-1">İPTAL</Button>
+                <Button variant="primary" type="submit" loading={saving} className="flex-1">YÜKLE</Button>
+              </div>
+            </form>
+          </Card>
+        </div>
+      )}
+
+      {/* PREVIEW MODAL */}
+      {previewDoc && (
+        <div className="fixed inset-0 bg-gray-900/90 backdrop-blur-md z-[100] flex items-center justify-center p-6" onClick={() => setPreviewDoc(null)}>
+          <div className="relative max-w-5xl w-full flex flex-col gap-6" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between text-white">
+               <div>
+                  <h3 className="text-xl font-bold">{previewDoc.title}</h3>
+                  <p className="text-sm text-gray-400">{previewDoc.description || 'Açıklama yok'}</p>
+               </div>
+               <button onClick={() => setPreviewDoc(null)} className="p-2 hover:bg-white/10 rounded-full transition-colors">
+                 <X size={32} />
+               </button>
+            </div>
+            
+            <div className="bg-black/20 rounded-2xl overflow-hidden flex items-center justify-center border border-white/10 min-h-[300px]">
+              {isImage(previewDoc.fileData) ? (
+                <img src={previewDoc.fileData} alt={previewDoc.title} className="max-w-full max-h-[75vh] object-contain shadow-2xl" />
+              ) : (
+                <div className="p-20 text-center space-y-6">
+                   <FileText size={100} className="text-white/20 mx-auto" />
+                   <p className="text-white text-lg font-medium">Bu dosya türü için önizleme desteklenmiyor.</p>
+                   <Button variant="primary" size="lg" onClick={() => handleDownload(previewDoc.id, previewDoc.title, previewDoc.fileData)} icon={Download}>
+                     Belgeyi İndir
+                   </Button>
                 </div>
               )}
-
-              <div className="flex items-center justify-between mt-auto pt-2 border-t border-gray-50">
-                <span className="text-[9px] text-gray-400 font-bold uppercase">
-                  {doc.createdAt ? new Date(doc.createdAt).toLocaleDateString('tr-TR') : ''}
-                </span>
-                <div className="flex items-center gap-0.5">
-                  {isImage(doc.fileData) && (
-                    <button onClick={() => setPreviewDoc(doc)}
-                      className="text-gray-400 hover:text-indigo-600 p-1 rounded-lg hover:bg-indigo-50 transition"
-                      title="Görüntüle"
-                    >
-                      <Eye size={14} />
-                    </button>
-                  )}
-                  <button onClick={() => handleDownload(doc.id, doc.title, doc.fileData)}
-                    className="text-indigo-500 hover:text-indigo-700 p-1 rounded-lg hover:bg-indigo-50 transition"
-                    title="İndir"
-                  >
-                    <Download size={14} />
-                  </button>
-                  {isBaskan && (
-                    <button onClick={() => handleDelete(doc.id)}
-                      className="text-red-400 hover:text-red-600 p-1 rounded-lg hover:bg-red-50 transition"
-                      title="Sil"
-                    >
-                      <Trash2 size={14} />
-                    </button>
-                  )}
-                </div>
-              </div>
             </div>
-          ))}
+          </div>
         </div>
       )}
     </div>

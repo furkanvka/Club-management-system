@@ -2,7 +2,26 @@ import React, { useEffect, useState } from 'react';
 import { useClub } from '../../store/ClubContext';
 import { useAuth } from '../../store/AuthContext';
 import api from '../../services/api';
-import { User, Phone, BookOpen, GraduationCap, Save, Camera, Clock, CheckCircle2, Shield, Star, Crown, UserCheck, Hash, Mail } from 'lucide-react';
+import { 
+  User, 
+  Phone, 
+  BookOpen, 
+  GraduationCap, 
+  Save, 
+  Camera, 
+  CheckCircle2, 
+  Shield, 
+  Star, 
+  Crown, 
+  UserCheck, 
+  Hash, 
+  Mail,
+  Loader2,
+  Building2
+} from 'lucide-react';
+import { Card } from '../../components/common/Card';
+import { Button } from '../../components/common/Button';
+import { Input } from '../../components/common/Input';
 
 export const Profile = () => {
   const { activeClub, activeRole, activeMembershipStatus } = useClub();
@@ -27,7 +46,6 @@ export const Profile = () => {
         if (r.data) {
           setProfile(r.data);
         } else {
-          // If no profile, pre-fill with data from user object
           setProfile(prev => ({
             ...prev,
             fullName: user?.firstName ? `${user.firstName} ${user.lastName}` : '',
@@ -59,17 +77,24 @@ export const Profile = () => {
     switch (normalized) {
       case 'KULUP_BASKANI':
       case 'BASKAN':
-        return { label: 'Kulüp Başkanı', cls: 'bg-purple-50 text-purple-700 border-purple-100', icon: Crown };
+        return { label: 'Kulüp Başkanı', color: 'bg-purple-50 text-purple-700 border-purple-100', icon: Crown };
       case 'EKIP_LIDERI':
-        return { label: 'Ekip Lideri', cls: 'bg-amber-50 text-amber-700 border-amber-100', icon: Star };
+        return { label: 'Ekip Lideri', color: 'bg-amber-50 text-amber-700 border-amber-100', icon: Star };
       case 'EKIP_UYESI':
-        return { label: 'Ekip Üyesi', cls: 'bg-indigo-50 text-indigo-700 border-indigo-100', icon: Shield };
+        return { label: 'Ekip Üyesi', color: 'bg-indigo-50 text-indigo-700 border-indigo-100', icon: Shield };
       default:
-        return { label: 'Kulüp Üyesi', cls: 'bg-blue-50 text-blue-700 border-blue-100', icon: UserCheck };
+        return { label: 'Kulüp Üyesi', color: 'bg-blue-50 text-blue-700 border-blue-100', icon: UserCheck };
     }
   };
 
-  if (loading) return <div className="flex justify-center p-20"><div className="w-10 h-10 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin" /></div>;
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center py-24 gap-4">
+        <Loader2 className="w-10 h-10 text-indigo-500 animate-spin" />
+        <p className="text-sm font-medium text-gray-500">Profil yükleniyor...</p>
+      </div>
+    );
+  }
 
   const rd = roleDisplay(activeRole);
   const RoleIcon = rd.icon;
@@ -78,175 +103,176 @@ export const Profile = () => {
   const displayStudentNumber = profile.studentNumber || user?.studentNumber || '—';
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in duration-500 pb-12">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-black text-gray-900 tracking-tight">Profil Bilgilerim</h1>
-          <p className="text-sm text-gray-500 font-medium mt-1">{activeClub?.name} bünyesindeki üyelik profiliniz</p>
-        </div>
+    <div className="max-w-5xl mx-auto space-y-8 pb-12">
+      {/* Header */}
+      <div className="pb-6 border-b border-gray-100">
+        <h1 className="text-3xl font-bold text-gray-900 tracking-tight">Profil Bilgilerim</h1>
+        <p className="text-gray-500 font-medium mt-1">
+          {activeClub?.name} bünyesindeki üyelik profiliniz
+        </p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Left: Avatar & Summary */}
+        {/* Profile Summary Sidebar */}
         <div className="space-y-6">
-          <div className="bg-white rounded-[2.5rem] p-8 border border-gray-100 shadow-xl shadow-gray-200/50 flex flex-col items-center text-center">
+          <Card className="flex flex-col items-center text-center">
             <div className="relative group mb-6">
-              <div className="w-32 h-32 rounded-[2.5rem] bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-4xl font-black shadow-lg shadow-indigo-200 overflow-hidden">
-                {profile.avatarUrl ? <img src={profile.avatarUrl} alt="Avatar" className="w-full h-full object-cover" /> : initial}
+              <div className="w-24 h-24 rounded-2xl bg-indigo-600 flex items-center justify-center text-white text-3xl font-bold shadow-lg shadow-indigo-100 overflow-hidden">
+                {profile.avatarUrl ? (
+                  <img src={profile.avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
+                ) : initial}
               </div>
-              <button className="absolute bottom-0 right-0 p-2.5 bg-white border border-gray-100 rounded-2xl shadow-lg text-indigo-600 hover:scale-110 transition-transform">
-                <Camera size={18} />
+              <button className="absolute -bottom-2 -right-2 p-2 bg-white border border-gray-200 rounded-lg shadow-sm text-indigo-600 hover:scale-110 transition-all">
+                <Camera size={16} />
               </button>
-            </div>
-            <h2 className="text-xl font-black text-gray-900 leading-tight">{displayName}</h2>
-            <div className="flex flex-col gap-1 mt-2">
-                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest flex items-center justify-center gap-1">
-                   <Mail size={10} /> {user?.email}
-                </p>
-                <p className="text-[10px] font-black text-indigo-500 uppercase tracking-widest flex items-center justify-center gap-1">
-                   <Hash size={10} /> No: {displayStudentNumber}
-                </p>
             </div>
             
-            <div className="mt-8 w-full space-y-3">
-               <div className="flex items-center justify-between p-3.5 bg-gray-50 rounded-2xl border border-gray-100">
-                  <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Yetki</span>
-                  <div className={`flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider ${rd.cls}`}>
-                    <RoleIcon size={12} />
-                    {rd.label}
-                  </div>
-               </div>
-               <div className="flex items-center justify-between p-3.5 bg-gray-50 rounded-2xl border border-gray-100">
-                  <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Durum</span>
-                  <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider ${activeMembershipStatus === 'active' ? 'bg-emerald-100 text-emerald-700 border border-emerald-200' : 'bg-gray-200 text-gray-600 border border-gray-300'}`}>
-                    {activeMembershipStatus === 'active' ? 'Aktif' : 'Pasif'}
-                  </span>
-               </div>
+            <h2 className="text-xl font-bold text-gray-900 truncate w-full">{displayName}</h2>
+            <div className="space-y-1 mt-2">
+              <p className="text-xs font-medium text-gray-400 flex items-center justify-center gap-1.5">
+                <Mail size={12} /> {user?.email}
+              </p>
+              <p className="text-xs font-bold text-indigo-600 flex items-center justify-center gap-1.5">
+                <Hash size={12} /> NO: {displayStudentNumber}
+              </p>
             </div>
-          </div>
 
-          <div className="bg-white rounded-[2rem] p-6 border border-gray-100 shadow-lg shadow-gray-200/40">
-             <h3 className="text-sm font-black text-gray-800 flex items-center gap-2 mb-4">
-                <Clock size={16} className="text-indigo-500" /> Hesap Özeti
-             </h3>
+            <div className="mt-8 w-full border-t border-gray-50 pt-6 space-y-3">
+              <div className="flex items-center justify-between text-xs">
+                <span className="font-bold text-gray-400 uppercase tracking-wider">Yetki</span>
+                <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full font-bold border ${rd.color}`}>
+                  <RoleIcon size={12} /> {rd.label.toUpperCase()}
+                </span>
+              </div>
+              <div className="flex items-center justify-between text-xs">
+                <span className="font-bold text-gray-400 uppercase tracking-wider">Durum</span>
+                <span className={`inline-flex items-center px-2.5 py-1 rounded-full font-bold border ${
+                  activeMembershipStatus === 'active' 
+                  ? 'bg-emerald-50 text-emerald-700 border-emerald-100' 
+                  : 'bg-gray-100 text-gray-600 border-gray-200'
+                }`}>
+                  {activeMembershipStatus === 'active' ? 'AKTİF' : 'PASİF'}
+                </span>
+              </div>
+            </div>
+          </Card>
+
+          <Card title="Hesap Özeti">
              <div className="space-y-4">
-                <div className="border-l-2 border-indigo-100 pl-4 relative">
-                   <div className="absolute w-2 h-2 rounded-full bg-indigo-500 -left-[5px] top-1"></div>
-                   <p className="text-xs font-black text-gray-800">Üyelik Kaydı</p>
-                   <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Doğrulandı</p>
+                <div className="flex items-start gap-3">
+                   <div className="mt-1 w-1.5 h-1.5 rounded-full bg-indigo-500 shadow-[0_0_8px_rgba(79,70,229,0.5)]"></div>
+                   <div>
+                      <p className="text-sm font-bold text-gray-800 leading-none">Üyelik Kaydı</p>
+                      <p className="text-[11px] text-gray-400 font-medium mt-1 uppercase tracking-tight">Doğrulandı</p>
+                   </div>
                 </div>
-                <div className="border-l-2 border-indigo-100 pl-4 relative">
-                   <div className="absolute w-2 h-2 rounded-full bg-gray-300 -left-[5px] top-1"></div>
-                   <p className="text-xs font-bold text-gray-500">Hesap Tipi</p>
-                   <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Öğrenci</p>
+                <div className="flex items-start gap-3">
+                   <div className="mt-1 w-1.5 h-1.5 rounded-full bg-gray-300"></div>
+                   <div>
+                      <p className="text-sm font-bold text-gray-800 leading-none">Hesap Tipi</p>
+                      <p className="text-[11px] text-gray-400 font-medium mt-1 uppercase tracking-tight">Üniversite Öğrencisi</p>
+                   </div>
+                </div>
+                <div className="flex items-start gap-3">
+                   <div className="mt-1 w-1.5 h-1.5 rounded-full bg-gray-300"></div>
+                   <div>
+                      <p className="text-sm font-bold text-gray-800 leading-none">Aktif Kulüp</p>
+                      <p className="text-[11px] text-gray-400 font-medium mt-1 uppercase tracking-tight truncate max-w-[160px]">{activeClub?.name}</p>
+                   </div>
                 </div>
              </div>
-          </div>
+          </Card>
         </div>
 
-        {/* Right: Form */}
+        {/* Edit Profile Form */}
         <div className="lg:col-span-2">
-          <form onSubmit={handleSave} className="bg-white rounded-[2.5rem] p-8 md:p-10 border border-gray-100 shadow-xl shadow-gray-200/50 space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <label className="text-sm font-black text-gray-700 ml-1 flex items-center gap-2">
-                  <User size={14} className="text-indigo-500" /> Ad Soyad
-                </label>
-                <input 
-                  value={profile.fullName}
-                  onChange={e => setProfile({...profile, fullName: e.target.value})}
-                  placeholder="Ali Yılmaz" 
-                  className="w-full px-5 py-3.5 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:bg-white outline-none transition-all font-semibold"
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-black text-gray-700 ml-1 flex items-center gap-2">
-                  <Hash size={14} className="text-indigo-500" /> Öğrenci Numarası
-                </label>
-                <input 
-                  value={profile.studentNumber}
-                  onChange={e => setProfile({...profile, studentNumber: e.target.value})}
-                  placeholder="202101001" 
-                  className="w-full px-5 py-3.5 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:bg-white outline-none transition-all font-semibold"
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <label className="text-sm font-black text-gray-700 ml-1 flex items-center gap-2">
-                  <Phone size={14} className="text-indigo-500" /> Telefon
-                </label>
-                <input 
-                  value={profile.phone}
-                  onChange={e => setProfile({...profile, phone: e.target.value})}
-                  placeholder="05xx ..." 
-                  className="w-full px-5 py-3.5 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:bg-white outline-none transition-all font-semibold"
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-black text-gray-700 ml-1 flex items-center gap-2">
-                  <BookOpen size={14} className="text-indigo-500" /> Bölüm
-                </label>
-                <input 
-                  value={profile.department}
-                  onChange={e => setProfile({...profile, department: e.target.value})}
-                  placeholder="Bilgisayar Mühendisliği" 
-                  className="w-full px-5 py-3.5 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:bg-white outline-none transition-all font-semibold"
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <label className="text-sm font-black text-gray-700 ml-1 flex items-center gap-2">
-                  <GraduationCap size={14} className="text-indigo-500" /> Sınıf
-                </label>
-                <select 
-                  value={profile.classYear}
-                  onChange={e => setProfile({...profile, classYear: e.target.value})}
-                  className="w-full px-5 py-3.5 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:bg-white outline-none transition-all font-semibold"
-                >
-                  <option value="">Seçiniz</option>
-                  {[1,2,3,4,5,6].map(y => <option key={y} value={y}>{y}. Sınıf</option>)}
-                  <option value="99">Mezun</option>
-                </select>
-              </div>
-            </div>
-
-            <div className="p-6 bg-indigo-50/50 rounded-[2rem] border border-indigo-100 space-y-4">
-               <h3 className="text-xs font-black text-indigo-600 uppercase tracking-widest px-1">Hesap Bilgileri (Sistem)</h3>
-               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-1">
-                     <p className="text-[10px] font-black text-gray-400 uppercase ml-1">Kayıtlı E-posta</p>
-                     <div className="px-5 py-3 bg-white border border-gray-100 rounded-xl text-sm font-bold text-gray-500 flex items-center gap-2">
-                        <Mail size={14} /> {user?.email}
-                     </div>
-                  </div>
-               </div>
-            </div>
-
-            <div className="pt-4 flex items-center gap-4">
-              <button 
-                type="submit" 
-                disabled={saving}
-                className="flex-1 py-4 bg-indigo-600 text-white rounded-2xl text-base font-black shadow-lg shadow-indigo-200 hover:bg-indigo-700 hover:scale-[1.01] active:scale-95 disabled:opacity-70 transition-all flex items-center justify-center gap-2"
-              >
-                {saving ? 'Kaydediliyor...' : (
-                  <>
-                    <Save size={18} /> Profilimi Güncelle
-                  </>
-                )}
-              </button>
-              
-              {success && (
-                <div className="flex items-center gap-2 text-emerald-500 animate-in slide-in-from-left-2 duration-300">
-                  <CheckCircle2 size={24} />
-                  <span className="text-xs font-black uppercase tracking-widest">Başarılı</span>
+          <Card noPadding>
+            <div className="p-8">
+              <form onSubmit={handleSave} className="space-y-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <Input 
+                    label="Ad Soyad"
+                    value={profile.fullName}
+                    onChange={e => setProfile({...profile, fullName: e.target.value})}
+                    placeholder="Ali Yılmaz" 
+                    icon={User}
+                  />
+                  <Input 
+                    label="Öğrenci Numarası"
+                    value={profile.studentNumber}
+                    onChange={e => setProfile({...profile, studentNumber: e.target.value})}
+                    placeholder="202101001" 
+                    icon={Hash}
+                  />
                 </div>
-              )}
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <Input 
+                    label="Telefon Numarası"
+                    value={profile.phone}
+                    onChange={e => setProfile({...profile, phone: e.target.value})}
+                    placeholder="05xx ..." 
+                    icon={Phone}
+                  />
+                  <Input 
+                    label="Bölüm / Fakülte"
+                    value={profile.department}
+                    onChange={e => setProfile({...profile, department: e.target.value})}
+                    placeholder="Bilgisayar Mühendisliği" 
+                    icon={BookOpen}
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-1.5">
+                    <label className="text-sm font-bold text-gray-700 flex items-center gap-2">
+                      <GraduationCap size={14} className="text-gray-400" /> Sınıf
+                    </label>
+                    <select 
+                      value={profile.classYear}
+                      onChange={e => setProfile({...profile, classYear: e.target.value})}
+                      className="w-full px-3 py-2 text-sm bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-medium"
+                    >
+                      <option value="">Seçiniz...</option>
+                      {[1,2,3,4,5,6].map(y => <option key={y} value={y}>{y}. Sınıf</option>)}
+                      <option value="99">Mezun</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="p-5 bg-gray-50 rounded-xl border border-gray-100 flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-white border border-gray-200 flex items-center justify-center text-gray-400 shadow-sm">
+                      <Building2 size={18} />
+                    </div>
+                    <div>
+                      <p className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Sistem E-postası</p>
+                      <p className="text-sm font-bold text-gray-700">{user?.email}</p>
+                    </div>
+                  </div>
+                  <span className="text-[10px] font-bold text-gray-400 bg-white px-2 py-1 rounded-md border border-gray-200 shadow-sm">DEĞİŞTİRİLEMEZ</span>
+                </div>
+
+                <div className="pt-4 flex items-center gap-6 border-t border-gray-100">
+                  <Button 
+                    type="submit" 
+                    loading={saving}
+                    className="px-10 py-2.5 rounded-xl font-bold"
+                    icon={Save}
+                  >
+                    Profilimi Güncelle
+                  </Button>
+                  
+                  {success && (
+                    <div className="flex items-center gap-2 text-emerald-600 animate-fade-in">
+                      <CheckCircle2 size={20} />
+                      <span className="text-xs font-bold uppercase tracking-wider">Güncellendi</span>
+                    </div>
+                  )}
+                </div>
+              </form>
             </div>
-          </form>
+          </Card>
         </div>
       </div>
     </div>
