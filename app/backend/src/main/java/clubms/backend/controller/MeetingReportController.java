@@ -127,6 +127,8 @@ public class MeetingReportController {
 
                 meeting.setContent(reportData.getContent());
                 meeting.setAttendees(reportData.getAttendees());
+                meeting.setFileName(reportData.getFileName());
+                meeting.setFileData(reportData.getFileData());
                 meeting.setStatus("RAPORLANDI");
                 return ResponseEntity.ok(meetingReportService.saveReport(meeting));
             }).orElse(ResponseEntity.<MeetingReport>notFound().build());

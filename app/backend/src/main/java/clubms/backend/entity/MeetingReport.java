@@ -43,6 +43,12 @@ public class MeetingReport {
     @Column(columnDefinition = "TEXT")
     private String attendees; // comma separated or simplified JSON
 
+    @Column(name = "file_name")
+    private String fileName;
+
+    @Column(name = "file_data", columnDefinition = "TEXT")
+    private String fileData;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
@@ -72,6 +78,10 @@ public class MeetingReport {
     public void setStatus(String status) { this.status = status; }
     public String getAttendees() { return attendees; }
     public void setAttendees(String attendees) { this.attendees = attendees; }
+    public String getFileName() { return fileName; }
+    public void setFileName(String fileName) { this.fileName = fileName; }
+    public String getFileData() { return fileData; }
+    public void setFileData(String fileData) { this.fileData = fileData; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 }

@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { useClub } from '../../store/ClubContext';
 import { useAuth } from '../../store/AuthContext';
 import api from '../../services/api';
-import { Plus, BookOpen, Trash2, Calendar, Users, X, MapPin, Tag, FileText, CheckCircle, Megaphone } from 'lucide-react';
+import { Plus, BookOpen, Trash2, Calendar, Users, X, MapPin, Tag, FileText, CheckCircle, Megaphone, Download, Upload } from 'lucide-react';
 
 export const Meetings = ({ view }) => {
   const { activeClub, activeRole, activeMembershipId } = useClub();
@@ -13,6 +13,7 @@ export const Meetings = ({ view }) => {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [reportingMeeting, setReportingMeeting] = useState(null); 
+  const [selectedFile, setSelectedFile] = useState(null);
   
   const [form, setForm] = useState({ 
     title: '', content: '', meetingDate: '', attendees: '', location: '', type: 'GENEL', teamId: '' 
@@ -29,7 +30,6 @@ export const Meetings = ({ view }) => {
     if (!activeClub?.id) return;
     setLoading(true);
     try {
-      // Sadece gerekli olan temel verileri çekiyoruz
       const [mRes, tRes] = await Promise.all([
         api.get(`/clubs/${activeClub.id}/meetings`),
         api.get(`/clubs/${activeClub.id}/teams`)
@@ -45,6 +45,41 @@ export const Meetings = ({ view }) => {
 
   useEffect(() => { fetchData(); }, [fetchData]);
 
+  const openReportForm = (m) => {
+    setReportingMeeting(m);
+    setForm({ ...form, content: '', attendees: '' });
+    setSelectedFile(null);
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file && file.type === 'application/pdf') {
+      setSelectedFile(file);
+    } else {
+      alert('Lütfen sadece PDF dosyası seçin.');
+      e.target.value = null;
+    }
+  };
+
+  const fileToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = error => reject(error);
+    });
+  };
+
+  const downloadPDF = (meeting) => {
+    if (!meeting.fileData) return;
+    const link = document.createElement('a');
+    link.href = meeting.fileData;
+    link.download = meeting.fileName || `${meeting.title}_raporu.pdf`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   // Ekip Liderinin kendi ekibini seçebildiği o meşhur filtre (Projects.jsx ile aynı)
   const selectableTeams = useMemo(() => {
     if (isAdmin) return teams;
@@ -58,12 +93,9 @@ export const Meetings = ({ view }) => {
 
     if (isAdmin) return baseMeetings;
 
-    // Üyeler ve Liderler için: GENEL toplantılar + Kendi ekiplerinin toplantıları
     return baseMeetings.filter(m => {
       if (m.type === 'GENEL') return true;
       if (m.type === 'EKIP' && m.team) {
-        // Kullanıcının bu ekibin içinde (üye veya lider) olup olmadığını kontrol et
-        // Backend'den gelen ekip listesinde bu kontrolü yapıyoruz
         return teams.some(t => t.id === m.team.id);
       }
       return false;
@@ -99,8 +131,19 @@ export const Meetings = ({ view }) => {
     e.preventDefault();
     setSaving(true);
     try {
+      let fileData = null;
+      let fileName = null;
+
+      if (selectedFile) {
+        fileData = await fileToBase64(selectedFile);
+        fileName = selectedFile.name;
+      }
+
       await api.put(`/clubs/${activeClub.id}/meetings/${reportingMeeting.id}/report`, {
-        content: form.content, attendees: form.attendees
+        content: form.content, 
+        attendees: form.attendees,
+        fileData,
+        fileName
       });
       setReportingMeeting(null);
       fetchData();
@@ -180,7 +223,27 @@ export const Meetings = ({ view }) => {
             </div>
             <form onSubmit={handleAddReport} className="p-6 space-y-4">
               <input required placeholder="Katılımcılar" value={form.attendees} onChange={e => setForm({...form, attendees: e.target.value})} className="w-full border border-gray-100 bg-gray-50 rounded-xl px-4 py-3 text-sm outline-none" />
-              <textarea required placeholder="Notlar / Kararlar" rows={6} value={form.content} onChange={e => setForm({...form, content: e.target.value})} className="w-full border border-gray-100 bg-gray-50 rounded-xl px-4 py-3 text-sm outline-none" />
+              <textarea placeholder="Notlar / Kararlar (Opsiyonel)" rows={4} value={form.content} onChange={e => setForm({...form, content: e.target.value})} className="w-full border border-gray-100 bg-gray-50 rounded-xl px-4 py-3 text-sm outline-none" />
+              
+              <div className="space-y-2">
+                <label className="text-[11px] font-bold text-gray-400 uppercase tracking-widest px-1">PDF Rapor Yükle</label>
+                <div className="relative group">
+                  <input 
+                    type="file" 
+                    accept=".pdf" 
+                    onChange={handleFileChange}
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" 
+                  />
+                  <div className="border-2 border-dashed border-gray-100 group-hover:border-emerald-200 bg-gray-50 rounded-2xl p-6 transition-all flex flex-col items-center gap-2">
+                    <Upload className="text-gray-300 group-hover:text-emerald-500 transition-colors" size={24} />
+                    <span className="text-sm font-medium text-gray-500 group-hover:text-emerald-600">
+                      {selectedFile ? selectedFile.name : 'Dosya Seçin veya Sürükleyin'}
+                    </span>
+                    <span className="text-[10px] text-gray-400">Sadece PDF (Maks 10MB)</span>
+                  </div>
+                </div>
+              </div>
+
               <button type="submit" disabled={saving} className="w-full py-3 bg-emerald-600 text-white rounded-xl text-sm font-bold hover:bg-emerald-700 transition">
                 {saving ? 'Kaydediliyor...' : 'Raporu Tamamla'}
               </button>
@@ -210,6 +273,11 @@ export const Meetings = ({ view }) => {
                       <FileText size={12} /> Rapor Yaz
                     </button>
                   )}
+                  {m.fileData && (
+                    <button onClick={() => downloadPDF(m)} className="flex items-center gap-1 px-3 py-1.5 bg-indigo-50 text-indigo-600 rounded-xl text-[10px] font-bold uppercase hover:bg-indigo-100 transition">
+                      <Download size={12} /> PDF İndir
+                    </button>
+                  )}
                   {isAdmin && <button onClick={() => handleDelete(m.id)} className="p-2 text-gray-300 hover:text-red-500 transition"><Trash2 size={16} /></button>}
                 </div>
               </div>
@@ -226,7 +294,13 @@ export const Meetings = ({ view }) => {
                 {m.status === 'RAPORLANDI' && (
                   <div className="pt-4 border-t border-gray-50 space-y-2">
                     <p className="text-[10px] font-bold text-emerald-600 uppercase tracking-widest">Katılımcılar: <span className="text-gray-500 normal-case">{m.attendees}</span></p>
-                    <div className="p-4 bg-gray-50 rounded-2xl text-[13px] text-gray-600 italic line-clamp-3">{m.content}</div>
+                    {m.content && <div className="p-4 bg-gray-50 rounded-2xl text-[13px] text-gray-600 italic line-clamp-3">{m.content}</div>}
+                    {m.fileData && (
+                      <div className="flex items-center gap-2 p-3 bg-indigo-50/50 rounded-2xl border border-indigo-100">
+                        <FileText size={16} className="text-indigo-500" />
+                        <span className="text-[11px] font-bold text-indigo-700 truncate">{m.fileName || 'Rapor.pdf'}</span>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
