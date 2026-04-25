@@ -40,7 +40,7 @@ public class EventController {
     }
 
     @PostMapping
-    public ResponseEntity<Event> createEvent(@PathVariable Long clubId, @RequestBody Event event) {
+    public ResponseEntity<?> createEvent(@PathVariable Long clubId, @RequestBody Event event) {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         boolean isAuthorized = false;
         if (principal instanceof UserPrincipal) {
@@ -57,8 +57,15 @@ public class EventController {
         }
 
         return clubService.getClubById(clubId).map(club -> {
-            event.setClub(club);
-            return ResponseEntity.ok(eventService.createEvent(event));
+            try {
+                event.setClub(club);
+                return ResponseEntity.ok(eventService.createEvent(event));
+            } catch (RuntimeException e) {
+                if (e.getMessage().contains("COLLISION")) {
+                    return ResponseEntity.status(409).body("Bu konumda ve saatte (veya çok yakınında) başka bir etkinlik zaten planlanmış. Lütfen farklı bir saat veya mekan seçiniz.");
+                }
+                return ResponseEntity.badRequest().body(e.getMessage());
+            }
         }).orElse(ResponseEntity.notFound().build());
     }
 

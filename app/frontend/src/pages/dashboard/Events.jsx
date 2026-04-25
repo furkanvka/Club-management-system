@@ -212,7 +212,10 @@ export const Events = () => {
       setForm(EMPTY_FORM);
       setShowForm(false);
       fetchEvents();
-    } catch (e) { alert(e.response?.data || 'Hata.'); }
+    } catch (e) { 
+      const msg = e.response?.data || 'Etkinlik oluşturulurken bir hata oluştu.';
+      alert(msg); 
+    }
     setSaving(false);
   };
 

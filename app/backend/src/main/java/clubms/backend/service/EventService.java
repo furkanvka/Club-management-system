@@ -5,6 +5,7 @@ import clubms.backend.repository.EventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -43,16 +44,22 @@ public class EventService {
     public boolean hasCollision(Event event) {
         if (event.getEventDate() == null || event.getLocation() == null) return false;
         
-        // Find all events on the same day and location (simplified check)
+        LocalDateTime newStart = event.getEventDate();
+        // Assume each event takes roughly 2 hours for collision checking
+        LocalDateTime newEnd = newStart.plusHours(2);
+
         List<Event> allEvents = eventRepository.findAll();
         return allEvents.stream()
-            .filter(e -> !e.getId().equals(event.getId())) // exclude current event
-            .anyMatch(e -> 
-                e.getEventDate() != null && 
-                e.getEventDate().toLocalDate().equals(event.getEventDate().toLocalDate()) &&
-                e.getLocation() != null &&
-                e.getLocation().equalsIgnoreCase(event.getLocation())
-            );
+            .filter(e -> e.getId() != null && !e.getId().equals(event.getId()))
+            .filter(e -> e.getLocation() != null && e.getLocation().equalsIgnoreCase(event.getLocation()))
+            .anyMatch(e -> {
+                LocalDateTime existingStart = e.getEventDate();
+                if (existingStart == null) return false;
+                LocalDateTime existingEnd = existingStart.plusHours(2);
+                
+                // Check for overlap: (StartA < EndB) and (EndA > StartB)
+                return newStart.isBefore(existingEnd) && newEnd.isAfter(existingStart);
+            });
     }
 
     public Event createEvent(Event event) {
