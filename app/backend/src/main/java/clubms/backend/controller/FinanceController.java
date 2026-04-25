@@ -55,4 +55,10 @@ public class FinanceController {
             return ResponseEntity.ok(financeService.createTransaction(transaction));
         }).orElse(ResponseEntity.notFound().build());
     }
+
+    @DeleteMapping("/{transactionId}")
+    public ResponseEntity<Void> deleteTransaction(@PathVariable Long clubId, @PathVariable Long transactionId) {
+        financeService.deleteTransaction(transactionId);
+        return ResponseEntity.noContent().build();
+    }
 }

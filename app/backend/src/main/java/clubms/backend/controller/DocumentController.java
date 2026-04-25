@@ -28,22 +28,55 @@ public class DocumentController {
     @GetMapping
     public ResponseEntity<List<Document>> getDocuments(@PathVariable Long clubId) {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        boolean isManager = false;
+        boolean isBaskan = false;
+        boolean isStaff = false;
+        
         if (principal instanceof UserPrincipal) {
             UserPrincipal up = (UserPrincipal) principal;
-            if (up.getId() < 0) isManager = true; // Club login
-            else {
-                isManager = memberService.getMembershipsByUserId(up.getId()).stream()
+            if (up.getId() < 0) {
+                isBaskan = true;
+                isStaff = true;
+            } else {
+                List<clubms.backend.entity.Membership> memberships = memberService.getMembershipsByUserId(up.getId());
+                isBaskan = memberships.stream()
+                    .anyMatch(m -> m.getClub().getId().equals(clubId) && "baskan".equalsIgnoreCase(m.getRole()));
+                
+                isStaff = memberships.stream()
                     .anyMatch(m -> m.getClub().getId().equals(clubId) && 
-                              ("baskan".equalsIgnoreCase(m.getRole()) || (m.getFlags() != null && m.getFlags().contains("\"docs\":true"))));
+                              ("baskan".equalsIgnoreCase(m.getRole()) || 
+                               "ekip_lideri".equalsIgnoreCase(m.getRole()) || 
+                               "ekip_uyesi".equalsIgnoreCase(m.getRole()) ||
+                               (m.getFlags() != null && m.getFlags().contains("\"docs\":true"))));
             }
         }
 
+        final boolean baskanRole = isBaskan;
+        final boolean staffRole = isStaff;
+
         List<Document> allDocs = documentService.getDocumentsByClubId(clubId);
-        if (isManager) return ResponseEntity.ok(allDocs);
         
         return ResponseEntity.ok(allDocs.stream()
-            .filter(d -> "APPROVED".equalsIgnoreCase(d.getApprovalStatus()))
+            .filter(d -> {
+                // Onaylanmamışlar sadece staff'a
+                if (!"APPROVED".equalsIgnoreCase(d.getApprovalStatus()) && !staffRole) return false;
+                
+                String cat = d.getCategory();
+                if (cat == null) cat = "Diğer";
+
+                // Kategori bazlı yetkilendirme
+                if ("Resmi".equalsIgnoreCase(cat) || "Finans".equalsIgnoreCase(cat)) {
+                    return baskanRole;
+                }
+                if ("Etkinlik".equalsIgnoreCase(cat) || "Proje".equalsIgnoreCase(cat)) {
+                    return staffRole;
+                }
+                if ("Public".equalsIgnoreCase(cat)) {
+                    return true;
+                }
+                
+                // Diğer kategoriler (Şablon, Diğer vb.) varsayılan olarak staff görsün
+                return staffRole;
+            })
             .collect(Collectors.toList()));
     }
 
@@ -112,14 +145,26 @@ public class DocumentController {
             .map(doc -> {
                 if (doc.getFileData() == null) return ResponseEntity.notFound().<byte[]>build();
                 try {
-                    String base64Data = doc.getFileData();
-                    if (base64Data.contains(",")) {
-                        base64Data = base64Data.split(",")[1];
+                    String fullData = doc.getFileData();
+                    String base64Data = fullData;
+                    String contentType = "application/pdf";
+                    String extension = "pdf";
+
+                    if (fullData.contains(",")) {
+                        String prefix = fullData.split(",")[0];
+                        base64Data = fullData.split(",")[1];
+                        
+                        if (prefix.contains("image/png")) { contentType = "image/png"; extension = "png"; }
+                        else if (prefix.contains("image/jpeg")) { contentType = "image/jpeg"; extension = "jpg"; }
+                        else if (prefix.contains("image/gif")) { contentType = "image/gif"; extension = "gif"; }
+                        else if (prefix.contains("image/webp")) { contentType = "image/webp"; extension = "webp"; }
+                        else if (prefix.contains("application/pdf")) { contentType = "application/pdf"; extension = "pdf"; }
                     }
+
                     byte[] data = java.util.Base64.getDecoder().decode(base64Data);
                     return ResponseEntity.ok()
-                        .header(org.springframework.http.HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + doc.getTitle() + ".pdf\"")
-                        .contentType(org.springframework.http.MediaType.APPLICATION_PDF)
+                        .header(org.springframework.http.HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + doc.getTitle() + "." + extension + "\"")
+                        .contentType(org.springframework.http.MediaType.parseMediaType(contentType))
                         .body(data);
                 } catch (Exception e) {
                     return ResponseEntity.internalServerError().<byte[]>build();

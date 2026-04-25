@@ -33,6 +33,9 @@ public class Transaction {
     @Column(name = "receipt_url")
     private String receiptUrl;
 
+    @Column(name = "receipt_data", columnDefinition = "TEXT")
+    private String receiptData;
+
     @Column(name = "transaction_date")
     private LocalDate transactionDate;
 
@@ -64,6 +67,8 @@ public class Transaction {
     public void setDescription(String description) { this.description = description; }
     public String getReceiptUrl() { return receiptUrl; }
     public void setReceiptUrl(String receiptUrl) { this.receiptUrl = receiptUrl; }
+    public String getReceiptData() { return receiptData; }
+    public void setReceiptData(String receiptData) { this.receiptData = receiptData; }
     public LocalDate getTransactionDate() { return transactionDate; }
     public void setTransactionDate(LocalDate transactionDate) { this.transactionDate = transactionDate; }
     public Membership getCreatedBy() { return createdBy; }

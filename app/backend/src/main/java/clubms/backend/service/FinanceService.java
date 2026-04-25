@@ -20,4 +20,8 @@ public class FinanceService {
     public Transaction createTransaction(Transaction transaction) {
         return transactionRepository.save(transaction);
     }
+
+    public void deleteTransaction(Long id) {
+        transactionRepository.deleteById(id);
+    }
 }

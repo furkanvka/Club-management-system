@@ -137,7 +137,7 @@ const PresidentDashboard = ({ activeClub, loginType, activeRole, activeMembershi
 };
 
 // ─── Öğrenci / Üye Dashboard ───────────────────────────────────────────────
-const MemberDashboard = ({ activeClub, user, activeMembershipId }) => {
+const MemberDashboard = ({ activeClub, user, activeMembershipId, activeRole }) => {
   const navigate = useNavigate();
   const [myTasks, setMyTasks] = useState([]);
   const [loadingTasks, setLoadingTasks] = useState(true);
@@ -248,5 +248,5 @@ export const DashboardHome = () => {
     return <PresidentDashboard activeClub={activeClub} loginType={loginType} activeRole={activeRole} activeMembershipId={activeMembershipId} />;
   }
 
-  return <MemberDashboard activeClub={activeClub} user={user} activeMembershipId={activeMembershipId} />;
+  return <MemberDashboard activeClub={activeClub} user={user} activeMembershipId={activeMembershipId} activeRole={activeRole} />;
 };
