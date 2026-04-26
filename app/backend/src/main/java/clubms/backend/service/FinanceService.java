@@ -22,6 +22,9 @@ public class FinanceService {
     }
 
     public void deleteTransaction(Long id) {
-        transactionRepository.deleteById(id);
+        transactionRepository.findById(id).ifPresent(t -> {
+            t.setStatus("cancelled");
+            transactionRepository.save(t);
+        });
     }
 }

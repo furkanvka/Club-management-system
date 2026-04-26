@@ -15,7 +15,8 @@ import {
   Calendar as CalendarIcon, 
   Tag, 
   Filter,
-  Receipt
+  Receipt,
+  Ban
 } from 'lucide-react';
 import { Card } from '../../components/common/Card';
 import { Button } from '../../components/common/Button';
@@ -93,11 +94,11 @@ export const Finance = () => {
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm('Bu işlemi silmek istediğinize emin misiniz?')) return;
+    if (!window.confirm('Bu işlemi iptal etmek istediğinize emin misiniz? Bu işlem geri alınamaz ve kayıtlarda "İptal Edildi" olarak kalacaktır.')) return;
     try {
       await api.delete(`/clubs/${activeClub.id}/transactions/${id}`);
       fetchTx();
-    } catch (e) { alert('Silinemedi.'); }
+    } catch (e) { alert('İşlem iptal edilemedi.'); }
   };
 
   const handleCreate = async (e) => {
@@ -120,8 +121,9 @@ export const Finance = () => {
     } finally { setSaving(false); }
   };
 
-  const income = transactions.filter(t => t.type === 'income').reduce((s, t) => s + Number(t.amount), 0);
-  const expense = transactions.filter(t => t.type === 'expense').reduce((s, t) => s + Number(t.amount), 0);
+  const activeTransactions = transactions.filter(t => t.status !== 'cancelled');
+  const income = activeTransactions.filter(t => t.type === 'income').reduce((s, t) => s + Number(t.amount), 0);
+  const expense = activeTransactions.filter(t => t.type === 'expense').reduce((s, t) => s + Number(t.amount), 0);
   const balance = income - expense;
 
   const fmt = (n) => '₺' + Number(n).toLocaleString('tr-TR', { minimumFractionDigits: 2 });
@@ -211,61 +213,72 @@ export const Finance = () => {
           data={filteredTransactions}
           loading={loading}
           emptyMessage="Kayıtlı finansal işlem bulunamadı."
-          renderRow={(t) => (
-            <>
-              <TableCell>
-                <div className="flex items-center gap-2 text-gray-500 font-medium text-xs">
-                  <CalendarIcon size={14} className="text-gray-300" />
-                  {t.transactionDate ? new Date(t.transactionDate).toLocaleDateString('tr-TR') : '—'}
-                </div>
-              </TableCell>
-              <TableCell>
-                <p className="font-bold text-gray-900">{t.description}</p>
-              </TableCell>
-              <TableCell>
-                {t.category ? (
-                  <span className="inline-flex items-center gap-1 text-[11px] font-bold text-gray-500 bg-gray-100 px-2 py-0.5 rounded-md">
-                    <Tag size={10} /> {t.category.toUpperCase()}
+          renderRow={(t) => {
+            const isCancelled = t.status === 'cancelled';
+            return (
+              <tr className={isCancelled ? 'opacity-50 grayscale-[0.5]' : ''}>
+                <TableCell>
+                  <div className="flex items-center gap-2 text-gray-500 font-medium text-xs">
+                    <CalendarIcon size={14} className="text-gray-300" />
+                    {t.transactionDate ? new Date(t.transactionDate).toLocaleDateString('tr-TR') : '—'}
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <div className="flex items-center gap-2">
+                    <p className={`font-bold ${isCancelled ? 'text-gray-400 line-through' : 'text-gray-900'}`}>{t.description}</p>
+                    {isCancelled && (
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[9px] font-black bg-gray-200 text-gray-600 tracking-tighter">
+                        <Ban size={10} /> İPTAL EDİLDİ
+                      </span>
+                    )}
+                  </div>
+                </TableCell>
+                <TableCell>
+                  {t.category ? (
+                    <span className="inline-flex items-center gap-1 text-[11px] font-bold text-gray-500 bg-gray-100 px-2 py-0.5 rounded-md">
+                      <Tag size={10} /> {t.category.toUpperCase()}
+                    </span>
+                  ) : <span className="text-gray-300">—</span>}
+                </TableCell>
+                <TableCell>
+                  <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold border ${
+                    isCancelled ? 'bg-gray-50 text-gray-400 border-gray-100' :
+                    t.type === 'income' 
+                    ? 'bg-emerald-50 text-emerald-700 border-emerald-100' 
+                    : 'bg-rose-50 text-rose-700 border-rose-100'
+                  }`}>
+                    <div className={`w-1.5 h-1.5 rounded-full ${isCancelled ? 'bg-gray-300' : t.type === 'income' ? 'bg-emerald-500' : 'bg-rose-500'}`} />
+                    {t.type === 'income' ? 'GELİR' : 'GİDER'}
                   </span>
-                ) : <span className="text-gray-300">—</span>}
-              </TableCell>
-              <TableCell>
-                <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold border ${
-                  t.type === 'income' 
-                  ? 'bg-emerald-50 text-emerald-700 border-emerald-100' 
-                  : 'bg-rose-50 text-rose-700 border-rose-100'
-                }`}>
-                  <div className={`w-1.5 h-1.5 rounded-full ${t.type === 'income' ? 'bg-emerald-500' : 'bg-rose-500'}`} />
-                  {t.type === 'income' ? 'GELİR' : 'GİDER'}
-                </span>
-              </TableCell>
-              <TableCell className={`text-right font-bold ${t.type === 'income' ? 'text-emerald-600' : 'text-rose-600'}`}>
-                {t.type === 'income' ? '+' : '-'}{fmt(t.amount)}
-              </TableCell>
-              <TableCell className="text-right">
-                 <div className="flex justify-end gap-1">
-                    {t.receiptData && (
-                      <button 
-                        onClick={() => setPreviewReceipt(t)} 
-                        className="p-2 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all"
-                        title="Fişi Görüntüle"
-                      >
-                         <Receipt size={18} />
-                      </button>
-                    )}
-                    {canManage && (
-                      <button 
-                        onClick={() => handleDelete(t.id)} 
-                        className="p-2 text-gray-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-all"
-                        title="Sil"
-                      >
-                         <Trash2 size={18} />
-                      </button>
-                    )}
-                 </div>
-              </TableCell>
-            </>
-          )}
+                </TableCell>
+                <TableCell className={`text-right font-bold ${isCancelled ? 'text-gray-400 line-through' : t.type === 'income' ? 'text-emerald-600' : 'text-rose-600'}`}>
+                  {t.type === 'income' ? '+' : '-'}{fmt(t.amount)}
+                </TableCell>
+                <TableCell className="text-right">
+                  <div className="flex justify-end gap-1">
+                      {t.receiptData && (
+                        <button 
+                          onClick={() => setPreviewReceipt(t)} 
+                          className="p-2 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all"
+                          title="Fişi Görüntüle"
+                        >
+                          <Receipt size={18} />
+                        </button>
+                      )}
+                      {canManage && !isCancelled && (
+                        <button 
+                          onClick={() => handleDelete(t.id)} 
+                          className="p-2 text-gray-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-all"
+                          title="İşlemi İptal Et"
+                        >
+                          <Ban size={18} />
+                        </button>
+                      )}
+                  </div>
+                </TableCell>
+              </tr>
+            );
+          }}
         />
       </Card>
 

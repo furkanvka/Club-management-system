@@ -62,10 +62,40 @@ public class TeamController {
     }
 
     @GetMapping("/{teamId}/members/{membershipId}/history")
-    public ResponseEntity<Map<String, Object>> getMemberHistory(@PathVariable Long clubId, @PathVariable Long teamId, @PathVariable Long membershipId) {
+    public ResponseEntity<Map<String, Object>> getMemberHistory(@PathVariable Long clubId, @PathVariable Long teamId, @PathVariable Long membershipId, @RequestParam(required = false) Long requesterId) {
+        
+        // 1. Yetki Kontrolü
+        org.springframework.security.core.Authentication auth = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
+        boolean isFullAccess = (auth != null && auth.getAuthorities().stream().anyMatch(a -> 
+            a.getAuthority().equals("ROLE_CLUB") || a.getAuthority().equals("ROLE_ADMIN"))) || isRequesterBaskan(requesterId);
+
+        // 2. Global Görünüm (Üyeler Sayfası): Sadece Başkan/Admin görebilir
+        if (teamId == 0) {
+            if (isFullAccess) {
+                return ResponseEntity.ok(teamService.getMemberHistory(teamId, membershipId, requesterId));
+            }
+            return ResponseEntity.status(403).build();
+        }
+
+        // 3. Ekip Görünümü (Ekipler Sayfası): Başkan/Admin VEYA Ekip Lideri görebilir
         return teamRepository.findByIdAndClubId(teamId, clubId)
-            .map(t -> ResponseEntity.ok(teamService.getMemberHistory(teamId, membershipId)))
+            .map(t -> {
+                boolean isTeamLeader = t.getLeader() != null && t.getLeader().getId().equals(requesterId);
+                if (isFullAccess || isTeamLeader) {
+                    return ResponseEntity.ok(teamService.getMemberHistory(teamId, membershipId, requesterId));
+                }
+                return ResponseEntity.status(403).<Map<String, Object>>build();
+            })
             .orElse(ResponseEntity.notFound().build());
+    }
+
+    @Autowired private clubms.backend.repository.MembershipRepository membershipRepository;
+    
+    private boolean isRequesterBaskan(Long requesterId) {
+        if (requesterId == null) return false;
+        return membershipRepository.findById(requesterId)
+            .map(m -> m.getRole() != null && m.getRole().toUpperCase().contains("BASKAN"))
+            .orElse(false);
     }
 
     @GetMapping("/{teamId}/meetings")

@@ -39,6 +39,8 @@ public class Transaction {
     @Column(name = "transaction_date")
     private LocalDate transactionDate;
 
+    private String status = "active"; // active, cancelled
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "created_by")
     @JsonIgnoreProperties({"club", "user", "hibernateLazyInitializer"})
@@ -71,6 +73,8 @@ public class Transaction {
     public void setReceiptData(String receiptData) { this.receiptData = receiptData; }
     public LocalDate getTransactionDate() { return transactionDate; }
     public void setTransactionDate(LocalDate transactionDate) { this.transactionDate = transactionDate; }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
     public Membership getCreatedBy() { return createdBy; }
     public void setCreatedBy(Membership createdBy) { this.createdBy = createdBy; }
     public LocalDateTime getCreatedAt() { return createdAt; }

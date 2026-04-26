@@ -97,17 +97,77 @@ public class TeamService {
         return teamMemberRepository.findByTeamId(teamId);
     }
 
+    @Autowired private EventRepository eventRepository;
+
     // Üyenin ekipteki geçmişini ve performansını getir
-    public Map<String, Object> getMemberHistory(Long teamId, Long membershipId) {
-        List<Task> memberTasks = taskRepository.findByAssignedToId(membershipId).stream()
-                .filter(t -> t.getProject().getTeam().getId().equals(teamId))
+    public Map<String, Object> getMemberHistory(Long teamId, Long membershipId, Long requesterId) {
+        boolean isGlobalPrivileged = false;
+        String requesterRole = "";
+
+        if (requesterId != null) {
+            Membership requester = membershipRepository.findById(requesterId).orElse(null);
+            if (requester != null && requester.getRole() != null) {
+                requesterRole = requester.getRole().toUpperCase();
+            }
+        }
+
+        // Güvenlik bağlamından rollerini kontrol et (Kulüp girişi veya Sistem Admini için)
+        org.springframework.security.core.Authentication auth = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null) {
+            isGlobalPrivileged = auth.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_CLUB") || a.getAuthority().equals("ROLE_ADMIN"));
+        }
+        
+        // Eğer rolünde BASKAN geçiyorsa global yetkilidir
+        if (requesterRole.contains("BASKAN")) {
+            isGlobalPrivileged = true;
+        }
+
+        List<Task> memberTasks = taskRepository.findByAssignedToId(membershipId);
+        
+        // FİLTRELEME MANTIĞI:
+        // Eğer global yetkili DEĞİLSE (yani bir ekip lideriyse), sadece o ekibe ait görevleri görsün.
+        if (!isGlobalPrivileged && teamId != 0) {
+            memberTasks = memberTasks.stream()
+                .filter(t -> t.getProject() != null && 
+                            t.getProject().getTeam() != null && 
+                            t.getProject().getTeam().getId().equals(teamId))
                 .collect(Collectors.toList());
+        }
+
+        // DETAYLI BİLGİLER (Ekipler ve Etkinlikler):
+        // Sadece Başkanlar/Adminler üyenin tüm ekiplerini ve etkinliklerini görsün.
+        List<Team> teams = new ArrayList<>();
+        List<Event> events = new ArrayList<>();
+        
+        if (isGlobalPrivileged) {
+            teams = teamMemberRepository.findByMembershipId(membershipId).stream()
+                    .map(TeamMember::getTeam)
+                    .distinct()
+                    .collect(Collectors.toList());
+            
+            events = eventRepository.findByResponsibleId(membershipId);
+            
+            List<Event> taskEvents = memberTasks.stream()
+                    .filter(t -> t.getEvent() != null)
+                    .map(Task::getEvent)
+                    .distinct()
+                    .collect(Collectors.toList());
+            
+            for (Event e : taskEvents) {
+                if (events.stream().noneMatch(existing -> existing.getId().equals(e.getId()))) {
+                    events.add(e);
+                }
+            }
+        }
 
         long completedCount = memberTasks.stream().filter(t -> "completed".equals(t.getStatus())).count();
         long totalCount = memberTasks.size();
         
         Map<String, Object> history = new HashMap<>();
         history.put("tasks", memberTasks);
+        history.put("teams", teams);
+        history.put("events", events);
         history.put("totalTasks", totalCount);
         history.put("completedTasks", completedCount);
         history.put("performanceScore", totalCount == 0 ? 0 : (completedCount * 100) / totalCount);

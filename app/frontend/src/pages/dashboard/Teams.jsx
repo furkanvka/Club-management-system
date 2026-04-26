@@ -62,7 +62,9 @@ export const Teams = () => {
   };
 
   const fetchMemberHistory = (membershipId) => {
-    api.get(`/clubs/${activeClub.id}/teams/${selectedTeam.id}/members/${membershipId}/history`)
+    api.get(`/clubs/${activeClub.id}/teams/${selectedTeam.id}/members/${membershipId}/history`, {
+        params: { requesterId: activeMembershipId }
+    })
         .then(r => setSelectedMemberHistory(r.data))
         .catch(() => alert("Üye geçmişi getirilemedi."));
   };
@@ -132,7 +134,7 @@ export const Teams = () => {
     }
   };
 
-  const isLeaderOfSelectedTeam = Number(selectedTeam?.leader?.id) === Number(activeMembershipId);
+  const isLeaderOfSelectedTeam = Number(selectedTeam?.leader?.id) === Number(activeMembershipId) || isAdmin;
 
   return (
     <div className="space-y-8 max-w-7xl mx-auto">
@@ -353,11 +355,11 @@ export const Teams = () => {
                             <div 
                               key={tm.id} 
                               className={`flex items-center justify-between p-4 bg-white border rounded-xl group transition-all ${
-                                isLeaderOfSelectedTeam 
+                                isLeaderOfSelectedTeam && !isAdmin
                                 ? 'cursor-pointer border-gray-100 hover:border-indigo-300 hover:shadow-sm' 
                                 : 'border-gray-50 opacity-90'
                               }`} 
-                              onClick={() => isLeaderOfSelectedTeam && fetchMemberHistory(tm.membership.id)}
+                              onClick={() => isLeaderOfSelectedTeam && !isAdmin && fetchMemberHistory(tm.membership.id)}
                             >
                                 <div className="flex items-center gap-4">
                                     <div className={`w-10 h-10 rounded-lg flex items-center justify-center font-bold text-sm shadow-sm border ${
@@ -394,7 +396,7 @@ export const Teams = () => {
                                             <UserMinus size={18} />
                                         </button>
                                     )}
-                                    <ChevronRight size={16} className={`text-gray-300 transition-all ${isLeaderOfSelectedTeam ? 'group-hover:text-indigo-400 group-hover:translate-x-0.5' : 'hidden'}`} />
+                                    <ChevronRight size={16} className={`text-gray-300 transition-all ${isLeaderOfSelectedTeam && !isAdmin ? 'group-hover:text-indigo-400 group-hover:translate-x-0.5' : 'hidden'}`} />
                                 </div>
                             </div>
                           );
