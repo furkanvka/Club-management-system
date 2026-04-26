@@ -29,7 +29,16 @@ public class TaskService {
         return taskRepository.findByAssignedToId(membershipId);
     }
 
+    @Autowired private clubms.backend.repository.MembershipRepository membershipRepository;
+
     public Task createTask(Task task, Long requesterMembershipId) {
+        if (task.getAssignedTo() != null && task.getAssignedTo().getId() != null) {
+            clubms.backend.entity.Membership assignedMember = membershipRepository.findById(task.getAssignedTo().getId()).orElse(null);
+            if (assignedMember != null && ("baskan".equalsIgnoreCase(assignedMember.getRole()) || "kulup_baskani".equalsIgnoreCase(assignedMember.getRole()))) {
+                throw new RuntimeException("Kulüp başkanı görev alamaz.");
+            }
+        }
+
         if (task.getProject() != null) {
             Project project = projectRepository.findById(task.getProject().getId())
                     .orElseThrow(() -> new RuntimeException("Proje bulunamadı"));

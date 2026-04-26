@@ -29,7 +29,16 @@ public class EventService {
         return eventStaffRepository.findByEventId(eventId);
     }
 
+    @Autowired
+    private clubms.backend.repository.MembershipRepository membershipRepository;
+
     public clubms.backend.entity.EventStaff addStaff(clubms.backend.entity.EventStaff staff) {
+        if (staff.getMembership() != null && staff.getMembership().getId() != null) {
+            clubms.backend.entity.Membership m = membershipRepository.findById(staff.getMembership().getId()).orElse(null);
+            if (m != null && ("baskan".equalsIgnoreCase(m.getRole()) || "kulup_baskani".equalsIgnoreCase(m.getRole()))) {
+                throw new RuntimeException("Kulüp başkanı etkinliklerde görevli olarak atanamaz.");
+            }
+        }
         return eventStaffRepository.save(staff);
     }
 

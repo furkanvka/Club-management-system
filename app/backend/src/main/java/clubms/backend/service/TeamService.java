@@ -47,6 +47,10 @@ public class TeamService {
             Membership leaderMembership = membershipRepository.findById(team.getLeader().getId())
                     .orElseThrow(() -> new RuntimeException("Lider üyeliği bulunamadı"));
             
+            if ("baskan".equalsIgnoreCase(leaderMembership.getRole()) || "kulup_baskani".equalsIgnoreCase(leaderMembership.getRole())) {
+                throw new RuntimeException("Kulüp başkanı ekip lideri olamaz.");
+            }
+            
             // Üyenin zaten bir ekipte olup olmadığını kontrol et
             boolean alreadyInTeam = teamMemberRepository.findByMembershipId(leaderMembership.getId()).stream()
                     .anyMatch(tm -> tm.getTeam().getClub().getId().equals(team.getClub().getId()));
@@ -244,6 +248,10 @@ public class TeamService {
 
         Membership memberToUpdate = membershipRepository.findById(membershipId)
                 .orElseThrow(() -> new RuntimeException("Üye bulunamadı"));
+
+        if ("baskan".equalsIgnoreCase(memberToUpdate.getRole()) || "kulup_baskani".equalsIgnoreCase(memberToUpdate.getRole())) {
+            throw new RuntimeException("Kulüp başkanı ekiplere üye olarak eklenemez.");
+        }
 
         // Üyenin genel rolünü ve durumunu güncelle
         memberToUpdate.setRole("ekip_uyesi");

@@ -338,7 +338,12 @@ export const Projects = () => {
                                 className="w-full px-3 py-2 text-sm bg-white border border-indigo-100 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all"
                             >
                                 <option value="">Bir ekip üyesi seçin...</option>
-                                {teamMembers.map(tm => (
+                                {teamMembers
+                                  .filter(tm => {
+                                    const role = (tm.membership?.role || '').toLowerCase();
+                                    return role !== 'baskan' && role !== 'kulup_baskani';
+                                  })
+                                  .map(tm => (
                                     <option key={tm.id} value={tm.membership.id}>
                                       {tm.membership.user?.firstName ? `${tm.membership.user.firstName} ${tm.membership.user.lastName}` : tm.membership.user?.email}
                                     </option>

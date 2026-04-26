@@ -134,7 +134,9 @@ export const Teams = () => {
     }
   };
 
-  const isLeaderOfSelectedTeam = Number(selectedTeam?.leader?.id) === Number(activeMembershipId) || isAdmin;
+  const isLeaderOfSelectedTeam = Number(selectedTeam?.leader?.id) === Number(activeMembershipId);
+  // Presidents can see the detail but cannot add/remove members unless they are the leader (which they aren't allowed to be anyway)
+  const canManageMembers = isLeaderOfSelectedTeam;
 
   return (
     <div className="space-y-8 max-w-7xl mx-auto">
@@ -318,7 +320,7 @@ export const Teams = () => {
                 {activeTab === 'members' && (
                   <div className="space-y-8">
                     {/* Add Member Form */}
-                    {isLeaderOfSelectedTeam && (
+                    {canManageMembers && (
                         <div className="bg-indigo-50/30 border border-indigo-100 p-6 rounded-2xl space-y-4">
                             <h4 className="text-[11px] font-bold text-indigo-700 uppercase tracking-widest flex items-center gap-2">
                                 <Plus size={14} /> Yeni Ekip Üyesi Ekle

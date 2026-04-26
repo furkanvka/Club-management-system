@@ -49,7 +49,13 @@ export const Sidebar = () => {
     const memId = activeMembershipId || localStorage.getItem('activeMembershipId');
     if (activeClub?.id && memId) {
       api.get(`/clubs/${activeClub.id}/teams/my-teams`, { params: { membershipId: memId } })
-        .then(r => setMyTeams(r.data))
+        .then(r => {
+          if (Array.isArray(r.data)) {
+            setMyTeams(r.data);
+          } else {
+            setMyTeams([]);
+          }
+        })
         .catch(() => setMyTeams([]));
     } else {
       setMyTeams([]);
@@ -92,6 +98,7 @@ export const Sidebar = () => {
 
   const hasAccess = (item) => {
     if (item.hideForClub && user?.loginType === 'club') return false;
+    if (item.path === '/dashboard/tasks' && isBaskan) return false;
     const access = item.access;
     if (access === 'all') return true;
     if (isBaskan) return true;

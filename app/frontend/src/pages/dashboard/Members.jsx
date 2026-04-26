@@ -49,12 +49,16 @@ export const Members = () => {
     api.get(`/clubs/${activeClub.id}/teams`)
       .then(r => {
         let data = r.data;
-        if (!isBaskan) {
-          data = data.filter(t => Number(t.leader?.id) === Number(activeMembershipId));
+        if (Array.isArray(data)) {
+          if (!isBaskan) {
+            data = data.filter(t => Number(t.leader?.id) === Number(activeMembershipId));
+          }
+          setMyTeams(data);
+        } else {
+          setMyTeams([]);
         }
-        setMyTeams(data);
       })
-      .catch(() => {});
+      .catch(() => setMyTeams([]));
   }, [activeClub?.id, isBaskan, activeMembershipId, canManageTeams]);
 
   useEffect(() => { 
