@@ -232,19 +232,6 @@ export const ClubSelect = () => {
                       ))
                     )}
                   </div>
-
-                  <div className="pt-6 border-t border-gray-100">
-                     <Button 
-                       onClick={() => navigate('/club-register')}
-                       className="w-full py-4 rounded-xl flex items-center justify-between px-6"
-                       icon={Repeat}
-                     >
-                       <div className="text-left">
-                         <div className="text-sm font-bold">Kendi Kulübünü Kur</div>
-                         <div className="text-[10px] text-indigo-100 opacity-80 font-medium">Hemen başvuru yap</div>
-                       </div>
-                     </Button>
-                  </div>
                 </div>
              </Card>
           </div>

@@ -77,6 +77,15 @@ public class MemberService {
         }).orElseThrow(() -> new RuntimeException("Membership not found"));
     }
 
+    public Membership updateRole(Long membershipId, String role) {
+        return membershipRepository.findById(membershipId).map(membership -> {
+            // JSON'dan gelebilecek olası tırnakları temizle
+            String cleanRole = role.replace("\"", "");
+            membership.setRole(cleanRole);
+            return membershipRepository.save(membership);
+        }).orElseThrow(() -> new RuntimeException("Membership not found"));
+    }
+
     public void deleteMembership(Long membershipId) {
         membershipRepository.deleteById(membershipId);
     }

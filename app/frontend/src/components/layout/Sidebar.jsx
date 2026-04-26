@@ -62,7 +62,7 @@ export const Sidebar = () => {
       items: [
         { name: 'Genel Bakış', path: '/dashboard', icon: Home, access: 'all' },
         { name: 'Profilim', path: '/dashboard/profile', icon: User, access: 'all' },
-        { name: 'Tüm Görevlerim', path: '/dashboard/tasks', icon: CheckSquare, access: 'all' },
+        { name: 'Tüm Görevlerim', path: '/dashboard/tasks', icon: CheckSquare, access: 'all', hideForClub: true },
       ]
     },
     {
@@ -90,7 +90,9 @@ export const Sidebar = () => {
     }
   ];
 
-  const hasAccess = (access) => {
+  const hasAccess = (item) => {
+    if (item.hideForClub && user?.loginType === 'club') return false;
+    const access = item.access;
     if (access === 'all') return true;
     if (isBaskan) return true;
     if (access === 'management' && (isBaskan || isLider)) return true;
@@ -124,7 +126,7 @@ export const Sidebar = () => {
       {/* Navigation */}
       <nav className="flex-1 overflow-y-auto py-6 px-4 space-y-8 scrollbar-thin scrollbar-thumb-gray-200">
         {sections.map(section => {
-          const visibleItems = section.items.filter(item => hasAccess(item.access));
+          const visibleItems = section.items.filter(item => hasAccess(item));
           if (visibleItems.length === 0) return null;
 
           const isOpen = openSections[section.label] !== false;
@@ -199,17 +201,19 @@ export const Sidebar = () => {
         </div>
         
         <div className="grid grid-cols-2 gap-2">
-          <button 
-            onClick={() => navigate('/select-club')}
-            title="Kulüp Değiştir"
-            className="flex items-center justify-center p-2 text-gray-500 hover:text-indigo-600 hover:bg-white rounded-lg transition-all border border-transparent hover:border-indigo-100"
-          >
-            <Repeat size={18} />
-          </button>
+          {user?.loginType !== 'club' && (
+            <button 
+              onClick={() => navigate('/select-club')}
+              title="Kulüp Değiştir"
+              className="flex items-center justify-center p-2 text-gray-500 hover:text-indigo-600 hover:bg-white rounded-lg transition-all border border-transparent hover:border-indigo-100"
+            >
+              <Repeat size={18} />
+            </button>
+          )}
           <button 
             onClick={() => { logout(); navigate('/'); }}
             title="Çıkış Yap"
-            className="flex items-center justify-center p-2 text-rose-500 hover:bg-rose-50 rounded-lg transition-all border border-transparent hover:border-rose-100"
+            className={`flex items-center justify-center p-2 text-rose-500 hover:bg-rose-50 rounded-lg transition-all border border-transparent hover:border-rose-100 ${user?.loginType === 'club' ? 'col-span-2' : ''}`}
           >
             <LogOut size={18} />
           </button>

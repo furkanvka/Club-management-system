@@ -469,7 +469,12 @@ export const Events = () => {
                             className="w-full px-3 py-2 text-sm bg-white border border-indigo-200 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 font-medium"
                           >
                             <option value="">Seçiniz...</option>
-                            {members.map(m => (
+                            {members
+                              .filter(m => {
+                                const role = (m.role || '').toUpperCase();
+                                return role !== 'BASKAN' && role !== 'KULUP_BASKANI';
+                              })
+                              .map(m => (
                               <option key={m.id} value={m.id}>{m.user?.firstName ? `${m.user.firstName} ${m.user.lastName}` : m.user?.email?.split('@')[0]}</option>
                             ))}
                           </select>

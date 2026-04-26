@@ -70,6 +70,17 @@ export const Members = () => {
     } catch (e) { alert('Üye silinemedi.'); }
   };
 
+  const handleMakePresident = async (memberId) => {
+    if (!window.confirm('Bu üyeyi kulüp başkanı olarak atamak istediğinize emin misiniz?')) return;
+    try {
+      await api.put(`/clubs/${activeClub.id}/members/${memberId}/role`, 'baskan');
+      alert('Üye başarıyla başkan olarak atandı.');
+      fetchMembers();
+    } catch (e) {
+      alert('Başkan atanamadı.');
+    }
+  };
+
   const handleUpdateFlags = async (memberId, currentFlags, flagKey) => {
     try {
       let flagsObj = {};
@@ -188,8 +199,9 @@ export const Members = () => {
           renderRow={(m) => {
             const rb = getRoleBadge(m.role);
             const RoleIcon = rb.icon;
-            const normalizedRole = (m.role || '').toUpperCase();
+            const normalizedRole = (m.role || '').toUpperCase().replace('-', '_');
             const isUserBaskan = normalizedRole === 'KULUP_BASKANI' || normalizedRole === 'BASKAN';
+            const isRegularMember = !m.role || normalizedRole === 'UYE';
             const displayName = m.user?.firstName ? `${m.user.firstName} ${m.user.lastName}` : (m.user?.email?.split('@')[0] || 'Bilinmiyor');
             
             return (
@@ -214,31 +226,6 @@ export const Members = () => {
                       <RoleIcon size={12} />
                       {rb.label.toUpperCase()}
                     </span>
-                    {isBaskan && !isUserBaskan && (
-                      <div className="flex gap-1">
-                        {[
-                          { key: 'yonetici', label: 'Ynt', color: 'text-red-600', bg: 'bg-red-50' },
-                          { key: 'finans', label: 'Fin', icon: DollarSign, color: 'text-green-600', bg: 'bg-green-50' },
-                          { key: 'docs', label: 'Bel', icon: Folder, color: 'text-blue-600', bg: 'bg-blue-50' },
-                        ].map(f => {
-                          const active = m.flags && m.flags.includes(`"${f.key}":true`);
-                          return (
-                            <button
-                              key={f.key}
-                              onClick={() => handleUpdateFlags(m.id, m.flags, f.key)}
-                              className={`px-2 py-0.5 rounded text-[9px] font-bold uppercase transition-all border ${
-                                active 
-                                ? `${f.bg} ${f.color} border-current` 
-                                : 'bg-gray-50 text-gray-400 border-gray-100 hover:border-gray-200'
-                              }`}
-                              title={`${f.label} Yetkisi`}
-                            >
-                              {f.label}
-                            </button>
-                          );
-                        })}
-                      </div>
-                    )}
                   </div>
                 </TableCell>
                 <TableCell>
@@ -253,6 +240,17 @@ export const Members = () => {
                 </TableCell>
                 <TableCell className="text-right">
                   <div className="flex justify-end gap-2">
+                     {user?.loginType === 'club' && isRegularMember && (
+                       <Button
+                         variant="primary"
+                         size="sm"
+                         onClick={() => handleMakePresident(m.id)}
+                         icon={Crown}
+                       >
+                         BAŞKAN YAP
+                       </Button>
+                     )}
+
                      {canManageTeams && !isUserBaskan && (
                        <Button
                          variant="secondary"

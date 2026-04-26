@@ -49,4 +49,9 @@ public class MemberController {
     public ResponseEntity<Membership> updateFlags(@PathVariable Long clubId, @PathVariable Long memberId, @RequestBody String flags) {
         return ResponseEntity.ok(memberService.updateMembershipFlags(memberId, flags));
     }
+
+    @PutMapping("/{memberId}/role")
+    public ResponseEntity<Membership> updateRole(@PathVariable Long clubId, @PathVariable Long memberId, @RequestBody String role) {
+        return ResponseEntity.ok(memberService.updateRole(memberId, role));
+    }
 }

@@ -124,9 +124,11 @@ const PresidentDashboard = ({ activeClub, loginType, activeRole }) => {
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <Button variant="secondary" onClick={() => navigate('/dashboard/tasks')} icon={ClipboardList}>
-            Görevleri Gör
-          </Button>
+          {loginType !== 'club' && (
+            <Button variant="secondary" onClick={() => navigate('/dashboard/tasks')} icon={ClipboardList}>
+              Görevleri Gör
+            </Button>
+          )}
           <Button variant="primary" onClick={() => navigate('/dashboard/events')} icon={Plus}>
             Yeni Etkinlik
           </Button>
