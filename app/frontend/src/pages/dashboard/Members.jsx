@@ -13,7 +13,10 @@ import {
   Plus,
   X,
   DollarSign,
-  Folder
+  Folder,
+  Eye,
+  CheckCircle2,
+  Clock
 } from 'lucide-react';
 import { Card } from '../../components/common/Card';
 import { Table, TableCell } from '../../components/common/Table';
@@ -32,6 +35,11 @@ export const Members = () => {
   const [selectedMember, setSelectedMember] = useState(null);
   const [assigning, setAssigning] = useState(false);
 
+  // History State
+  const [showHistoryModal, setShowHistoryModal] = useState(false);
+  const [historyData, setHistoryData] = useState(null);
+  const [loadingHistory, setLoadingHistory] = useState(false);
+
   const isBaskan = activeRole === 'baskan' || user?.loginType === 'club';
   const isLider = activeRole === 'ekip_lideri' || activeRole === 'EKIP_LIDERI' || activeRole === 'lider';
   const canManageTeams = isLider;
@@ -43,6 +51,20 @@ export const Members = () => {
       .then(r => { setMembers(r.data); setLoading(false); })
       .catch(() => setLoading(false));
   }, [activeClub?.id]);
+
+  const fetchMemberHistory = async (membershipId) => {
+    setLoadingHistory(true);
+    setShowHistoryModal(true);
+    try {
+      const r = await api.get(`/clubs/${activeClub.id}/members/${membershipId}/history`);
+      setHistoryData(r.data);
+    } catch (e) {
+      alert('Geçmiş bilgileri alınamadı.');
+      setShowHistoryModal(false);
+    } finally {
+      setLoadingHistory(false);
+    }
+  };
 
   const fetchMyTeams = useCallback(() => {
     if (!activeClub?.id || !canManageTeams) return;
@@ -265,6 +287,16 @@ export const Members = () => {
                          EKİBE EKLE
                        </Button>
                      )}
+
+                     {isBaskan && (
+                        <button
+                         onClick={() => { setSelectedMember(m); fetchMemberHistory(m.id); }}
+                         className="p-2 text-indigo-500 hover:text-indigo-700 hover:bg-indigo-50 rounded-lg transition-all"
+                         title="Geçmişi Görüntüle"
+                       >
+                         <Eye size={18} />
+                       </button>
+                     )}
                      
                      {isBaskan && !isUserBaskan && (
                         <button
@@ -339,6 +371,166 @@ export const Members = () => {
                  </Button>
               </div>
            </div>
+        </div>
+      )}
+
+      {/* Member History Modal */}
+      {showHistoryModal && (
+        <div className="fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-50 flex items-start justify-center p-4 pt-24">
+          <div className="bg-white w-full max-w-2xl rounded-2xl shadow-2xl border border-gray-100 overflow-hidden flex flex-col max-h-[85vh] animate-in slide-in-from-top-4 duration-300">
+            <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between bg-white sticky top-0 z-10">
+              <div>
+                <h3 className="text-xl font-bold text-gray-900">Üye Geçmişi</h3>
+                <p className="text-sm text-gray-500 font-medium">
+                  {selectedMember?.user?.firstName} {selectedMember?.user?.lastName} ({selectedMember?.user?.studentNumber})
+                </p>
+              </div>
+              <button onClick={() => setShowHistoryModal(false)} className="p-2 text-gray-400 hover:text-gray-600 transition-all rounded-lg hover:bg-gray-50">
+                <X size={24} />
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto p-6 space-y-8 bg-gray-50/30">
+              {loadingHistory ? (
+                <div className="flex flex-col items-center justify-center py-20 gap-4">
+                  <div className="w-10 h-10 border-4 border-indigo-600/20 border-t-indigo-600 rounded-full animate-spin" />
+                  <p className="text-sm font-bold text-indigo-600 uppercase tracking-widest">Veriler Yükleniyor...</p>
+                </div>
+              ) : (
+                <>
+                  {/* Teams Section */}
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Users className="text-indigo-500" size={20} />
+                      <h4 className="font-bold text-gray-900 uppercase tracking-tight text-sm">Bulunduğu Ekipler</h4>
+                    </div>
+                    {historyData?.teams?.length === 0 ? (
+                      <p className="text-sm text-gray-400 bg-white p-4 rounded-xl border border-dashed border-gray-200">Henüz bir ekipte yer almadı.</p>
+                    ) : (
+                      <div className="grid gap-3">
+                        {historyData?.teams?.map(tm => (
+                          <div key={tm.id} className="flex items-center justify-between p-4 bg-white border border-gray-200 rounded-xl shadow-sm">
+                            <div className="flex items-center gap-3">
+                              <div className="w-10 h-10 bg-indigo-50 rounded-lg flex items-center justify-center text-indigo-600 font-bold">
+                                {tm.team?.name[0]}
+                              </div>
+                              <div>
+                                <div className="text-sm font-bold text-gray-900">{tm.team?.name}</div>
+                                <div className="text-xs text-gray-500">{tm.role}</div>
+                              </div>
+                            </div>
+                            <div className="text-right">
+                              <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Katılım</div>
+                              <div className="text-xs font-medium text-gray-600">{new Date(tm.joinedAt).toLocaleDateString('tr-TR')}</div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Events Section */}
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Star className="text-amber-500" size={20} />
+                      <h4 className="font-bold text-gray-900 uppercase tracking-tight text-sm">Etkinlik Görevleri</h4>
+                    </div>
+                    {historyData?.events?.length === 0 ? (
+                      <p className="text-sm text-gray-400 bg-white p-4 rounded-xl border border-dashed border-gray-200">Henüz bir etkinlikte görev almadı.</p>
+                    ) : (
+                      <div className="grid gap-3">
+                        {historyData?.events?.map(es => (
+                          <div key={es.id} className="flex items-center justify-between p-4 bg-white border border-gray-200 rounded-xl shadow-sm">
+                            <div className="flex items-center gap-3">
+                              <div className="w-10 h-10 bg-amber-50 rounded-lg flex items-center justify-center text-amber-600 font-bold">
+                                E
+                              </div>
+                              <div>
+                                <div className="text-sm font-bold text-gray-900">{es.event?.title}</div>
+                                <div className="text-xs text-gray-500">{es.role}</div>
+                              </div>
+                            </div>
+                            <div className="text-right">
+                              <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Tarih</div>
+                              <div className="text-xs font-medium text-gray-600">{new Date(es.assignedAt).toLocaleDateString('tr-TR')}</div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Applications Section */}
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Folder className="text-blue-500" size={20} />
+                      <h4 className="font-bold text-gray-900 uppercase tracking-tight text-sm">Etkinlik Başvuruları</h4>
+                    </div>
+                    {historyData?.applications?.length === 0 ? (
+                      <p className="text-sm text-gray-400 bg-white p-4 rounded-xl border border-dashed border-gray-200">Henüz bir etkinliğe başvurmadı.</p>
+                    ) : (
+                      <div className="grid gap-3">
+                        {historyData?.applications?.map(app => (
+                          <div key={app.id} className="flex items-center justify-between p-4 bg-white border border-gray-200 rounded-xl shadow-sm">
+                            <div className="flex items-center gap-3">
+                              <div className={`w-2 h-2 rounded-full ${app.status === 'approved' ? 'bg-emerald-500' : app.status === 'pending' ? 'bg-amber-500' : 'bg-rose-500'}`} />
+                              <div>
+                                <div className="text-sm font-bold text-gray-900">{app.event?.title}</div>
+                                <div className="text-[10px] text-gray-500 font-bold uppercase">{app.status}</div>
+                              </div>
+                            </div>
+                            <div className="text-right">
+                               <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Başvuru</div>
+                               <div className="text-xs font-medium text-gray-600">{new Date(app.appliedAt).toLocaleDateString('tr-TR')}</div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Tasks Section */}
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <CheckCircle2 className="text-emerald-500" size={20} />
+                      <h4 className="font-bold text-gray-900 uppercase tracking-tight text-sm">Atanan Görevler</h4>
+                    </div>
+                    {historyData?.tasks?.length === 0 ? (
+                      <p className="text-sm text-gray-400 bg-white p-4 rounded-xl border border-dashed border-gray-200">Henüz bir görev atanmadı.</p>
+                    ) : (
+                      <div className="grid gap-3">
+                        {historyData?.tasks?.map(task => (
+                          <div key={task.id} className="flex items-center justify-between p-4 bg-white border border-gray-200 rounded-xl shadow-sm">
+                            <div className="flex items-center gap-3">
+                              <div className={`w-2 h-2 rounded-full ${task.status === 'TAMAMLANDI' ? 'bg-emerald-500' : 'bg-amber-500'}`} />
+                              <div>
+                                <div className="text-sm font-bold text-gray-900">{task.title}</div>
+                                <div className="text-[10px] text-gray-500 font-bold uppercase">{task.status}</div>
+                              </div>
+                            </div>
+                            <div className="text-right">
+                               <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Teslim</div>
+                               <div className="text-xs font-medium text-gray-600">{task.dueDate ? new Date(task.dueDate).toLocaleDateString('tr-TR') : '—'}</div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </>
+              )}
+            </div>
+
+            <div className="px-6 py-4 bg-gray-50 border-t border-gray-100 flex justify-end">
+              <Button 
+                variant="secondary"
+                size="sm"
+                onClick={() => setShowHistoryModal(false)}
+              >
+                KAPAT
+              </Button>
+            </div>
+          </div>
         </div>
       )}
     </div>

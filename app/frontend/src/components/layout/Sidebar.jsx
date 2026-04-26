@@ -65,6 +65,9 @@ export const Sidebar = () => {
   const sections = [
     {
       label: 'GENEL',
+      color: 'text-blue-600',
+      iconColor: 'text-blue-500',
+      activeBg: 'bg-blue-50 text-blue-700 shadow-blue-100/50',
       items: [
         { name: 'Genel Bakış', path: '/dashboard', icon: Home, access: 'all' },
         { name: 'Profilim', path: '/dashboard/profile', icon: User, access: 'all' },
@@ -73,6 +76,9 @@ export const Sidebar = () => {
     },
     {
       label: 'YÖNETİM',
+      color: 'text-purple-600',
+      iconColor: 'text-purple-500',
+      activeBg: 'bg-purple-50 text-purple-700 shadow-purple-100/50',
       items: [
         { name: 'Üye Listesi', path: '/dashboard/members', icon: Users, access: 'management' },
         { name: 'Ekipler', path: '/dashboard/teams', icon: LayoutGrid, access: 'management' },
@@ -81,6 +87,9 @@ export const Sidebar = () => {
     },
     {
       label: 'PROJE & ETKİNLİK',
+      color: 'text-amber-600',
+      iconColor: 'text-amber-500',
+      activeBg: 'bg-amber-50 text-amber-700 shadow-amber-100/50',
       items: [
         { name: 'Projeler', path: '/dashboard/projects', icon: Briefcase, access: 'ekip' },
         { name: 'Etkinlikler', path: '/dashboard/events', icon: Calendar, access: 'all' },
@@ -90,6 +99,9 @@ export const Sidebar = () => {
     },
     {
       label: 'ARŞİV',
+      color: 'text-emerald-600',
+      iconColor: 'text-emerald-500',
+      activeBg: 'bg-emerald-50 text-emerald-700 shadow-emerald-100/50',
       items: [
         { name: 'Tüm Belgeler', path: '/dashboard/documents', icon: Folder, access: 'all' },
       ]
@@ -139,21 +151,21 @@ export const Sidebar = () => {
           const isOpen = openSections[section.label] !== false;
 
           return (
-            <div key={section.label} className="space-y-2">
+            <div key={section.label} className="space-y-3">
               <button 
                 onClick={() => toggleSection(section.label)}
-                className="w-full flex items-center justify-between px-2 text-gray-400 hover:text-gray-600 transition-colors group"
+                className={`w-full flex items-center justify-between px-2 py-1 transition-all duration-200 group ${section.color}`}
               >
-                <span className="text-[11px] font-bold uppercase tracking-widest">
+                <span className="text-[10px] font-black uppercase tracking-widest opacity-80 group-hover:opacity-100">
                   {section.label}
                 </span>
-                <span>
-                  {isOpen ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+                <span className="opacity-50 group-hover:opacity-100">
+                  {isOpen ? <ChevronDown size={12} /> : <ChevronRight size={12} />}
                 </span>
               </button>
               
               {isOpen && (
-                <div className="space-y-1">
+                <div className="space-y-1 px-1">
                   {visibleItems.map(item => (
                     <NavLink
                       key={item.path}
@@ -162,12 +174,12 @@ export const Sidebar = () => {
                       className={({ isActive }) =>
                         `group flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
                           isActive 
-                            ? "bg-indigo-50 text-indigo-700 shadow-sm shadow-indigo-100/50" 
+                            ? `${section.activeBg} shadow-sm` 
                             : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                         }`
                       }
                     >
-                      <item.icon className={`mr-3 h-4 w-4 transition-colors ${item.path === '/dashboard' ? 'text-indigo-500' : ''}`} />
+                      <item.icon className={`mr-3 h-4 w-4 transition-colors ${section.iconColor}`} />
                       {item.name}
                     </NavLink>
                   ))}

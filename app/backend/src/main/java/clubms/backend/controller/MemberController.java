@@ -34,6 +34,11 @@ public class MemberController {
         return ResponseEntity.ok(taskService.getTasksByAssignedToId(membershipId));
     }
 
+    @GetMapping("/{membershipId}/history")
+    public ResponseEntity<clubms.backend.dto.response.MemberHistoryResponse> getMemberHistory(@PathVariable Long clubId, @PathVariable Long membershipId) {
+        return ResponseEntity.ok(memberService.getMemberHistory(membershipId));
+    }
+
     @GetMapping
     public ResponseEntity<List<Membership>> getMembers(@PathVariable Long clubId) {
         return ResponseEntity.ok(memberService.getMembersByClubId(clubId));

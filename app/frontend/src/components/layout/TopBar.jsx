@@ -93,12 +93,6 @@ export const TopBar = () => {
 
       {/* Right: user info */}
       <div className="flex items-center gap-6">
-        {/* Role Badge */}
-        <span className={`hidden md:inline-flex items-center gap-1.5 text-[11px] font-bold px-3 py-1.5 rounded-full border ${badge.color}`}>
-          <BadgeIcon size={12} />
-          {badge.label.toUpperCase()}
-        </span>
-
         {/* User Info */}
         <div className="flex items-center gap-3 pl-6 border-l border-gray-100">
           <div className="text-right hidden sm:block">

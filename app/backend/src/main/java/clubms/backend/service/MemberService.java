@@ -22,6 +22,21 @@ public class MemberService {
     @Autowired
     private EventApplicationRepository eventApplicationRepository;
 
+    @Autowired
+    private clubms.backend.repository.EventStaffRepository eventStaffRepository;
+
+    @Autowired
+    private clubms.backend.repository.TaskRepository taskRepository;
+
+    public clubms.backend.dto.response.MemberHistoryResponse getMemberHistory(Long membershipId) {
+        return new clubms.backend.dto.response.MemberHistoryResponse(
+            teamMemberRepository.findByMembershipId(membershipId),
+            eventStaffRepository.findByMembershipId(membershipId),
+            eventApplicationRepository.findByMembershipId(membershipId),
+            taskRepository.findByAssignedToId(membershipId)
+        );
+    }
+
     public List<Membership> getMembersByClubId(Long clubId) {
         List<Membership> memberships = membershipRepository.findByClubId(clubId);
         memberships.forEach(this::calculateDynamicStatus);
