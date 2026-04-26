@@ -280,7 +280,7 @@ export const Documents = () => {
                   </span>
                   
                   {doc.approvalStatus === 'PENDING' ? (
-                    isBaskan ? (
+                    (isBaskan || isLider) ? (
                       <div className="flex gap-1">
                          <button onClick={() => handleReject(doc.id)} className="p-1 text-rose-500 hover:bg-rose-50 rounded transition-colors" title="Reddet"><XCircle size={14} /></button>
                          <button onClick={() => handleApprove(doc.id)} className="p-1 text-emerald-500 hover:bg-emerald-50 rounded transition-colors" title="Onayla"><Check size={14} /></button>

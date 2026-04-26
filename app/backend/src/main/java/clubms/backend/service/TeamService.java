@@ -249,7 +249,9 @@ public class TeamService {
         Membership memberToUpdate = membershipRepository.findById(membershipId)
                 .orElseThrow(() -> new RuntimeException("Üye bulunamadı"));
 
-        if ("baskan".equalsIgnoreCase(memberToUpdate.getRole()) || "kulup_baskani".equalsIgnoreCase(memberToUpdate.getRole())) {
+        // Başkan kontrolü: Rolünde 'baskan' geçen hiç kimse ekibe eklenemez.
+        String memberRole = memberToUpdate.getRole() != null ? memberToUpdate.getRole().toLowerCase() : "";
+        if (memberRole.contains("baskan")) {
             throw new RuntimeException("Kulüp başkanı ekiplere üye olarak eklenemez.");
         }
 

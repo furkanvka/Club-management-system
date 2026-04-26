@@ -95,13 +95,13 @@ public class DocumentController {
             }
         }
 
-        final String userRole = role;
+        final String userRole = role != null ? role.toLowerCase() : "uye";
         return clubService.getClubById(clubId).map(club -> {
             document.setClub(club);
-            // Baskan, Lider ve Ekip Uyesi yukleyebilir. Lider ve Uye yuklerse oto-onaylanabilir veya baskan onayına duser.
-            // Sizin isteginize gore yukleme hakları var.
-            if ("baskan".equals(userRole) || "ekip_lideri".equals(userRole) || "ekip_uyesi".equals(userRole)) {
-                document.setApprovalStatus("APPROVED"); // Ekip calısması icin oto-onay
+            // Baskan ve Ekip Lideri yuklerse oto-onaylanır.
+            // Ekip uyesi yuklerse PENDING olur, baskan veya lider onaylamalı.
+            if (userRole.contains("baskan") || userRole.contains("lider")) {
+                document.setApprovalStatus("APPROVED");
             } else {
                 document.setApprovalStatus("PENDING");
             }
@@ -111,6 +111,20 @@ public class DocumentController {
 
     @PutMapping("/{documentId}/approve")
     public ResponseEntity<Document> approveDocument(@PathVariable Long clubId, @PathVariable Long documentId) {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        boolean hasAuth = false;
+        if (principal instanceof UserPrincipal) {
+            UserPrincipal up = (UserPrincipal) principal;
+            if (up.getId() < 0) hasAuth = true;
+            else {
+                hasAuth = memberService.getMembershipsByUserId(up.getId()).stream()
+                    .anyMatch(m -> m.getClub().getId().equals(clubId) && 
+                              ("baskan".equalsIgnoreCase(m.getRole()) || "ekip_lideri".equalsIgnoreCase(m.getRole()) || "lider".equalsIgnoreCase(m.getRole())));
+            }
+        }
+
+        if (!hasAuth) return ResponseEntity.status(403).build();
+
         return documentService.getDocumentsByClubId(clubId).stream()
             .filter(d -> d.getId().equals(documentId))
             .findFirst()
@@ -122,6 +136,20 @@ public class DocumentController {
 
     @PutMapping("/{documentId}/reject")
     public ResponseEntity<Document> rejectDocument(@PathVariable Long clubId, @PathVariable Long documentId) {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        boolean hasAuth = false;
+        if (principal instanceof UserPrincipal) {
+            UserPrincipal up = (UserPrincipal) principal;
+            if (up.getId() < 0) hasAuth = true;
+            else {
+                hasAuth = memberService.getMembershipsByUserId(up.getId()).stream()
+                    .anyMatch(m -> m.getClub().getId().equals(clubId) && 
+                              ("baskan".equalsIgnoreCase(m.getRole()) || "ekip_lideri".equalsIgnoreCase(m.getRole()) || "lider".equalsIgnoreCase(m.getRole())));
+            }
+        }
+
+        if (!hasAuth) return ResponseEntity.status(403).build();
+
         return documentService.getDocumentsByClubId(clubId).stream()
             .filter(d -> d.getId().equals(documentId))
             .findFirst()

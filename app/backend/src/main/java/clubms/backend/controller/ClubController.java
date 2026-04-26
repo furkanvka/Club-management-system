@@ -107,6 +107,9 @@ public class ClubController {
     private clubms.backend.repository.UserRepository userRepository;
 
     @Autowired
+    private clubms.backend.service.DocumentService documentService;
+
+    @Autowired
     private org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
 
     @PostMapping
@@ -117,6 +120,18 @@ public class ClubController {
             }
             
             Club savedClub = clubService.createClub(club);
+
+            // Eğer tüzük dosyası varsa, onu otomatik olarak onaylanmış bir belge olarak ekle
+            if (savedClub.getStatuteFileData() != null && !savedClub.getStatuteFileData().isEmpty()) {
+                clubms.backend.entity.Document statuteDoc = new clubms.backend.entity.Document();
+                statuteDoc.setClub(savedClub);
+                statuteDoc.setTitle("Kulüp Tüzüğü");
+                statuteDoc.setCategory("Resmi");
+                statuteDoc.setFileData(savedClub.getStatuteFileData());
+                statuteDoc.setApprovalStatus("APPROVED");
+                statuteDoc.setDescription("Kayıt sırasında yüklenen resmi kulüp tüzüğü.");
+                documentService.saveDocumentInfo(statuteDoc);
+            }
 
             org.springframework.security.core.Authentication currentAuth = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
             if (currentAuth != null && currentAuth.isAuthenticated() && currentAuth.getPrincipal() instanceof UserPrincipal) {
