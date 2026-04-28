@@ -49,8 +49,20 @@ export const ClubProvider = ({ children }) => {
       const currentMemberships = memRes.data || [];
       setMyMemberships(currentMemberships);
 
-      // Otomatik seçim veya mevcut seçimi güncelleme
-      if (activeClub) {
+      // Kulüp hesabıyla giriş yapıldıysa, ilk kulübü otomatik seç
+      if (loginType === 'club' && currentMyClubs.length > 0) {
+          const club = currentMyClubs[0];
+          const role = 'baskan';
+          setActiveClub(club);
+          setActiveRole(role);
+          setActiveMembershipId(null);
+          setActiveMembershipStatus('active');
+          localStorage.setItem('activeClub', JSON.stringify(club));
+          localStorage.setItem('activeRole', role);
+          localStorage.removeItem('activeMembershipId');
+          localStorage.setItem('activeMembershipStatus', 'active');
+      } else if (activeClub) {
+          // Mevcut seçili kulübü güncelle
           const currentMem = currentMemberships.find(m => m.club?.id === activeClub.id);
           if (currentMem) {
               if (currentMem.role !== activeRole) {
@@ -66,21 +78,30 @@ export const ClubProvider = ({ children }) => {
                   localStorage.setItem('activeMembershipStatus', currentMem.status || 'passive');
               }
           }
-      } else if (loginType === 'club' && currentMyClubs.length > 0) {
-          selectClub(currentMyClubs[0], 'baskan');
-      } else if (currentMyClubs.length === 1) {
+      } else if (currentMyClubs.length === 1 && loginType !== 'club') {
+          // Tek kulübü olan üye için otomatik seç (selectClub'a gerek yok, doğrudan state set et)
           const club = currentMyClubs[0];
           const m = currentMemberships.find(mem => mem.club?.id === club.id);
-          selectClub(club, m?.role || 'uye');
+          const role = m?.role || 'uye';
+          setActiveClub(club);
+          setActiveRole(role);
+          setActiveMembershipId(m?.id || null);
+          setActiveMembershipStatus(m?.status || 'passive');
+          localStorage.setItem('activeClub', JSON.stringify(club));
+          localStorage.setItem('activeRole', role);
+          if (m?.id) localStorage.setItem('activeMembershipId', m.id);
+          localStorage.setItem('activeMembershipStatus', m?.status || 'passive');
       }
     } catch (e) {
       console.error("Bilgiler tazelenirken hata oluştu", e);
     }
-  }, [activeClub?.id, activeRole, activeMembershipId, activeMembershipStatus]); // IDs are enough for deps
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeClub?.id, activeRole, activeMembershipId, activeMembershipStatus]);
 
   useEffect(() => {
     refreshClubs();
-  }, [user]); // Sadece kullanıcı değiştiğinde en baştan tazele
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.sub, user?.loginType]); // Primitive değerleri izle — obje ref karşılaştırması güvenilmez
 
   const selectClub = (club, role, membershipId, status) => {
     if (!club) {

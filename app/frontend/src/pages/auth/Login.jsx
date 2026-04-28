@@ -78,7 +78,7 @@ export const Login = () => {
             <div className="space-y-1">
               <div className="flex justify-between items-center px-0.5">
                 <label className="text-sm font-bold text-gray-700">Şifre</label>
-                <button type="button" className="text-[11px] font-bold text-indigo-600 hover:text-indigo-700 transition-colors">
+                <button type="button" onClick={() => navigate('/forgot-password')} className="text-[11px] font-bold text-indigo-600 hover:text-indigo-700 transition-colors">
                   Şifremi Unuttum
                 </button>
               </div>

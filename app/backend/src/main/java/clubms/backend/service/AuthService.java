@@ -1,7 +1,9 @@
 package clubms.backend.service;
 
+import clubms.backend.dto.request.ChangePasswordRequest;
 import clubms.backend.dto.request.LoginRequest;
 import clubms.backend.dto.request.RegisterRequest;
+import clubms.backend.dto.request.ResetPasswordRequest;
 import clubms.backend.entity.User;
 import clubms.backend.repository.UserRepository;
 import clubms.backend.security.JwtTokenProvider;
@@ -87,5 +89,67 @@ public class AuthService {
         user.setStudentNumber(signUpRequest.getStudentNumber());
 
         return userRepository.save(user);
+    }
+
+    /**
+     * Public password reset — user provides email + new password (twice).
+     * No email verification for simplicity.
+     */
+    public void resetPassword(ResetPasswordRequest request) {
+        if (!request.getNewPassword().equals(request.getNewPasswordConfirm())) {
+            throw new RuntimeException("Şifreler eşleşmiyor!");
+        }
+
+        // Try users table first
+        java.util.Optional<User> userOpt = userRepository.findByEmail(request.getEmail());
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            user.setPasswordHash(passwordEncoder.encode(request.getNewPassword()));
+            userRepository.save(user);
+            return;
+        }
+
+        // Try clubs table
+        var clubOpt = clubRepository.findByContactEmail(request.getEmail());
+        if (clubOpt.isPresent()) {
+            var club = clubOpt.get();
+            club.setPassword(passwordEncoder.encode(request.getNewPassword()));
+            clubRepository.save(club);
+            return;
+        }
+
+        throw new RuntimeException("Bu e-posta adresi ile kayıtlı bir hesap bulunamadı.");
+    }
+
+    /**
+     * Authenticated password change — user must provide current password.
+     */
+    public void changePassword(Long userId, ChangePasswordRequest request) {
+        if (!request.getNewPassword().equals(request.getNewPasswordConfirm())) {
+            throw new RuntimeException("Yeni şifreler eşleşmiyor!");
+        }
+
+        // If userId is negative, it's a club account
+        if (userId < 0) {
+            var club = clubRepository.findById(-userId)
+                    .orElseThrow(() -> new RuntimeException("Kulüp hesabı bulunamadı."));
+
+            if (!passwordEncoder.matches(request.getCurrentPassword(), club.getPassword())) {
+                throw new RuntimeException("Mevcut şifre yanlış!");
+            }
+
+            club.setPassword(passwordEncoder.encode(request.getNewPassword()));
+            clubRepository.save(club);
+        } else {
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new RuntimeException("Kullanıcı bulunamadı."));
+
+            if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPasswordHash())) {
+                throw new RuntimeException("Mevcut şifre yanlış!");
+            }
+
+            user.setPasswordHash(passwordEncoder.encode(request.getNewPassword()));
+            userRepository.save(user);
+        }
     }
 }

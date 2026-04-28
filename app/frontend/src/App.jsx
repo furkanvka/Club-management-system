@@ -11,6 +11,7 @@ import { Login } from './pages/auth/Login';
 import { Register } from './pages/auth/Register';
 import { ClubRegister } from './pages/auth/ClubRegister';
 import { ClubLogin } from './pages/auth/ClubLogin';
+import { ForgotPassword } from './pages/auth/ForgotPassword';
 import { ClubSelect } from './pages/club/ClubSelect';
 import { Landing } from './pages/Landing';
 import { AdminDashboard } from './pages/admin/AdminDashboard';
@@ -49,6 +50,7 @@ function AppRoutes() {
       <Route path="/admin/login" element={<AdminLogin />} />
       <Route path="/register" element={<Register />} />
       <Route path="/club-login" element={<ClubLogin />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/club-register" element={<ClubRegister />} />
       <Route path="/admin" element={
         <AdminProtectedRoute>
