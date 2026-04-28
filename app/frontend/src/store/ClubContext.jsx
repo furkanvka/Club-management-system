@@ -49,8 +49,8 @@ export const ClubProvider = ({ children }) => {
       const currentMemberships = memRes.data || [];
       setMyMemberships(currentMemberships);
 
-      // Kulüp hesabıyla giriş yapıldıysa, ilk kulübü otomatik seç
-      if (loginType === 'club' && currentMyClubs.length > 0) {
+      // Kulüp hesabıyla giriş yapıldıysa ve henüz aktif kulüp yoksa, ilk kulübü otomatik seç
+      if (loginType === 'club' && currentMyClubs.length > 0 && !activeClub) {
           const club = currentMyClubs[0];
           const role = 'baskan';
           setActiveClub(club);

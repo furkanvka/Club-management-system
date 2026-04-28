@@ -1,5 +1,6 @@
 package clubms.backend.config;
 
+import org.springframework.web.cors.CorsConfiguration;
 import clubms.backend.security.CustomUserDetailsService;
 import clubms.backend.security.JwtAuthenticationEntryPoint;
 import clubms.backend.security.JwtAuthenticationFilter;
@@ -53,17 +54,25 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.cors(cors -> cors.configure(http))
-                .csrf(csrf -> csrf.disable())
-                .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(
-                        auth -> auth.requestMatchers("/api/auth/login", "/api/auth/club-login", "/api/auth/register", "/api/auth/reset-password").permitAll()
-                                .requestMatchers("/api/public/**", "/error", "/actuator/health").permitAll()
-                                .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/clubs").permitAll()
-                                .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/clubs").permitAll()
-                                .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                                .anyRequest().hasAnyRole("USER", "ADMIN", "CLUB"));
+        http.cors(cors -> cors.configurationSource(request -> {
+                CorsConfiguration config = new CorsConfiguration();
+                config.setAllowedOrigins(java.util.Arrays.asList("http://165.245.254.8", "http://localhost", "http://localhost:3000"));
+                config.setAllowedMethods(java.util.Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                config.setAllowedHeaders(java.util.Arrays.asList("Authorization", "Content-Type", "Cache-Control"));
+                config.setAllowCredentials(true);
+                return config;
+            }))
+            .csrf(csrf -> csrf.disable())
+            .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .authorizeHttpRequests(auth -> auth
+                // Auth ve Health her zaman açık
+                .requestMatchers("/api/auth/**", "/api/public/**", "/error", "/actuator/health", "/api/health").permitAll()
+                // Kulüp endpoint'leri açık
+                .requestMatchers("/api/clubs/**").permitAll()
+                .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                .anyRequest().authenticated()
+            );
 
         http.authenticationProvider(authenticationProvider());
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);

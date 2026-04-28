@@ -1,5 +1,6 @@
 package clubms.backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
@@ -23,6 +24,7 @@ public class User {
     @Column(name = "student_number")
     private String studentNumber;
 
+    @JsonIgnore
     @Column(nullable = false)
     private String passwordHash;
 

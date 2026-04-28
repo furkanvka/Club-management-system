@@ -42,6 +42,7 @@ export const authService = {
     localStorage.removeItem('activeClub');
     localStorage.removeItem('activeRole');
     localStorage.removeItem('activeMembershipId');
+    localStorage.removeItem('activeMembershipStatus');
   },
 
   getCurrentUser: () => {

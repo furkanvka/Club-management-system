@@ -23,8 +23,7 @@ import {
   Eye,
   EyeOff,
   AlertCircle,
-  Calendar,
-  Clock
+  Calendar
 } from 'lucide-react';
 import { Card } from '../../components/common/Card';
 import { Button } from '../../components/common/Button';
