@@ -74,7 +74,7 @@ export const TopBar = () => {
       <React.Fragment key={name}>
         <ChevronRight size={14} className="text-gray-300 mx-1" />
         <span className={`text-sm ${isLast ? 'font-bold text-gray-900' : 'font-medium text-gray-500'}`}>
-          {names[name] || name.charAt(0).toUpperCase() + name.slice(1)}
+          {names[name] || name.charAt(0).toLocaleUpperCase('tr-TR') + name.slice(1)}
         </span>
       </React.Fragment>
     );
@@ -85,8 +85,13 @@ export const TopBar = () => {
       {/* Left: breadcrumb */}
       <div className="flex items-center">
         <div className="flex items-center gap-1">
-          <Building2 size={16} className="text-gray-400 mr-1" />
-          <span className="text-sm font-bold text-gray-900">{activeClub?.name || 'KulüpYönet'}</span>
+          <div 
+            onClick={() => navigate('/dashboard')} 
+            className="flex items-center gap-1 cursor-pointer hover:text-indigo-600 transition-colors group"
+          >
+            <Building2 size={16} className="text-gray-400 group-hover:text-indigo-600 transition-colors mr-1" />
+            <span className="text-sm font-bold text-gray-900 group-hover:text-indigo-600 transition-colors">{activeClub?.name || 'KulüpYönet'}</span>
+          </div>
           {breadcrumbItems}
         </div>
       </div>
@@ -94,15 +99,18 @@ export const TopBar = () => {
       {/* Right: user info */}
       <div className="flex items-center gap-6">
         {/* User Info */}
-        <div className="flex items-center gap-3 pl-6 border-l border-gray-100">
+        <div 
+          onClick={() => navigate('/dashboard/profile')}
+          className="flex items-center gap-3 pl-6 border-l border-gray-100 cursor-pointer group"
+        >
           <div className="text-right hidden sm:block">
-            <p className="text-sm font-bold text-gray-900 leading-none mb-1">{getDisplayName()}</p>
+            <p className="text-sm font-bold text-gray-900 leading-none mb-1 group-hover:text-indigo-600 transition-colors">{getDisplayName()}</p>
             <p className="text-[11px] font-medium text-gray-500 leading-none">{user?.email}</p>
           </div>
           
-          <div className={`w-9 h-9 rounded-xl flex items-center justify-center text-white text-sm font-bold shadow-sm transition-transform hover:scale-105 cursor-pointer
+          <div className={`w-9 h-9 rounded-xl flex items-center justify-center text-white text-sm font-bold shadow-sm transition-transform group-hover:scale-105 cursor-pointer
             ${isAdmin ? 'bg-red-500' : isClub ? 'bg-purple-600' : isBaskan ? 'bg-amber-500' : 'bg-indigo-600'}`}>
-            {getDisplayName()[0]?.toUpperCase()}
+            {getDisplayName()[0]?.toLocaleUpperCase('tr-TR')}
           </div>
         </div>
 

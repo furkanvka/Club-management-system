@@ -130,13 +130,16 @@ export const Sidebar = () => {
   return (
     <aside className="w-64 border-r border-gray-200 bg-white flex flex-col shrink-0 h-screen shadow-sm transition-all duration-300">
       {/* Club Header */}
-      <div className="h-16 px-6 border-b border-gray-100 flex items-center gap-3 bg-white sticky top-0 z-10">
-        <div className={`w-8 h-8 rounded-lg ${isBaskan ? 'bg-indigo-600' : 'bg-gray-800'} flex items-center justify-center text-white`}>
+      <div 
+        onClick={() => navigate('/dashboard')}
+        className="h-16 px-6 border-b border-gray-100 flex items-center gap-3 bg-white sticky top-0 z-10 cursor-pointer hover:bg-gray-50 transition-colors group"
+      >
+        <div className={`w-8 h-8 rounded-lg ${isBaskan ? 'bg-indigo-600 group-hover:bg-indigo-700' : 'bg-gray-800 group-hover:bg-gray-900'} flex items-center justify-center text-white transition-colors`}>
           {isBaskan ? <ShieldCheck size={18} /> : <Settings size={18} />}
         </div>
         <div className="min-w-0">
-          <div className="text-[10px] text-gray-400 font-bold uppercase tracking-wider leading-none mb-1">Kulüp Yönetimi</div>
-          <div className="text-sm font-bold text-gray-900 truncate leading-none">
+          <div className="text-[10px] text-gray-400 font-bold uppercase tracking-wider leading-none mb-1 group-hover:text-indigo-500 transition-colors">Kulüp Yönetimi</div>
+          <div className="text-sm font-bold text-gray-900 truncate leading-none group-hover:text-indigo-600 transition-colors">
             {activeClub ? activeClub.name : 'KulüpYönet'}
           </div>
         </div>
@@ -209,12 +212,15 @@ export const Sidebar = () => {
 
       {/* User Footer */}
       <div className="p-4 border-t border-gray-100 bg-gray-50/50">
-        <div className="flex items-center gap-3 px-2 mb-4">
-          <div className="w-10 h-10 rounded-xl bg-white border border-gray-200 shadow-sm flex items-center justify-center font-bold text-indigo-600">
-            {user?.email?.[0].toUpperCase() || 'U'}
+        <div 
+          onClick={() => navigate('/dashboard/profile')}
+          className="flex items-center gap-3 px-2 mb-4 cursor-pointer group"
+        >
+          <div className="w-10 h-10 rounded-xl bg-white border border-gray-200 shadow-sm flex items-center justify-center font-bold text-indigo-600 group-hover:border-indigo-300 group-hover:bg-indigo-50 transition-all">
+            {user?.email?.[0].toLocaleUpperCase('tr-TR') || 'U'}
           </div>
           <div className="flex-1 min-w-0">
-            <div className="text-sm font-bold text-gray-900 truncate">{user?.email?.split('@')[0]}</div>
+            <div className="text-sm font-bold text-gray-900 truncate group-hover:text-indigo-600 transition-colors">{user?.email?.split('@')[0]}</div>
             <div className="text-[11px] font-medium text-gray-500">{getRoleLabel()}</div>
           </div>
         </div>

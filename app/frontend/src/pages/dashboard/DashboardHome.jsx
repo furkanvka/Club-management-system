@@ -249,7 +249,7 @@ const MemberDashboard = ({ activeClub, user, activeMembershipId }) => {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-gray-100">
         <div className="flex items-center gap-4">
           <div className="w-14 h-14 rounded-2xl bg-indigo-600 flex items-center justify-center text-white text-xl font-bold shadow-lg shadow-indigo-100">
-            {user?.firstName?.[0].toUpperCase() || user?.email?.[0].toUpperCase()}
+            {user?.firstName?.[0]?.toLocaleUpperCase('tr-TR') || user?.email?.[0]?.toLocaleUpperCase('tr-TR')}
           </div>
           <div>
             <h1 className="text-3xl font-bold text-gray-900 tracking-tight">
