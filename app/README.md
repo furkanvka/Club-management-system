@@ -6,7 +6,7 @@
 ![React](https://img.shields.io/badge/frontend-React-blue.svg)
 ![PostgreSQL](https://img.shields.io/badge/database-PostgreSQL-blue.svg)
 
-Student Club Management System is a robust web-based platform designed to empower student organizations. It centralizes member administration, financial tracking, event coordination, and resource management into a single, intuitive interface.
+Student Club Management System is a web-based platform designed to empower student organizations. It centralizes member administration, financial tracking, event coordination, and resource management into a single, intuitive interface.
 
 ---
 
@@ -32,8 +32,6 @@ Student Club Management System is a robust web-based platform designed to empowe
 app/
 ├── backend/          # Spring Boot Application
 ├── frontend/         # React Application
-├── docker-compose.yml # Orchestration configuration
-└── wireframe.html    # Initial design mockups
 ```
 
 ---
@@ -44,7 +42,7 @@ app/
 
 Before you begin, ensure you have the following installed. Follow the links for installation guides:
 
-1.  **Docker Desktop** (Recommended)
+1.  **Docker Desktop**
     - [Download & Install Docker](https://www.docker.com/products/docker-desktop/)
     - Verify: `docker --version` and `docker-compose --version`
 
@@ -58,7 +56,7 @@ Before you begin, ensure you have the following installed. Follow the links for 
     - **Linux**: Use `nvm` or `sudo apt install nodejs npm`
     - Verify: `node -version` and `npm -version`
 
-4.  **Maven** (Optional, project includes `./mvnw`)
+4.  **Maven**
     - [Download Maven](https://maven.apache.org/download.cgi)
     - **Linux**: `sudo apt install maven`
     - Verify: `mvn -version`
