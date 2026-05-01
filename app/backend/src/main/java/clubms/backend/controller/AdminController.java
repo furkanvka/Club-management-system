@@ -32,9 +32,18 @@ public class AdminController {
         return ResponseEntity.ok(pendingClubs);
     }
 
+    @GetMapping("/clubs/all")
+    public ResponseEntity<List<Club>> getAllManagedClubs() {
+        return ResponseEntity.ok(clubService.getAllClubs());
+    }
+
     @PutMapping("/clubs/{id}/approve")
-    public ResponseEntity<Club> approveClub(@PathVariable Long id) {
+    public ResponseEntity<?> approveClub(@PathVariable Long id) {
         return clubService.getClubById(id).map(club -> {
+            // Sadece PENDING kulüpler onaylanabilir
+            if (!"PENDING".equals(club.getStatus())) {
+                return ResponseEntity.badRequest().body("Bu kulüp zaten " + club.getStatus() + " durumundadır.");
+            }
             club.setStatus("APPROVED");
             Club savedClub = clubService.createClub(club);
 
@@ -50,7 +59,7 @@ public class AdminController {
                 documentRepository.save(doc);
             }
 
-            return ResponseEntity.ok(savedClub);
+            return ResponseEntity.ok((Object) savedClub);
         }).orElse(ResponseEntity.notFound().build());
     }
 

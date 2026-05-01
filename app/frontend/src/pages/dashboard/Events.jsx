@@ -69,7 +69,7 @@ export const Events = () => {
       const isAnyResponsible = res.data.some(ev => isResponsibleFor(ev));
       if (isBaskan || isAnyResponsible) {
         const memRes = await api.get(`/clubs/${activeClub.id}/members`);
-        setMembers(memRes.data);
+        setMembers(memRes.data.filter(m => m.status !== 'pending'));
       }
 
       const staffEvents = [];

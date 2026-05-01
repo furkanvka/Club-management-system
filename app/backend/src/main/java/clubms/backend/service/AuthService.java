@@ -63,8 +63,17 @@ public class AuthService {
 
     public String authenticateClub(LoginRequest loginRequest) {
         // Strict Check: Must exist in clubs table
-        if (clubRepository.findByContactEmail(loginRequest.getEmail()).isEmpty()) {
+        var clubOpt = clubRepository.findByContactEmail(loginRequest.getEmail());
+        if (clubOpt.isEmpty()) {
             throw new RuntimeException("Bu e-posta adresi ile kayıtlı bir kulüp hesabı bulunamadı.");
+        }
+        
+        var club = clubOpt.get();
+        if (!"APPROVED".equals(club.getStatus())) {
+            if ("REJECTED".equals(club.getStatus())) {
+                throw new RuntimeException("Kulüp başvurunuz reddedilmiştir. Giriş yapılamaz.");
+            }
+            throw new RuntimeException("Kulüp başvurunuz henüz onaylanmamıştır. Lütfen yönetici onayını bekleyin.");
         }
 
         Authentication authentication = authenticationManager.authenticate(

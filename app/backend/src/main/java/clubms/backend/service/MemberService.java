@@ -56,6 +56,11 @@ public class MemberService {
             return;
         }
 
+        // Onay bekleyen üyeler — statüsünü değiştirme
+        if ("pending".equals(m.getStatus())) {
+            return; // pending olarak kalsın
+        }
+
         // Bir ekipte üyeliği var mı?
         boolean inTeam = !teamMemberRepository.findByMembershipId(m.getId()).isEmpty();
         
@@ -70,10 +75,16 @@ public class MemberService {
     }
 
     public Membership createMembership(Membership membership) {
-        // Yeni üyelik varsayılan olarak pasiftir (henüz bir ekipte değil)
+        // Yeni üyelik başkan değilse onay bekler
         if (!"baskan".equals(membership.getRole())) {
-            membership.setStatus("passive");
+            membership.setStatus("pending");
+        } else {
+            membership.setStatus("active");
         }
+        return membershipRepository.save(membership);
+    }
+
+    public Membership saveMembership(Membership membership) {
         return membershipRepository.save(membership);
     }
 

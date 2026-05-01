@@ -214,33 +214,37 @@ export const Sidebar = () => {
       <div className="p-4 border-t border-gray-100 bg-gray-50/50">
         <div 
           onClick={() => navigate('/dashboard/profile')}
-          className="flex items-center gap-3 px-2 mb-4 cursor-pointer group"
+          className="flex items-center gap-3 px-2 mb-3 cursor-pointer group"
         >
-          <div className="w-10 h-10 rounded-xl bg-white border border-gray-200 shadow-sm flex items-center justify-center font-bold text-indigo-600 group-hover:border-indigo-300 group-hover:bg-indigo-50 transition-all">
-            {user?.email?.[0].toLocaleUpperCase('tr-TR') || 'U'}
+          <div className="w-9 h-9 rounded-xl bg-white border border-gray-200 shadow-sm flex items-center justify-center font-bold text-indigo-600 group-hover:border-indigo-300 group-hover:bg-indigo-50 transition-all text-sm">
+            {user?.email?.[0]?.toLocaleUpperCase('tr-TR') || 'U'}
           </div>
           <div className="flex-1 min-w-0">
-            <div className="text-sm font-bold text-gray-900 truncate group-hover:text-indigo-600 transition-colors">{user?.email?.split('@')[0]}</div>
-            <div className="text-[11px] font-medium text-gray-500">{getRoleLabel()}</div>
+            <div className="text-xs font-bold text-gray-900 truncate group-hover:text-indigo-600 transition-colors">{user?.email?.split('@')[0]}</div>
+            <div className="text-[10px] font-medium text-gray-500 uppercase tracking-wide">{getRoleLabel()}</div>
           </div>
         </div>
         
-        <div className="grid grid-cols-2 gap-2">
+        <div className="flex gap-2">
           {user?.loginType !== 'club' && (
             <button 
               onClick={() => navigate('/select-club')}
               title="Kulüp Değiştir"
-              className="flex items-center justify-center p-2 text-gray-500 hover:text-indigo-600 hover:bg-white rounded-lg transition-all border border-transparent hover:border-indigo-100"
+              className="flex-1 flex items-center justify-center gap-1.5 py-2 text-gray-500 hover:text-indigo-600 hover:bg-white rounded-lg transition-all border border-transparent hover:border-indigo-100 text-xs font-medium"
             >
-              <Repeat size={18} />
+              <Repeat size={15} />
+              <span>Değiştir</span>
             </button>
           )}
           <button 
             onClick={() => { logout(); navigate('/'); }}
             title="Çıkış Yap"
-            className={`flex items-center justify-center p-2 text-rose-500 hover:bg-rose-50 rounded-lg transition-all border border-transparent hover:border-rose-100 ${user?.loginType === 'club' ? 'col-span-2' : ''}`}
+            className={`flex items-center justify-center gap-1.5 py-2 text-rose-500 hover:bg-rose-50 hover:text-rose-600 rounded-lg transition-all border border-transparent hover:border-rose-100 text-xs font-medium ${
+              user?.loginType === 'club' ? 'flex-1' : 'flex-1'
+            }`}
           >
-            <LogOut size={18} />
+            <LogOut size={15} />
+            <span>Çıkış</span>
           </button>
         </div>
       </div>

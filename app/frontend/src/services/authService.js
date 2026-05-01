@@ -1,12 +1,26 @@
 import api from './api';
 
+// Safe JWT decode for UTF-8 characters
+const parseJwt = (token) => {
+  try {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+    return JSON.parse(jsonPayload);
+  } catch (e) {
+    return null;
+  }
+};
+
 export const authService = {
   login: async (credentials) => {
     const response = await api.post('/auth/login', credentials);
     if (response.data.accessToken) {
       localStorage.setItem('token', response.data.accessToken);
-      const payload = JSON.parse(atob(response.data.accessToken.split('.')[1]));
-      const isAdmin = payload.role === 'ROLE_ADMIN';
+      const payload = parseJwt(response.data.accessToken);
+      const isAdmin = payload?.role === 'ROLE_ADMIN';
       localStorage.setItem('loginType', isAdmin ? 'admin' : 'user');
     }
     return response.data;
@@ -48,13 +62,10 @@ export const authService = {
   getCurrentUser: () => {
     const token = localStorage.getItem('token');
     if (!token) return null;
-    try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      const loginType = localStorage.getItem('loginType') || 'user';
-      return { ...payload, loginType };
-    } catch (e) {
-      return null;
-    }
+    const payload = parseJwt(token);
+    if (!payload) return null;
+    const loginType = localStorage.getItem('loginType') || 'user';
+    return { ...payload, loginType };
   }
 };
 

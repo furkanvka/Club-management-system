@@ -1,137 +1,50 @@
 <mxfile host="app.diagrams.net">
   <diagram name="Kulup_Yonetim_ER" id="Club_ER_01">
-    <mxGraphModel dx="2235" dy="1173" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="3000" pageHeight="3000" math="0" shadow="0">
+    <mxGraphModel dx="2438" dy="1280" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="3000" pageHeight="3000" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
         <mxCell id="E_USER" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;strokeWidth=2;fontStyle=1;" value="KULLANICI" vertex="1">
-          <mxGeometry height="50" width="100" x="227.65" y="265" as="geometry" />
+          <mxGeometry height="50" width="100" x="227.65" y="535" as="geometry" />
         </mxCell>
         <mxCell id="E_CLUB" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;strokeWidth=2;fontStyle=1;" value="KULÜP" vertex="1">
-          <mxGeometry height="50" width="100" x="855" y="215" as="geometry" />
+          <mxGeometry height="50" width="100" x="855" y="485" as="geometry" />
         </mxCell>
         <mxCell id="E_EVENT" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;strokeWidth=2;fontStyle=1;" value="ETKİNLİK" vertex="1">
-          <mxGeometry height="50" width="100" x="1210" y="100" as="geometry" />
+          <mxGeometry height="50" width="100" x="1210" y="370" as="geometry" />
         </mxCell>
         <mxCell id="E_PROJECT" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;strokeWidth=2;fontStyle=1;" value="PROJE" vertex="1">
-          <mxGeometry height="50" width="100" x="1270" y="510" as="geometry" />
+          <mxGeometry height="50" width="100" x="1270" y="780" as="geometry" />
         </mxCell>
         <mxCell id="E_MEMBER_PROFILE" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;strokeWidth=2;fontStyle=1;" value="ÜYE_PROFİLİ" vertex="1">
-          <mxGeometry height="50" width="120" x="247.65" y="675" as="geometry" />
+          <mxGeometry height="50" width="120" x="247.65" y="945" as="geometry" />
         </mxCell>
         <mxCell id="E_MEMBERSHIP" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;strokeWidth=2;fontStyle=1;" value="ÜYELİK" vertex="1">
-          <mxGeometry height="50" width="100" x="530" y="405" as="geometry" />
+          <mxGeometry height="50" width="100" x="530" y="675" as="geometry" />
         </mxCell>
         <mxCell id="E_TEAM" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;strokeWidth=2;fontStyle=1;" value="TAKIM" vertex="1">
-          <mxGeometry height="50" width="100" x="1060" y="645" as="geometry" />
+          <mxGeometry height="50" width="100" x="1010" y="945" as="geometry" />
         </mxCell>
         <mxCell id="A_USER_id" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="&lt;u&gt;id PK&lt;/u&gt;" vertex="1">
-          <mxGeometry height="35" width="90" x="80" y="130" as="geometry" />
+          <mxGeometry height="35" width="90" x="20" y="457.5" as="geometry" />
         </mxCell>
         <mxCell id="A_USER_email" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="eposta" vertex="1">
-          <mxGeometry height="35" width="90" x="180" y="130" as="geometry" />
+          <mxGeometry height="35" width="90" x="107.65" y="400" as="geometry" />
         </mxCell>
         <mxCell id="A_USER_firstName" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="ad" vertex="1">
-          <mxGeometry height="35" width="90" x="280" y="130" as="geometry" />
+          <mxGeometry height="35" width="90" x="227.65" y="400" as="geometry" />
         </mxCell>
         <mxCell id="A_USER_lastName" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="soyad" vertex="1">
-          <mxGeometry height="35" width="90" x="380" y="130" as="geometry" />
+          <mxGeometry height="35" width="90" x="327.65" y="400" as="geometry" />
         </mxCell>
         <mxCell id="A_USER_studentNumber" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="ogrenciNo" vertex="1">
-          <mxGeometry height="35" width="100" x="60" y="430" as="geometry" />
+          <mxGeometry height="35" width="100" x="60" y="700" as="geometry" />
         </mxCell>
         <mxCell id="A_USER_role" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="rol" vertex="1">
-          <mxGeometry height="35" width="90" x="60" y="365" as="geometry" />
+          <mxGeometry height="35" width="90" x="20" y="640.73" as="geometry" />
         </mxCell>
         <mxCell id="A_USER_createdAt" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="kayitTarihi" vertex="1">
-          <mxGeometry height="35" width="90" x="50" y="265" as="geometry" />
-        </mxCell>
-        <mxCell id="A_CLUB_id" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="&lt;u&gt;id PK&lt;/u&gt;" vertex="1">
-          <mxGeometry height="35" width="90" x="530" y="40" as="geometry" />
-        </mxCell>
-        <mxCell id="A_CLUB_name" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="ad" vertex="1">
-          <mxGeometry height="35" width="90" x="630" y="40" as="geometry" />
-        </mxCell>
-        <mxCell id="A_CLUB_category" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="kategori" vertex="1">
-          <mxGeometry height="35" width="90" x="730" y="40" as="geometry" />
-        </mxCell>
-        <mxCell id="A_CLUB_status" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="durum" vertex="1">
-          <mxGeometry height="35" width="90" x="540" y="145" as="geometry" />
-        </mxCell>
-        <mxCell id="A_CLUB_isOpen" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="alimaAcik" vertex="1">
-          <mxGeometry height="35" width="90" x="640" y="145" as="geometry" />
-        </mxCell>
-        <mxCell id="A_CLUB_createdAt" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="kurulusTarihi" vertex="1">
-          <mxGeometry height="35" width="90" x="870" y="50" as="geometry" />
-        </mxCell>
-        <mxCell id="A_MEMBERSHIP_id" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="&lt;u&gt;id PK&lt;/u&gt;" vertex="1">
-          <mxGeometry height="35" width="90" x="450" y="330" as="geometry" />
-        </mxCell>
-        <mxCell id="A_MEMBERSHIP_user_id" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="kullanici_id FK" vertex="1">
-          <mxGeometry height="35" width="90" x="650" y="285" as="geometry" />
-        </mxCell>
-        <mxCell id="A_MEMBERSHIP_club_id" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="kulup_id FK" vertex="1">
-          <mxGeometry height="35" width="90" x="610" y="565" as="geometry" />
-        </mxCell>
-        <mxCell id="A_MEMBERSHIP_role" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="rol" vertex="1">
-          <mxGeometry height="35" width="90" x="540" y="265" as="geometry" />
-        </mxCell>
-        <mxCell id="A_MEMBERSHIP_status" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="durum" vertex="1">
-          <mxGeometry height="35" width="90" x="720" y="485" as="geometry" />
-        </mxCell>
-        <mxCell id="A_MEMBERSHIP_joinedAt" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="katilimTarihi" vertex="1">
-          <mxGeometry height="35" width="90" x="730" y="412.5" as="geometry" />
-        </mxCell>
-        <mxCell id="A_PROFILE_id" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="&lt;u&gt;id PK&lt;/u&gt;" vertex="1">
-          <mxGeometry height="35" width="90" x="97.65" y="595" as="geometry" />
-        </mxCell>
-        <mxCell id="A_PROFILE_membership_id" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="uyelik_id FK" vertex="1">
-          <mxGeometry height="35" width="110" x="197.65" y="595" as="geometry" />
-        </mxCell>
-        <mxCell id="A_PROFILE_fullName" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="adSoyad" vertex="1">
-          <mxGeometry height="35" width="90" x="317.65" y="595" as="geometry" />
-        </mxCell>
-        <mxCell id="A_PROFILE_studentNumber" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="ogrenciNo" vertex="1">
-          <mxGeometry height="35" width="100" x="97.65" y="755" as="geometry" />
-        </mxCell>
-        <mxCell id="A_PROFILE_department" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="bolum" vertex="1">
-          <mxGeometry height="35" width="90" x="207.65" y="755" as="geometry" />
-        </mxCell>
-        <mxCell id="A_PROFILE_classYear" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="sinif" vertex="1">
-          <mxGeometry height="35" width="90" x="307.65" y="755" as="geometry" />
-        </mxCell>
-        <mxCell id="A_TEAM_id" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="&lt;u&gt;id PK&lt;/u&gt;" vertex="1">
-          <mxGeometry height="35" width="90" x="965" y="835" as="geometry" />
-        </mxCell>
-        <mxCell id="A_TEAM_club_id" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="kulup_id FK" vertex="1">
-          <mxGeometry height="35" width="90" x="1065" y="835" as="geometry" />
-        </mxCell>
-        <mxCell id="A_TEAM_leader_id" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="lider_id FK" vertex="1">
-          <mxGeometry height="35" width="90" x="1165" y="835" as="geometry" />
-        </mxCell>
-        <mxCell id="A_TEAM_name" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="ad" vertex="1">
-          <mxGeometry height="35" width="90" x="1210" y="725" as="geometry" />
-        </mxCell>
-        <mxCell id="A_TEAM_createdAt" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="kurulusTarihi" vertex="1">
-          <mxGeometry height="35" width="90" x="940" y="745" as="geometry" />
-        </mxCell>
-        <mxCell id="A_PROJECT_id" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="&lt;u&gt;id PK&lt;/u&gt;" vertex="1">
-          <mxGeometry height="35" width="90" x="1090" y="370" as="geometry" />
-        </mxCell>
-        <mxCell id="A_PROJECT_club_id" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="kulup_id FK" vertex="1">
-          <mxGeometry height="35" width="90" x="1340" y="335.73" as="geometry" />
-        </mxCell>
-        <mxCell id="A_PROJECT_team_id" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="takim_id FK" vertex="1">
-          <mxGeometry height="35" width="90" x="1470" y="370" as="geometry" />
-        </mxCell>
-        <mxCell id="A_PROJECT_name" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="ad" vertex="1">
-          <mxGeometry height="35" width="90" x="1190" y="335.73" as="geometry" />
-        </mxCell>
-        <mxCell id="A_PROJECT_status" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="durum" vertex="1">
-          <mxGeometry height="35" width="90" x="1470" y="610" as="geometry" />
-        </mxCell>
-        <mxCell id="A_PROJECT_priority" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="oncelik" vertex="1">
-          <mxGeometry height="35" width="90" x="1470" y="510" as="geometry" />
+          <mxGeometry height="35" width="90" x="20" y="555" as="geometry" />
         </mxCell>
         <mxCell id="AL_U1" edge="1" parent="1" source="A_USER_id" style="endArrow=none;html=1;strokeWidth=1;" target="E_USER">
           <mxGeometry relative="1" as="geometry" />
@@ -154,6 +67,30 @@
         <mxCell id="AL_U7" edge="1" parent="1" source="A_USER_createdAt" style="endArrow=none;html=1;strokeWidth=1;" target="E_USER">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
+        <mxCell id="A_CLUB_id" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="&lt;u&gt;id PK&lt;/u&gt;" vertex="1">
+          <mxGeometry height="35" width="90" x="570" y="335" as="geometry" />
+        </mxCell>
+        <mxCell id="A_CLUB_name" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="ad" vertex="1">
+          <mxGeometry height="35" width="90" x="700" y="310" as="geometry" />
+        </mxCell>
+        <mxCell id="A_CLUB_category" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="kategori" vertex="1">
+          <mxGeometry height="35" width="90" x="730" y="520" as="geometry" />
+        </mxCell>
+        <mxCell id="A_CLUB_status" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="durum" vertex="1">
+          <mxGeometry height="35" width="90" x="580" y="470" as="geometry" />
+        </mxCell>
+        <mxCell id="A_CLUB_isOpen" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="alimaAcik" vertex="1">
+          <mxGeometry height="35" width="90" x="560" y="415" as="geometry" />
+        </mxCell>
+        <mxCell id="A_CLUB_createdAt" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="kurulusTarihi" vertex="1">
+          <mxGeometry height="35" width="90" x="1010" y="585" as="geometry" />
+        </mxCell>
+        <mxCell id="A_CLUB_description" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="aciklama" vertex="1">
+          <mxGeometry height="35" width="90" x="970" y="310" as="geometry" />
+        </mxCell>
+        <mxCell id="A_CLUB_contactEmail" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="iletisimEposta" vertex="1">
+          <mxGeometry height="35" width="100" x="1070" y="310" as="geometry" />
+        </mxCell>
         <mxCell id="AL_C1" edge="1" parent="1" source="A_CLUB_id" style="endArrow=none;html=1;strokeWidth=1;" target="E_CLUB">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
@@ -171,6 +108,33 @@
         </mxCell>
         <mxCell id="AL_C6" edge="1" parent="1" source="A_CLUB_createdAt" style="endArrow=none;html=1;strokeWidth=1;" target="E_CLUB">
           <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="AL_C7" edge="1" parent="1" source="A_CLUB_description" style="endArrow=none;html=1;strokeWidth=1;" target="E_CLUB">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="AL_C8" edge="1" parent="1" source="A_CLUB_contactEmail" style="endArrow=none;html=1;strokeWidth=1;" target="E_CLUB">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="A_MEMBERSHIP_id" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="&lt;u&gt;id PK&lt;/u&gt;" vertex="1">
+          <mxGeometry height="35" width="90" x="450" y="600" as="geometry" />
+        </mxCell>
+        <mxCell id="A_MEMBERSHIP_user_id" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="kullanici_id FK" vertex="1">
+          <mxGeometry height="35" width="90" x="650" y="555" as="geometry" />
+        </mxCell>
+        <mxCell id="A_MEMBERSHIP_club_id" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="kulup_id FK" vertex="1">
+          <mxGeometry height="35" width="90" x="417.65" y="802.5" as="geometry" />
+        </mxCell>
+        <mxCell id="A_MEMBERSHIP_role" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="rol" vertex="1">
+          <mxGeometry height="35" width="90" x="540" y="535" as="geometry" />
+        </mxCell>
+        <mxCell id="A_MEMBERSHIP_status" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="durum" vertex="1">
+          <mxGeometry height="35" width="90" x="720" y="755" as="geometry" />
+        </mxCell>
+        <mxCell id="A_MEMBERSHIP_joinedAt" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="katilimTarihi" vertex="1">
+          <mxGeometry height="35" width="90" x="730" y="682.5" as="geometry" />
+        </mxCell>
+        <mxCell id="A_MEMBERSHIP_flags" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="bayraklar" vertex="1">
+          <mxGeometry height="35" width="90" x="380" y="650" as="geometry" />
         </mxCell>
         <mxCell id="AL_M1" edge="1" parent="1" source="A_MEMBERSHIP_id" style="endArrow=none;html=1;strokeWidth=1;" target="E_MEMBERSHIP">
           <mxGeometry relative="1" as="geometry" />
@@ -190,6 +154,30 @@
         <mxCell id="AL_M6" edge="1" parent="1" source="A_MEMBERSHIP_joinedAt" style="endArrow=none;html=1;strokeWidth=1;" target="E_MEMBERSHIP">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
+        <mxCell id="AL_M7" edge="1" parent="1" source="A_MEMBERSHIP_flags" style="endArrow=none;html=1;strokeWidth=1;" target="E_MEMBERSHIP">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="A_PROFILE_id" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="&lt;u&gt;id PK&lt;/u&gt;" vertex="1">
+          <mxGeometry height="35" width="90" x="97.65" y="865" as="geometry" />
+        </mxCell>
+        <mxCell id="A_PROFILE_membership_id" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="uyelik_id FK" vertex="1">
+          <mxGeometry height="35" width="110" x="197.65" y="865" as="geometry" />
+        </mxCell>
+        <mxCell id="A_PROFILE_fullName" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="adSoyad" vertex="1">
+          <mxGeometry height="35" width="90" x="317.65" y="865" as="geometry" />
+        </mxCell>
+        <mxCell id="A_PROFILE_studentNumber" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="ogrenciNo" vertex="1">
+          <mxGeometry height="35" width="100" x="97.65" y="1025" as="geometry" />
+        </mxCell>
+        <mxCell id="A_PROFILE_department" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="bolum" vertex="1">
+          <mxGeometry height="35" width="90" x="207.65" y="1025" as="geometry" />
+        </mxCell>
+        <mxCell id="A_PROFILE_classYear" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="sinif" vertex="1">
+          <mxGeometry height="35" width="90" x="307.65" y="1025" as="geometry" />
+        </mxCell>
+        <mxCell id="A_PROFILE_phone" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="telefon" vertex="1">
+          <mxGeometry height="35" width="90" x="417.65" y="1025" as="geometry" />
+        </mxCell>
         <mxCell id="AL_P1" edge="1" parent="1" source="A_PROFILE_id" style="endArrow=none;html=1;strokeWidth=1;" target="E_MEMBER_PROFILE">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
@@ -208,6 +196,27 @@
         <mxCell id="AL_P6" edge="1" parent="1" source="A_PROFILE_classYear" style="endArrow=none;html=1;strokeWidth=1;" target="E_MEMBER_PROFILE">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
+        <mxCell id="AL_P7" edge="1" parent="1" source="A_PROFILE_phone" style="endArrow=none;html=1;strokeWidth=1;" target="E_MEMBER_PROFILE">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="A_TEAM_id" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="&lt;u&gt;id PK&lt;/u&gt;" vertex="1">
+          <mxGeometry height="35" width="90" x="965" y="1105" as="geometry" />
+        </mxCell>
+        <mxCell id="A_TEAM_club_id" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="kulup_id FK" vertex="1">
+          <mxGeometry height="35" width="90" x="1065" y="1105" as="geometry" />
+        </mxCell>
+        <mxCell id="A_TEAM_leader_id" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="lider_id FK" vertex="1">
+          <mxGeometry height="35" width="90" x="1165" y="1105" as="geometry" />
+        </mxCell>
+        <mxCell id="A_TEAM_name" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="ad" vertex="1">
+          <mxGeometry height="35" width="90" x="1210" y="995" as="geometry" />
+        </mxCell>
+        <mxCell id="A_TEAM_createdAt" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="kurulusTarihi" vertex="1">
+          <mxGeometry height="35" width="90" x="940" y="1015" as="geometry" />
+        </mxCell>
+        <mxCell id="A_TEAM_description" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="aciklama" vertex="1">
+          <mxGeometry height="35" width="90" x="1210" y="1045" as="geometry" />
+        </mxCell>
         <mxCell id="AL_T1" edge="1" parent="1" source="A_TEAM_id" style="endArrow=none;html=1;strokeWidth=1;" target="E_TEAM">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
@@ -222,6 +231,33 @@
         </mxCell>
         <mxCell id="AL_T5" edge="1" parent="1" source="A_TEAM_createdAt" style="endArrow=none;html=1;strokeWidth=1;" target="E_TEAM">
           <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="AL_T6" edge="1" parent="1" source="A_TEAM_description" style="endArrow=none;html=1;strokeWidth=1;" target="E_TEAM">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="A_PROJECT_id" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="&lt;u&gt;id PK&lt;/u&gt;" vertex="1">
+          <mxGeometry height="35" width="90" x="1090" y="640" as="geometry" />
+        </mxCell>
+        <mxCell id="A_PROJECT_club_id" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="kulup_id FK" vertex="1">
+          <mxGeometry height="35" width="90" x="1340" y="605.73" as="geometry" />
+        </mxCell>
+        <mxCell id="A_PROJECT_team_id" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="takim_id FK" vertex="1">
+          <mxGeometry height="35" width="90" x="1470" y="640" as="geometry" />
+        </mxCell>
+        <mxCell id="A_PROJECT_name" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="ad" vertex="1">
+          <mxGeometry height="35" width="90" x="1190" y="605.73" as="geometry" />
+        </mxCell>
+        <mxCell id="A_PROJECT_status" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="durum" vertex="1">
+          <mxGeometry height="35" width="90" x="1470" y="880" as="geometry" />
+        </mxCell>
+        <mxCell id="A_PROJECT_priority" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="oncelik" vertex="1">
+          <mxGeometry height="35" width="90" x="1470" y="780" as="geometry" />
+        </mxCell>
+        <mxCell id="A_PROJECT_startDate" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="baslamaTarihi" vertex="1">
+          <mxGeometry height="35" width="100" x="1470" y="690" as="geometry" />
+        </mxCell>
+        <mxCell id="A_PROJECT_endDate" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="bitisTarihi" vertex="1">
+          <mxGeometry height="35" width="90" x="1470" y="735" as="geometry" />
         </mxCell>
         <mxCell id="AL_PR1" edge="1" parent="1" source="A_PROJECT_id" style="endArrow=none;html=1;strokeWidth=1;" target="E_PROJECT">
           <mxGeometry relative="1" as="geometry" />
@@ -241,8 +277,182 @@
         <mxCell id="AL_PR6" edge="1" parent="1" source="A_PROJECT_priority" style="endArrow=none;html=1;strokeWidth=1;" target="E_PROJECT">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
+        <mxCell id="AL_PR7" edge="1" parent="1" source="A_PROJECT_startDate" style="endArrow=none;html=1;strokeWidth=1;" target="E_PROJECT">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="AL_PR8" edge="1" parent="1" source="A_PROJECT_endDate" style="endArrow=none;html=1;strokeWidth=1;" target="E_PROJECT">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="A_EVENT_id" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="&lt;u&gt;id PK&lt;/u&gt;" vertex="1">
+          <mxGeometry height="35" width="90" x="1100" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="A_EVENT_name" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="ad" vertex="1">
+          <mxGeometry height="35" width="90" x="1210" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="A_EVENT_description" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="aciklama" vertex="1">
+          <mxGeometry height="35" width="90" x="1320" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="A_EVENT_eventDate" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="etkinlikTarihi" vertex="1">
+          <mxGeometry height="35" width="90" x="1410" y="300" as="geometry" />
+        </mxCell>
+        <mxCell id="A_EVENT_location" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="konum" vertex="1">
+          <mxGeometry height="35" width="90" x="1440" y="350" as="geometry" />
+        </mxCell>
+        <mxCell id="A_EVENT_capacity" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="kapasite" vertex="1">
+          <mxGeometry height="35" width="90" x="1440" y="400" as="geometry" />
+        </mxCell>
+        <mxCell id="A_EVENT_status" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="durum" vertex="1">
+          <mxGeometry height="35" width="90" x="1410" y="450" as="geometry" />
+        </mxCell>
+        <mxCell id="A_EVENT_club_id" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="kulup_id FK" vertex="1">
+          <mxGeometry height="35" width="90" x="1100" y="450" as="geometry" />
+        </mxCell>
+        <mxCell id="AL_E1" edge="1" parent="1" source="A_EVENT_id" style="endArrow=none;html=1;strokeWidth=1;" target="E_EVENT">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="AL_E2" edge="1" parent="1" source="A_EVENT_name" style="endArrow=none;html=1;strokeWidth=1;" target="E_EVENT">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="AL_E3" edge="1" parent="1" source="A_EVENT_description" style="endArrow=none;html=1;strokeWidth=1;" target="E_EVENT">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="AL_E4" edge="1" parent="1" source="A_EVENT_eventDate" style="endArrow=none;html=1;strokeWidth=1;" target="E_EVENT">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="AL_E5" edge="1" parent="1" source="A_EVENT_location" style="endArrow=none;html=1;strokeWidth=1;" target="E_EVENT">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="AL_E6" edge="1" parent="1" source="A_EVENT_capacity" style="endArrow=none;html=1;strokeWidth=1;" target="E_EVENT">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="AL_E7" edge="1" parent="1" source="A_EVENT_status" style="endArrow=none;html=1;strokeWidth=1;" target="E_EVENT">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="AL_E8" edge="1" parent="1" source="A_EVENT_club_id" style="endArrow=none;html=1;strokeWidth=1;" target="E_EVENT">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="E_TRANSACTION" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;strokeWidth=2;fontStyle=1;" value="İŞLEM" vertex="1">
+          <mxGeometry height="50" width="100" x="490" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="A_TRANS_id" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="&lt;u&gt;id PK&lt;/u&gt;" vertex="1">
+          <mxGeometry height="35" width="90" x="370" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="A_TRANS_amount" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="miktar" vertex="1">
+          <mxGeometry height="35" width="90" x="480" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="A_TRANS_type" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="tip" vertex="1">
+          <mxGeometry height="35" width="90" x="590" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="A_TRANS_status" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="durum" vertex="1">
+          <mxGeometry height="35" width="90" x="690" y="170" as="geometry" />
+        </mxCell>
+        <mxCell id="A_TRANS_date" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="islemTarihi" vertex="1">
+          <mxGeometry height="35" width="90" x="350" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="AL_TR1" edge="1" parent="1" source="A_TRANS_id" style="endArrow=none;html=1;strokeWidth=1;" target="E_TRANSACTION">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="AL_TR2" edge="1" parent="1" source="A_TRANS_amount" style="endArrow=none;html=1;strokeWidth=1;" target="E_TRANSACTION">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="AL_TR3" edge="1" parent="1" source="A_TRANS_type" style="endArrow=none;html=1;strokeWidth=1;" target="E_TRANSACTION">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="AL_TR4" edge="1" parent="1" source="A_TRANS_status" style="endArrow=none;html=1;strokeWidth=1;" target="E_TRANSACTION">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="AL_TR5" edge="1" parent="1" source="A_TRANS_date" style="endArrow=none;html=1;strokeWidth=1;" target="E_TRANSACTION">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="E_DOCUMENT" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;strokeWidth=2;fontStyle=1;" value="BELGE" vertex="1">
+          <mxGeometry height="50" width="100" x="855" y="142.5" as="geometry" />
+        </mxCell>
+        <mxCell id="A_DOC_id" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="&lt;u&gt;id PK&lt;/u&gt;" vertex="1">
+          <mxGeometry height="35" width="90" x="710" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="A_DOC_title" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="baslik" vertex="1">
+          <mxGeometry height="35" width="90" x="820" y="45" as="geometry" />
+        </mxCell>
+        <mxCell id="A_DOC_cat" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="kategori" vertex="1">
+          <mxGeometry height="35" width="90" x="930" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="A_DOC_status" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="onayDurumu" vertex="1">
+          <mxGeometry height="35" width="90" x="1010" y="95" as="geometry" />
+        </mxCell>
+        <mxCell id="AL_D1" edge="1" parent="1" source="A_DOC_id" style="endArrow=none;html=1;strokeWidth=1;" target="E_DOCUMENT">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="AL_D2" edge="1" parent="1" source="A_DOC_title" style="endArrow=none;html=1;strokeWidth=1;" target="E_DOCUMENT">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="AL_D3" edge="1" parent="1" source="A_DOC_cat" style="endArrow=none;html=1;strokeWidth=1;" target="E_DOCUMENT">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="AL_D4" edge="1" parent="1" source="A_DOC_status" style="endArrow=none;html=1;strokeWidth=1;" target="E_DOCUMENT">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="E_TASK" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;strokeWidth=2;fontStyle=1;" value="GÖREV" vertex="1">
+          <mxGeometry height="50" width="100" x="646.98" y="1130" as="geometry" />
+        </mxCell>
+        <mxCell id="A_TASK_id" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="&lt;u&gt;id PK&lt;/u&gt;" vertex="1">
+          <mxGeometry height="35" width="90" x="516.98" y="1080" as="geometry" />
+        </mxCell>
+        <mxCell id="A_TASK_title" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="baslik" vertex="1">
+          <mxGeometry height="35" width="90" x="516.98" y="1140" as="geometry" />
+        </mxCell>
+        <mxCell id="A_TASK_status" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="durum" vertex="1">
+          <mxGeometry height="35" width="90" x="536.98" y="1200" as="geometry" />
+        </mxCell>
+        <mxCell id="A_TASK_priority" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="oncelik" vertex="1">
+          <mxGeometry height="35" width="90" x="646.98" y="1220" as="geometry" />
+        </mxCell>
+        <mxCell id="A_TASK_dueDate" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="teslimTarihi" vertex="1">
+          <mxGeometry height="35" width="90" x="756.98" y="1190" as="geometry" />
+        </mxCell>
+        <mxCell id="AL_TA1" edge="1" parent="1" source="A_TASK_id" style="endArrow=none;html=1;strokeWidth=1;" target="E_TASK">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="AL_TA2" edge="1" parent="1" source="A_TASK_title" style="endArrow=none;html=1;strokeWidth=1;" target="E_TASK">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="AL_TA3" edge="1" parent="1" source="A_TASK_status" style="endArrow=none;html=1;strokeWidth=1;" target="E_TASK">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="AL_TA4" edge="1" parent="1" source="A_TASK_priority" style="endArrow=none;html=1;strokeWidth=1;" target="E_TASK">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="AL_TA5" edge="1" parent="1" source="A_TASK_dueDate" style="endArrow=none;html=1;strokeWidth=1;" target="E_TASK">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="E_MEETING_REPORT" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;strokeWidth=2;fontStyle=1;" value="TOPLANTI_RAPORU" vertex="1">
+          <mxGeometry height="50" width="130" x="1610" y="802.5" as="geometry" />
+        </mxCell>
+        <mxCell id="A_MR_id" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="&lt;u&gt;id PK&lt;/u&gt;" vertex="1">
+          <mxGeometry height="35" width="90" x="1730" y="947.5" as="geometry" />
+        </mxCell>
+        <mxCell id="A_MR_title" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="baslik" vertex="1">
+          <mxGeometry height="35" width="90" x="1770" y="870" as="geometry" />
+        </mxCell>
+        <mxCell id="A_MR_date" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="toplantiTarihi" vertex="1">
+          <mxGeometry height="35" width="90" x="1780" y="780" as="geometry" />
+        </mxCell>
+        <mxCell id="A_MR_type" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="tip" vertex="1">
+          <mxGeometry height="35" width="90" x="1720" y="707.5" as="geometry" />
+        </mxCell>
+        <mxCell id="AL_MR1" edge="1" parent="1" source="A_MR_id" style="endArrow=none;html=1;strokeWidth=1;" target="E_MEETING_REPORT">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="AL_MR2" edge="1" parent="1" source="A_MR_title" style="endArrow=none;html=1;strokeWidth=1;" target="E_MEETING_REPORT">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="AL_MR3" edge="1" parent="1" source="A_MR_date" style="endArrow=none;html=1;strokeWidth=1;" target="E_MEETING_REPORT">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="AL_MR4" edge="1" parent="1" source="A_MR_type" style="endArrow=none;html=1;strokeWidth=1;" target="E_MEETING_REPORT">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
         <mxCell id="R_USER_MEMBERSHIP" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;strokeWidth=2;fontStyle=1;" value="sahiptir" vertex="1">
-          <mxGeometry height="60" width="80" x="237.64999999999998" y="405" as="geometry" />
+          <mxGeometry height="60" width="80" x="237.65" y="675" as="geometry" />
         </mxCell>
         <mxCell id="RL1_UM" edge="1" parent="1" source="E_USER" style="endArrow=none;html=1;strokeWidth=2;" target="R_USER_MEMBERSHIP">
           <mxGeometry relative="1" as="geometry" />
@@ -261,7 +471,7 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="R_CLUB_MEMBERSHIP" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;strokeWidth=2;fontStyle=1;" value="uyeleri_var" vertex="1">
-          <mxGeometry height="60" width="100" x="750" y="323.23" as="geometry" />
+          <mxGeometry height="60" width="100" x="750" y="593.23" as="geometry" />
         </mxCell>
         <mxCell id="RL1_CM" edge="1" parent="1" source="E_CLUB" style="endArrow=none;html=1;strokeWidth=2;" target="R_CLUB_MEMBERSHIP">
           <mxGeometry relative="1" as="geometry" />
@@ -280,7 +490,7 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="R_MEMBERSHIP_PROFILE" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;strokeWidth=2;fontStyle=1;" value="profili_var" vertex="1">
-          <mxGeometry height="60" width="100" x="530" y="665" as="geometry" />
+          <mxGeometry height="60" width="100" x="530" y="935" as="geometry" />
         </mxCell>
         <mxCell id="RL1_MP" edge="1" parent="1" source="E_MEMBERSHIP" style="endArrow=none;html=1;strokeWidth=2;" target="R_MEMBERSHIP_PROFILE">
           <mxGeometry relative="1" as="geometry" />
@@ -299,7 +509,7 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="R_CLUB_TEAM" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;strokeWidth=2;fontStyle=1;" value="barindirir" vertex="1">
-          <mxGeometry height="60" width="80" x="865" y="472.5" as="geometry" />
+          <mxGeometry height="60" width="80" x="865" y="742.5" as="geometry" />
         </mxCell>
         <mxCell id="RL1_CT" edge="1" parent="1" source="E_CLUB" style="endArrow=none;html=1;strokeWidth=2;" target="R_CLUB_TEAM">
           <mxGeometry relative="1" as="geometry" />
@@ -318,7 +528,7 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="R_MEMBERSHIP_TEAM_LEAD" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;strokeWidth=2;fontStyle=1;" value="yonetir" vertex="1">
-          <mxGeometry height="60" width="80" x="850" y="645" as="geometry" />
+          <mxGeometry height="60" width="80" x="800" y="867.5" as="geometry" />
         </mxCell>
         <mxCell id="RL1_MTL" edge="1" parent="1" source="E_MEMBERSHIP" style="endArrow=none;html=1;strokeWidth=2;" target="R_MEMBERSHIP_TEAM_LEAD">
           <mxGeometry relative="1" as="geometry" />
@@ -337,7 +547,7 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="R_CLUB_EVENT" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;strokeWidth=2;fontStyle=1;" value="duzenler" vertex="1">
-          <mxGeometry height="60" width="100" x="1065" y="95" as="geometry" />
+          <mxGeometry height="60" width="100" x="1065" y="365" as="geometry" />
         </mxCell>
         <mxCell id="RL1_CE" edge="1" parent="1" source="E_CLUB" style="endArrow=none;html=1;strokeWidth=2;" target="R_CLUB_EVENT">
           <mxGeometry relative="1" as="geometry" />
@@ -356,7 +566,7 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="R_CLUB_PROJECT" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;strokeWidth=2;fontStyle=1;" value="sahiptir" vertex="1">
-          <mxGeometry height="60" width="80" x="1030" y="430" as="geometry" />
+          <mxGeometry height="60" width="80" x="1030" y="700" as="geometry" />
         </mxCell>
         <mxCell id="RL1_CP" edge="1" parent="1" source="E_CLUB" style="endArrow=none;html=1;strokeWidth=2;" target="R_CLUB_PROJECT">
           <mxGeometry relative="1" as="geometry" />
@@ -375,7 +585,7 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="R_TEAM_PROJECT" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;strokeWidth=2;fontStyle=1;" value="yurutur" vertex="1">
-          <mxGeometry height="60" width="100" x="1260" y="640" as="geometry" />
+          <mxGeometry height="60" width="100" x="1140" y="830" as="geometry" />
         </mxCell>
         <mxCell id="RL1_TP" edge="1" parent="1" source="E_TEAM" style="endArrow=none;html=1;strokeWidth=2;" target="R_TEAM_PROJECT">
           <mxGeometry relative="1" as="geometry" />
@@ -389,6 +599,147 @@
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="L_RL2_TP" connectable="0" parent="RL2_TP" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="N" vertex="1">
+          <mxGeometry relative="1" x="0.5" as="geometry">
+            <mxPoint x="10" y="10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="R_CLUB_TRANS" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;strokeWidth=2;fontStyle=1;" value="islem_yapar" vertex="1">
+          <mxGeometry height="60" width="100" x="730" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="RL1_CTrans" edge="1" parent="1" source="E_CLUB" style="endArrow=none;html=1;strokeWidth=2;" target="R_CLUB_TRANS">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="L_RL1_CTrans" connectable="0" parent="RL1_CTrans" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.5" as="geometry">
+            <mxPoint x="10" y="10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="RL2_CTrans" edge="1" parent="1" source="R_CLUB_TRANS" style="endArrow=none;html=1;strokeWidth=2;" target="E_TRANSACTION">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="L_RL2_CTrans" connectable="0" parent="RL2_CTrans" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="N" vertex="1">
+          <mxGeometry relative="1" x="0.5" as="geometry">
+            <mxPoint x="10" y="10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="R_MEM_TRANS" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;strokeWidth=2;fontStyle=1;" value="sorumludur" vertex="1">
+          <mxGeometry height="60" width="100" x="430" y="445" as="geometry" />
+        </mxCell>
+        <mxCell id="RL1_MTrans" edge="1" parent="1" source="E_MEMBERSHIP" style="endArrow=none;html=1;strokeWidth=2;" target="R_MEM_TRANS">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="L_RL1_MTrans" connectable="0" parent="RL1_MTrans" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.5" as="geometry">
+            <mxPoint x="10" y="10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="RL2_MTrans" edge="1" parent="1" source="R_MEM_TRANS" style="endArrow=none;html=1;strokeWidth=2;" target="E_TRANSACTION">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="430" y="340" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="L_RL2_MTrans" connectable="0" parent="RL2_MTrans" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="N" vertex="1">
+          <mxGeometry relative="1" x="0.5" as="geometry">
+            <mxPoint x="10" y="10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="R_CLUB_DOC" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;strokeWidth=2;fontStyle=1;" value="belgesi_var" vertex="1">
+          <mxGeometry height="60" width="100" x="855" y="210" as="geometry" />
+        </mxCell>
+        <mxCell id="RL1_CDoc" edge="1" parent="1" source="E_CLUB" style="endArrow=none;html=1;strokeWidth=2;" target="R_CLUB_DOC">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="L_RL1_CDoc" connectable="0" parent="RL1_CDoc" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.5" as="geometry">
+            <mxPoint x="10" y="10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="RL2_CDoc" edge="1" parent="1" source="R_CLUB_DOC" style="endArrow=none;html=1;strokeWidth=2;" target="E_DOCUMENT">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="L_RL2_CDoc" connectable="0" parent="RL2_CDoc" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="N" vertex="1">
+          <mxGeometry relative="1" x="0.5" as="geometry">
+            <mxPoint x="10" y="10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="R_PROJECT_TASK" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;strokeWidth=2;fontStyle=1;" value="gorevleri_var" vertex="1">
+          <mxGeometry height="60" width="100" x="1270" y="1130" as="geometry" />
+        </mxCell>
+        <mxCell id="RL1_PTask" edge="1" parent="1" source="E_PROJECT" style="endArrow=none;html=1;strokeWidth=2;" target="R_PROJECT_TASK">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="L_RL1_PTask" connectable="0" parent="RL1_PTask" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.5" as="geometry">
+            <mxPoint x="10" y="10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="RL2_PTask" edge="1" parent="1" source="R_PROJECT_TASK" style="endArrow=none;html=1;strokeWidth=2;" target="E_TASK">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="L_RL2_PTask" connectable="0" parent="RL2_PTask" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="N" vertex="1">
+          <mxGeometry relative="1" x="0.5" as="geometry">
+            <mxPoint x="10" y="10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="R_MEM_TASK" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;strokeWidth=2;fontStyle=1;" value="atanir" vertex="1">
+          <mxGeometry height="60" width="100" x="650" y="870" as="geometry" />
+        </mxCell>
+        <mxCell id="RL1_MTask" edge="1" parent="1" source="E_MEMBERSHIP" style="endArrow=none;html=1;strokeWidth=2;" target="R_MEM_TASK">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="L_RL1_MTask" connectable="0" parent="RL1_MTask" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.5" as="geometry">
+            <mxPoint x="10" y="10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="RL2_MTask" edge="1" parent="1" source="R_MEM_TASK" style="endArrow=none;html=1;strokeWidth=2;" target="E_TASK">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="L_RL2_MTask" connectable="0" parent="RL2_MTask" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="N" vertex="1">
+          <mxGeometry relative="1" x="0.5" as="geometry">
+            <mxPoint x="10" y="10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="R_TEAM_MR" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;strokeWidth=2;fontStyle=1;" value="raporlar" vertex="1">
+          <mxGeometry height="60" width="100" x="1510" y="940" as="geometry" />
+        </mxCell>
+        <mxCell id="RL1_TMr" edge="1" parent="1" source="E_TEAM" style="endArrow=none;html=1;strokeWidth=2;" target="R_TEAM_MR">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="L_RL1_TMr" connectable="0" parent="RL1_TMr" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.5" as="geometry">
+            <mxPoint x="10" y="10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="RL2_TMr" edge="1" parent="1" source="R_TEAM_MR" style="endArrow=none;html=1;strokeWidth=2;" target="E_MEETING_REPORT">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="L_RL2_TMr" connectable="0" parent="RL2_TMr" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="N" vertex="1">
+          <mxGeometry relative="1" x="0.5" as="geometry">
+            <mxPoint x="10" y="10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="R_CLUB_MR" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;strokeWidth=2;fontStyle=1;" value="raporlar" vertex="1">
+          <mxGeometry height="60" width="100" x="1200" y="485" as="geometry" />
+        </mxCell>
+        <mxCell id="RL1_CMr" edge="1" parent="1" source="E_CLUB" style="endArrow=none;html=1;strokeWidth=2;" target="R_CLUB_MR">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="L_RL1_CMr" connectable="0" parent="RL1_CMr" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.5" as="geometry">
+            <mxPoint x="10" y="10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="RL2_CMr" edge="1" parent="1" source="R_CLUB_MR" style="endArrow=none;html=1;strokeWidth=2;" target="E_MEETING_REPORT">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1680" y="520" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="L_RL2_CMr" connectable="0" parent="RL2_CMr" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="N" vertex="1">
           <mxGeometry relative="1" x="0.5" as="geometry">
             <mxPoint x="10" y="10" as="offset" />
           </mxGeometry>

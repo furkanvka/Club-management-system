@@ -72,7 +72,7 @@ export const Teams = () => {
   const fetchAllClubMembers = useCallback(() => {
     if (!activeClub?.id) return;
     api.get(`/clubs/${activeClub.id}/members`)
-      .then(r => setAllMembers(r.data))
+      .then(r => setAllMembers(r.data.filter(m => m.status !== 'pending')))
       .catch(err => console.error("Üyeler getirilemedi", err));
   }, [activeClub?.id]);
 

@@ -16,7 +16,8 @@ import {
   Folder,
   Eye,
   CheckCircle2,
-  Clock
+  Clock,
+  UserPlus
 } from 'lucide-react';
 import { Card } from '../../components/common/Card';
 import { Table, TableCell } from '../../components/common/Table';
@@ -28,6 +29,7 @@ export const Members = () => {
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [viewingPending, setViewingPending] = useState(false);
 
   // Team Assignment State
   const [myTeams, setMyTeams] = useState([]);
@@ -51,6 +53,15 @@ export const Members = () => {
       .then(r => { setMembers(r.data); setLoading(false); })
       .catch(() => setLoading(false));
   }, [activeClub?.id]);
+
+  const handleApproveMember = async (memberId) => {
+    try {
+      await api.put(`/clubs/${activeClub.id}/members/${memberId}/approve`);
+      fetchMembers();
+    } catch (e) {
+      alert('Onaylanırken hata oluştu.');
+    }
+  };
 
   const fetchMemberHistory = async (membershipId) => {
     setLoadingHistory(true);
@@ -157,14 +168,19 @@ export const Members = () => {
     }
   };
 
-  const filtered = members.filter(m =>
+  const pendingMembers = members.filter(m => m.status === 'pending');
+  const activeMembers = members.filter(m => m.status !== 'pending');
+
+  const filtered = (viewingPending ? pendingMembers : activeMembers).filter(m =>
     (m.user?.email || '').toLowerCase().includes(search.toLowerCase()) ||
     (m.user?.firstName || '').toLowerCase().includes(search.toLowerCase()) ||
     (m.user?.lastName || '').toLowerCase().includes(search.toLowerCase()) ||
     (m.user?.studentNumber || '').toLowerCase().includes(search.toLowerCase())
   );
 
-  const headers = ['Üye Bilgileri', 'Öğrenci No', 'Yetki Grubu', 'Sistem Durumu', ''];
+  const headers = viewingPending
+    ? ['Üye Bilgileri', 'Öğrenci No', 'Durum', '']
+    : ['Üye Bilgileri', 'Öğrenci No', 'Yetki Grubu', 'Sistem Durumu', ''];
 
   return (
     <div className="space-y-8 max-w-7xl mx-auto">
@@ -184,7 +200,7 @@ export const Members = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {[
           { label: 'Toplam Üye', value: members.length, color: 'bg-indigo-50 text-indigo-600', icon: Users },
-          { label: 'Başkanlar', value: members.filter(m => ['KULUP_BASKANI', 'BASKAN'].includes(m.role?.toUpperCase())).length, color: 'bg-purple-50 text-purple-600', icon: Crown },
+          { label: 'Onay Bekleyen', value: pendingMembers.length, color: 'bg-amber-50 text-amber-600', icon: Clock },
           { label: 'Ekip Liderleri', value: members.filter(m => m.role?.toUpperCase() === 'EKIP_LIDERI').length, color: 'bg-amber-50 text-amber-600', icon: Star },
           { label: 'Aktif Üyeler', value: members.filter(m => m.status === 'active').length, color: 'bg-emerald-50 text-emerald-600', icon: UserCheck },
         ].map(s => (
@@ -204,8 +220,8 @@ export const Members = () => {
 
       {/* Main Content */}
       <Card noPadding>
-        <div className="p-6 border-b border-gray-100 bg-gray-50/30">
-          <div className="relative max-w-sm">
+        <div className="p-6 border-b border-gray-100 bg-gray-50/30 flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+          <div className="relative max-w-sm w-full">
             <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
             <input
               type="text"
@@ -215,6 +231,37 @@ export const Members = () => {
               className="w-full pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all"
             />
           </div>
+          {/* Tab buttons */}
+          {isBaskan && (
+            <div className="flex gap-2">
+              <button
+                onClick={() => { setViewingPending(false); setSearch(''); }}
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold border transition-all ${
+                  !viewingPending ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-gray-50 text-gray-600 border-gray-200 hover:brightness-95'
+                }`}
+              >
+                <Users size={14} />
+                Aktif Üyeler
+                <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-black ${
+                  !viewingPending ? 'bg-white/20' : 'bg-gray-200 text-gray-600'
+                }`}>{activeMembers.length}</span>
+              </button>
+              <button
+                onClick={() => { setViewingPending(true); setSearch(''); }}
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold border transition-all ${
+                  viewingPending ? 'bg-amber-500 text-white border-amber-500' : 'bg-amber-50 text-amber-700 border-amber-200 hover:brightness-95'
+                }`}
+              >
+                <Clock size={14} />
+                Onay Bekleyen
+                {pendingMembers.length > 0 && (
+                  <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-black ${
+                    viewingPending ? 'bg-white/20' : 'bg-amber-200 text-amber-800'
+                  }`}>{pendingMembers.length}</span>
+                )}
+              </button>
+            </div>
+          )}
         </div>
 
         <Table
@@ -228,14 +275,18 @@ export const Members = () => {
             const normalizedRole = (m.role || '').toUpperCase().replace('-', '_');
             const isUserBaskan = normalizedRole === 'KULUP_BASKANI' || normalizedRole === 'BASKAN';
             const isRegularMember = !m.role || normalizedRole === 'UYE';
-            const displayName = m.user?.firstName ? `${m.user.firstName} ${m.user.lastName}` : (m.user?.email?.split('@')[0] || 'Bilinmiyor');
+            const displayName = m.user?.firstName
+              ? `${m.user.firstName}${m.user.lastName ? ' ' + m.user.lastName : ''}`
+              : (m.user?.email?.split('@')[0] || 'Bilinmiyor');
             
             return (
               <>
                 <TableCell>
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center font-bold text-indigo-600">
-                      {displayName[0].toUpperCase()}
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold ${
+                      viewingPending ? 'bg-amber-50 text-amber-600' : 'bg-indigo-50 text-indigo-600'
+                    }`}>
+                      {displayName[0].toLocaleUpperCase('tr-TR')}
                     </div>
                     <div>
                       <div className="font-bold text-gray-900">{displayName}</div>
@@ -246,27 +297,61 @@ export const Members = () => {
                 <TableCell className="font-medium text-gray-600">
                    {m.user?.studentNumber || '—'}
                 </TableCell>
-                <TableCell>
-                  <div className="flex flex-col gap-2">
-                    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold border ${rb.color}`}>
-                      <RoleIcon size={12} />
-                      {rb.label.toUpperCase()}
+                {viewingPending ? (
+                  <TableCell>
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold border bg-amber-50 text-amber-700 border-amber-100">
+                      <Clock size={12} />
+                      ONAY BEKLİYOR
                     </span>
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold ${
-                    m.status === 'active' 
-                    ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' 
-                    : 'bg-gray-50 text-gray-500 border border-gray-100'
-                  }`}>
-                    <div className={`w-1.5 h-1.5 rounded-full ${m.status === 'active' ? 'bg-emerald-500' : 'bg-gray-300'}`} />
-                    {m.status === 'active' ? 'AKTİF' : 'PASİF'}
-                  </div>
-                </TableCell>
+                  </TableCell>
+                ) : (
+                  <>
+                    <TableCell>
+                      <div className="flex flex-col gap-2">
+                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold border ${rb.color}`}>
+                          <RoleIcon size={12} />
+                          {rb.label.toLocaleUpperCase('tr-TR')}
+                        </span>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold ${
+                        m.status === 'active' 
+                        ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' 
+                        : 'bg-gray-50 text-gray-500 border border-gray-100'
+                      }`}>
+                        <div className={`w-1.5 h-1.5 rounded-full ${m.status === 'active' ? 'bg-emerald-500' : 'bg-gray-300'}`} />
+                        {m.status === 'active' ? 'AKTİF' : 'PASİF'}
+                      </div>
+                    </TableCell>
+                  </>
+                )}
                 <TableCell className="text-right">
                   <div className="flex justify-end gap-2">
-                     {user?.loginType === 'club' && isRegularMember && (
+                     {/* Onay bekleyen modda onay/red butonları */}
+                     {viewingPending && isBaskan && (
+                       <>
+                         <Button
+                           variant="primary"
+                           size="sm"
+                           onClick={() => handleApproveMember(m.id)}
+                           icon={CheckCircle2}
+                           className="bg-emerald-600 hover:bg-emerald-700 border-emerald-600"
+                         >
+                           ONAYLA
+                         </Button>
+                         <button
+                           onClick={() => handleRemove(m.id)}
+                           className="p-2 text-gray-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-all"
+                           title="Reddet ve Sil"
+                         >
+                           <Trash2 size={18} />
+                         </button>
+                       </>
+                     )}
+
+                     {/* Normal modda yönetim butonları */}
+                     {!viewingPending && user?.loginType === 'club' && isRegularMember && (
                        <Button
                          variant="primary"
                          size="sm"
@@ -277,7 +362,7 @@ export const Members = () => {
                        </Button>
                      )}
 
-                     {canManageTeams && !isUserBaskan && (
+                     {!viewingPending && canManageTeams && !isUserBaskan && (
                        <Button
                          variant="secondary"
                          size="sm"
@@ -288,7 +373,7 @@ export const Members = () => {
                        </Button>
                      )}
 
-                     {isBaskan && (
+                     {!viewingPending && isBaskan && (
                         <button
                          onClick={() => { setSelectedMember(m); fetchMemberHistory(m.id); }}
                          className="p-2 text-indigo-500 hover:text-indigo-700 hover:bg-indigo-50 rounded-lg transition-all"
@@ -298,7 +383,7 @@ export const Members = () => {
                        </button>
                      )}
                      
-                     {isBaskan && !isUserBaskan && (
+                     {!viewingPending && isBaskan && !isUserBaskan && (
                         <button
                          onClick={() => handleRemove(m.id)}
                          className="p-2 text-gray-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-all"

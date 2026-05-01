@@ -44,6 +44,23 @@ public class MemberController {
         return ResponseEntity.ok(memberService.getMembersByClubId(clubId));
     }
 
+    @GetMapping("/pending")
+    public ResponseEntity<List<Membership>> getPendingMembers(@PathVariable Long clubId) {
+        List<Membership> all = memberService.getMembersByClubId(clubId);
+        List<Membership> pending = all.stream()
+            .filter(m -> "pending".equals(m.getStatus()))
+            .collect(java.util.stream.Collectors.toList());
+        return ResponseEntity.ok(pending);
+    }
+
+    @PutMapping("/{memberId}/approve")
+    public ResponseEntity<Membership> approveMember(@PathVariable Long clubId, @PathVariable Long memberId) {
+        return memberService.getMembershipById(memberId).map(membership -> {
+            membership.setStatus("active");
+            return ResponseEntity.ok(memberService.saveMembership(membership));
+        }).orElse(ResponseEntity.notFound().build());
+    }
+
     @DeleteMapping("/{memberId}")
     public ResponseEntity<Void> removeMember(@PathVariable Long clubId, @PathVariable Long memberId) {
         memberService.deleteMembership(memberId);

@@ -381,5 +381,38 @@ export const DashboardHome = () => {
     return <PresidentDashboard activeClub={activeClub} loginType={loginType} activeRole={activeRole} />;
   }
 
+  // Onay bekleyen üye için uyarı göster
+  const activeMembershipStatus = localStorage.getItem('activeMembershipStatus');
+  if (activeMembershipStatus === 'pending') {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-8 max-w-lg mx-auto">
+        <div className="w-24 h-24 bg-amber-50 rounded-[2rem] flex items-center justify-center text-amber-500">
+          <Clock size={52} />
+        </div>
+        <div className="text-center space-y-3">
+          <h2 className="text-3xl font-bold text-gray-900 tracking-tight">Onay Bekleniyor</h2>
+          <p className="text-gray-500 font-medium text-base leading-relaxed">
+            <strong className="text-gray-700">{activeClub?.name}</strong> kulübüne üyelik başvurunuz alındı.<br />
+            Kulüp başkanı onayladıktan sonra içeriklere erişebileceksiniz.
+          </p>
+        </div>
+        <div className="w-full p-5 bg-amber-50 rounded-2xl border border-amber-100">
+          <div className="flex items-start gap-3">
+            <AlertCircle size={20} className="text-amber-500 shrink-0 mt-0.5" />
+            <div>
+              <p className="text-sm font-bold text-amber-800 mb-1">Başvurunuz İncelemede</p>
+              <p className="text-xs text-amber-700 leading-relaxed">
+                Kulüp başkanının onayını bekleyin. Onaylandığınızda etkinliklere, projelere ve görevlere erişebileceksiniz.
+              </p>
+            </div>
+          </div>
+        </div>
+        <Button variant="ghost" onClick={() => navigate('/select-club')} icon={Building2}>
+          Başka Kulüp Seç
+        </Button>
+      </div>
+    );
+  }
+
   return <MemberDashboard activeClub={activeClub} user={user} activeMembershipId={activeMembershipId} />;
 };

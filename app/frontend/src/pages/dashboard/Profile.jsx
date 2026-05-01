@@ -57,7 +57,16 @@ export const Profile = () => {
   const [pwSuccess, setPwSuccess] = useState(false);
 
   useEffect(() => {
-    if (!activeClub?.id) return;
+    if (!activeClub?.id) {
+      // Kulüp seçili değilse profil bilgisini user'dan doldur
+      setProfile(prev => ({
+        ...prev,
+        fullName: user?.firstName ? `${user.firstName}${user.lastName ? ' ' + user.lastName : ''}` : '',
+        studentNumber: user?.studentNumber || ''
+      }));
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     api.get(`/clubs/${activeClub.id}/members/me/profile`)
       .then(r => {
@@ -66,13 +75,20 @@ export const Profile = () => {
         } else {
           setProfile(prev => ({
             ...prev,
-            fullName: user?.firstName ? `${user.firstName} ${user.lastName}` : '',
+            fullName: user?.firstName ? `${user.firstName}${user.lastName ? ' ' + user.lastName : ''}` : '',
             studentNumber: user?.studentNumber || ''
           }));
         }
         setLoading(false);
       })
-      .catch(() => setLoading(false));
+      .catch(() => {
+        setProfile(prev => ({
+          ...prev,
+          fullName: user?.firstName ? `${user.firstName}${user.lastName ? ' ' + user.lastName : ''}` : '',
+          studentNumber: user?.studentNumber || ''
+        }));
+        setLoading(false);
+      });
   }, [activeClub, user]);
 
   const handleSave = async (e) => {
@@ -80,6 +96,10 @@ export const Profile = () => {
     setSaving(true);
     setSaveSuccess(false);
     try {
+      if (!activeClub?.id) {
+        alert('Lütfen önce bir kulüp seçin.');
+        return;
+      }
       await api.post(`/clubs/${activeClub.id}/members/me/profile`, profile);
       setSaveSuccess(true);
       setTimeout(() => setSaveSuccess(false), 3000);
@@ -150,8 +170,8 @@ export const Profile = () => {
 
   const rd = roleDisplay(activeRole);
   const RoleIcon = rd.icon;
-  const initial = user?.firstName?.[0] || profile.fullName?.[0] || user?.email?.[0].toUpperCase();
-  const displayName = profile.fullName || (user?.firstName ? `${user.firstName} ${user.lastName}` : 'İsimsiz Üye');
+  const initial = user?.firstName?.[0] || profile.fullName?.[0] || user?.email?.[0]?.toLocaleUpperCase('tr-TR') || 'U';
+  const displayName = profile.fullName || (user?.firstName ? `${user.firstName}${user.lastName ? ' ' + user.lastName : ''}` : 'İsimsiz Üye');
   const displayStudentNumber = profile.studentNumber || user?.studentNumber || '—';
   const loginType = user?.loginType || 'user';
   const isClubAccount = loginType === 'club';
@@ -210,11 +230,11 @@ export const Profile = () => {
                   {activeMembershipStatus === 'active' ? 'AKTİF' : 'PASİF'}
                 </span>
               </div>
-              {currentMembership?.joinDate && (
+              {currentMembership?.joinedAt && (
                 <div className="flex items-center justify-between text-xs">
                   <span className="font-bold text-gray-400 uppercase tracking-wider">Katılma</span>
                   <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full font-bold border bg-gray-50 text-gray-600 border-gray-200">
-                    <Calendar size={10} /> {new Date(currentMembership.joinDate).toLocaleDateString('tr-TR')}
+                    <Calendar size={10} /> {new Date(currentMembership.joinedAt).toLocaleDateString('tr-TR')}
                   </span>
                 </div>
               )}

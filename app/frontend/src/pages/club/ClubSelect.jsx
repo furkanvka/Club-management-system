@@ -41,11 +41,11 @@ export const ClubSelect = () => {
   };
 
   const handleJoin = async (club) => {
-    if (!window.confirm(`"${club.name}" kulübüne katılmak istediğinize emin misiniz?`)) return;
+    if (!window.confirm(`"${club.name}" kulübüne katılmak istediğinize emin misiniz?\n\nNot: Üyeliğiniz kulüp başkanı tarafından onaylanana kadar aktif olmayacaktır.`)) return;
     setLoading(true);
     try {
       await clubService.joinClub(club.id);
-      alert('Kulübe başarıyla katıldınız!');
+      alert(`"${club.name}" kulübüne başvurunuz iletildi!\n\nKulüp başkanı onayladıktan sonra aktif üye olacaksınız.`);
       await refreshClubs();
     } catch (err) {
       const status = err.response?.status;
