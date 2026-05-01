@@ -61,16 +61,14 @@ export const ClubRegister = () => {
         isOpen: true
       });
 
-      if (!user) {
-        await clubLogin({ email: contactEmail, password: clubPassword });
-      } else {
+      if (user) {
         await refreshClubs();
       }
 
       alert('Kulüp başvuru talebiniz başarıyla alındı! Yönetici onayından sonra giriş yapabilirsiniz.');
       navigate('/');
     } catch (err) {
-      setError('Başvuru gönderilirken bir hata oluştu: ' + (err.response?.data?.message || err.message));
+      setError('Başvuru gönderilirken bir hata oluştu: ' + (err.response?.data?.message || err.response?.data || err.message));
     } finally {
       setLoading(false);
     }
