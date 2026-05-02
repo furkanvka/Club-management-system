@@ -78,8 +78,10 @@ Before you begin, ensure you have the following installed. Follow the links for 
 3.  **Access the applications**:
     - **Frontend**: [http://localhost:3000](http://localhost:3000)
     - **Backend API**: [http://localhost:8080](http://localhost:8080)
-    - **Database**: `localhost:5432`
+    - **Database**: `localhost:5432`,
 
+4. **Admin girişi için**
+    -  /admin linki ile girip admin@admin.com admin123 şifresi ile girilmeli
 ---
 
 ## 📄 License
