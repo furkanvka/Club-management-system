@@ -52,6 +52,10 @@ export const Documents = () => {
         alert('Yalnızca PDF ve resim dosyaları (JPG, PNG, GIF, WEBP) desteklenmektedir.');
         return;
       }
+      if (file.size > 10 * 1024 * 1024) {
+        alert('Dosya boyutu 10MB\'dan küçük olmalıdır.');
+        return;
+      }
       const reader = new FileReader();
       reader.onloadend = () => {
         setForm({ ...form, fileData: reader.result, title: form.title || file.name.split('.')[0] });

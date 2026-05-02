@@ -54,8 +54,17 @@ export const AdminDashboard = () => {
 
   const handleViewStatute = (club) => {
     if (!club.statuteFileData) return;
+
+    if (club.statuteFileData.startsWith('data:')) {
+      const a = document.createElement('a');
+      a.href = club.statuteFileData;
+      a.download = `${club.name}_tuzuk.pdf`;
+      a.click();
+      return;
+    }
+
     try {
-      // base64 PDF veya dosya verisi
+      // raw base64 data
       const byteCharacters = atob(club.statuteFileData);
       const byteNumbers = new Array(byteCharacters.length);
       for (let i = 0; i < byteCharacters.length; i++) {
@@ -64,7 +73,10 @@ export const AdminDashboard = () => {
       const byteArray = new Uint8Array(byteNumbers);
       const blob = new Blob([byteArray], { type: 'application/pdf' });
       const url = URL.createObjectURL(blob);
-      window.open(url, '_blank');
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${club.name}_tuzuk.pdf`;
+      a.click();
     } catch (e) {
       // Düz metin veya başka format olabilir
       const blob = new Blob([club.statuteFileData], { type: 'text/plain' });

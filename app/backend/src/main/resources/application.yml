@@ -1,6 +1,9 @@
 spring:
   application:
     name: backend
+  jackson:
+    read-constraints:
+      max-string-length: 50000000
   datasource:
     url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://postgres:5432/mydb}
     username: ${SPRING_DATASOURCE_USERNAME:myuser}

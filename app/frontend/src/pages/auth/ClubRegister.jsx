@@ -34,6 +34,10 @@ export const ClubRegister = () => {
         alert('Lütfen sadece PDF dosyası yükleyin.');
         return;
       }
+      if (file.size > 5 * 1024 * 1024) { // 5MB limit as a safer buffer
+        alert('Dosya boyutu 5MB\'dan küçük olmalıdır.');
+        return;
+      }
       const reader = new FileReader();
       reader.onloadend = () => {
         setStatuteFile(reader.result);
