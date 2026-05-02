@@ -30,7 +30,7 @@ import { Button } from '../../components/common/Button';
 import { Input } from '../../components/common/Input';
 
 export const Profile = () => {
-  const { activeClub, activeRole, activeMembershipStatus, myClubs, myMemberships } = useClub();
+  const { activeClub, activeRole, activeMembershipStatus, myClubs, myMemberships, refreshClubs } = useClub();
   const { user } = useAuth();
   const [profile, setProfile] = useState({
     fullName: '',
@@ -101,6 +101,7 @@ export const Profile = () => {
         return;
       }
       await api.post(`/clubs/${activeClub.id}/members/me/profile`, profile);
+      await refreshClubs();
       setSaveSuccess(true);
       setTimeout(() => setSaveSuccess(false), 3000);
     } catch (err) {
@@ -285,54 +286,60 @@ export const Profile = () => {
               <form onSubmit={handleSave} className="space-y-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <Input
-                    label="Ad Soyad"
+                    label={isClubAccount ? "Kulüp Adı" : "Ad Soyad"}
                     value={profile.fullName}
                     onChange={e => setProfile({ ...profile, fullName: e.target.value })}
-                    placeholder="Ali Yılmaz"
-                    icon={User}
+                    placeholder={isClubAccount ? "Kulüp Adı" : "Ali Yılmaz"}
+                    icon={isClubAccount ? Building2 : User}
                   />
-                  <Input
-                    label="Öğrenci Numarası"
-                    value={profile.studentNumber}
-                    onChange={e => setProfile({ ...profile, studentNumber: e.target.value })}
-                    placeholder="202101001"
-                    icon={Hash}
-                  />
+                  {!isClubAccount && (
+                    <Input
+                      label="Öğrenci Numarası"
+                      value={profile.studentNumber}
+                      onChange={e => setProfile({ ...profile, studentNumber: e.target.value })}
+                      placeholder="202101001"
+                      icon={Hash}
+                    />
+                  )}
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <Input
-                    label="Telefon Numarası"
-                    value={profile.phone}
-                    onChange={e => setProfile({ ...profile, phone: e.target.value })}
-                    placeholder="05xx ..."
-                    icon={Phone}
-                  />
-                  <Input
-                    label="Bölüm / Fakülte"
-                    value={profile.department}
-                    onChange={e => setProfile({ ...profile, department: e.target.value })}
-                    placeholder="Bilgisayar Mühendisliği"
-                    icon={BookOpen}
-                  />
-                </div>
+                {!isClubAccount && (
+                  <>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <Input
+                        label="Telefon Numarası"
+                        value={profile.phone}
+                        onChange={e => setProfile({ ...profile, phone: e.target.value })}
+                        placeholder="05xx ..."
+                        icon={Phone}
+                      />
+                      <Input
+                        label="Bölüm / Fakülte"
+                        value={profile.department}
+                        onChange={e => setProfile({ ...profile, department: e.target.value })}
+                        placeholder="Bilgisayar Mühendisliği"
+                        icon={BookOpen}
+                      />
+                    </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-1.5">
-                    <label className="text-sm font-bold text-gray-700 flex items-center gap-2">
-                      <GraduationCap size={14} className="text-gray-400" /> Sınıf
-                    </label>
-                    <select
-                      value={profile.classYear}
-                      onChange={e => setProfile({ ...profile, classYear: e.target.value })}
-                      className="w-full px-3 py-2 text-sm bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-medium"
-                    >
-                      <option value="">Seçiniz...</option>
-                      {[1, 2, 3, 4, 5, 6].map(y => <option key={y} value={y}>{y}. Sınıf</option>)}
-                      <option value="99">Mezun</option>
-                    </select>
-                  </div>
-                </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-1.5">
+                        <label className="text-sm font-bold text-gray-700 flex items-center gap-2">
+                          <GraduationCap size={14} className="text-gray-400" /> Sınıf
+                        </label>
+                        <select
+                          value={profile.classYear}
+                          onChange={e => setProfile({ ...profile, classYear: e.target.value })}
+                          className="w-full px-3 py-2 text-sm bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-medium"
+                        >
+                          <option value="">Seçiniz...</option>
+                          {[1, 2, 3, 4, 5, 6].map(y => <option key={y} value={y}>{y}. Sınıf</option>)}
+                          <option value="99">Mezun</option>
+                        </select>
+                      </div>
+                    </div>
+                  </>
+                )}
 
                 <div className="p-5 bg-gray-50 rounded-xl border border-gray-100 flex items-center justify-between">
                   <div className="flex items-center gap-3">
