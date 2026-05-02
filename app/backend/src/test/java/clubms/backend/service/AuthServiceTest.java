@@ -93,9 +93,9 @@ public class AuthServiceTest {
 
     @Test
     void authenticateClub_Success() {
-        // Need to create a mock Club object or just return Optional.of(new Object) 
-        // since we just check isEmpty()
-        when(clubRepository.findByContactEmail(loginRequest.getEmail())).thenReturn(Optional.of(mock(clubms.backend.entity.Club.class)));
+        clubms.backend.entity.Club mockClub = mock(clubms.backend.entity.Club.class);
+        when(mockClub.getStatus()).thenReturn("APPROVED");
+        when(clubRepository.findByContactEmail(loginRequest.getEmail())).thenReturn(Optional.of(mockClub));
         
         Authentication authentication = mock(Authentication.class);
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))

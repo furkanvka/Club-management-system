@@ -84,5 +84,41 @@ Before you begin, ensure you have the following installed. Follow the links for 
     -  /admin linki ile girip admin@admin.com admin123 şifresi ile girilmeli
 ---
 
+## 🧪 Testing
+
+You can run tests for both the backend and frontend either inside the Docker containers or locally.
+
+### Running Tests with Docker (Recommended)
+
+When the services are running via Docker, you can execute the tests using `docker exec`:
+
+- **Backend Tests**:
+  ```bash
+  docker exec backend ./mvnw test
+  ```
+
+- **Frontend Tests**:
+  ```bash
+  docker exec frontend npm test -- --watchAll=false
+  ```
+
+### Running Tests Locally
+
+If you have the prerequisites installed on your host machine:
+
+- **Backend Tests**:
+  ```bash
+  cd backend
+  ./mvnw test
+  ```
+
+- **Frontend Tests**:
+  ```bash
+  cd frontend
+  npm test
+  ```
+
+---
+
 ## 📄 License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
